@@ -1,1046 +1,1042 @@
--- ----------------------------
--- 第三方平台授权表
--- ----------------------------
-create table sys_social
-(
-    id                 bigint           not null        comment '主键',
-    user_id            bigint           not null        comment '用户ID',
-    tenant_id          varchar(20)      default '000000' comment '租户id',
-    auth_id            varchar(255)     not null        comment '平台+平台唯一id',
-    source             varchar(255)     not null        comment '用户来源',
-    open_id            varchar(255)     default null    comment '平台编号唯一id',
-    user_name          varchar(30)      not null        comment '登录账号',
-    nick_name          varchar(30)      default ''      comment '用户昵称',
-    email              varchar(255)     default ''      comment '用户邮箱',
-    avatar             varchar(500)     default ''      comment '头像地址',
-    access_token       varchar(2000)     not null        comment '用户的授权令牌',
-    expire_in          int              default null    comment '用户的授权令牌的有效期，部分平台可能没有',
-    refresh_token      varchar(2000)     default null    comment '刷新令牌，部分平台可能没有',
-    access_code        varchar(255)     default null    comment '平台的授权信息，部分平台可能没有',
-    union_id           varchar(255)     default null    comment '用户的 unionid',
-    scope              varchar(255)     default null    comment '授予的权限，部分平台可能没有',
-    token_type         varchar(255)     default null    comment '个别平台的授权信息，部分平台可能没有',
-    id_token           varchar(2000)    default null    comment 'id token，部分平台可能没有',
-    mac_algorithm      varchar(255)     default null    comment '小米平台用户的附带属性，部分平台可能没有',
-    mac_key            varchar(255)     default null    comment '小米平台用户的附带属性，部分平台可能没有',
-    code               varchar(255)     default null    comment '用户的授权code，部分平台可能没有',
-    oauth_token        varchar(255)     default null    comment 'Twitter平台用户的附带属性，部分平台可能没有',
-    oauth_token_secret varchar(255)     default null    comment 'Twitter平台用户的附带属性，部分平台可能没有',
-    create_dept        bigint(20)                       comment '创建部门',
-    create_by          bigint(20)                       comment '创建者',
-    create_time        datetime                         comment '创建时间',
-    update_by          bigint(20)                       comment '更新者',
-    update_time        datetime                         comment '更新时间',
-    del_flag           char(1)          default '0'     comment '删除标志（0代表存在 1代表删除）',
-    PRIMARY KEY (id)
-) engine=innodb comment = '社会化关系表';
+-- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
+--
+-- Host: localhost    Database: ry-cloud
+-- ------------------------------------------------------
+-- Server version	8.0.44
 
--- ----------------------------
--- 租户表
--- ----------------------------
-create table sys_tenant
-(
-    id                bigint(20)    not null        comment 'id',
-    tenant_id         varchar(20)   not null        comment '租户编号',
-    contact_user_name varchar(20)                   comment '联系人',
-    contact_phone     varchar(20)                   comment '联系电话',
-    company_name      varchar(30)                   comment '企业名称',
-    license_number    varchar(30)                   comment '统一社会信用代码',
-    address           varchar(200)                  comment '地址',
-    intro             varchar(200)                  comment '企业简介',
-    domain            varchar(200)                  comment '域名',
-    remark            varchar(200)                  comment '备注',
-    package_id        bigint(20)                    comment '租户套餐编号',
-    expire_time       datetime                      comment '过期时间',
-    account_count     int           default -1      comment '用户数量（-1不限制）',
-    status            char(1)       default '0'     comment '租户状态（0正常 1停用）',
-    del_flag          char(1)       default '0'     comment '删除标志（0代表存在 1代表删除）',
-    create_dept       bigint(20)                    comment '创建部门',
-    create_by         bigint(20)                    comment '创建者',
-    create_time       datetime                      comment '创建时间',
-    update_by         bigint(20)                    comment '更新者',
-    update_time       datetime                      comment '更新时间',
-    primary key (id)
-) engine=innodb comment = '租户表';
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+--
+-- Table structure for table `gen_table`
+--
 
--- ----------------------------
--- 初始化-租户表数据
--- ----------------------------
+DROP TABLE IF EXISTS `gen_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gen_table` (
+  `table_id` bigint NOT NULL COMMENT '编号',
+  `data_name` varchar(200) DEFAULT '' COMMENT '数据源名称',
+  `table_name` varchar(200) DEFAULT '' COMMENT '表名称',
+  `table_comment` varchar(500) DEFAULT '' COMMENT '表描述',
+  `sub_table_name` varchar(64) DEFAULT NULL COMMENT '关联子表的表名',
+  `sub_table_fk_name` varchar(64) DEFAULT NULL COMMENT '子表关联的外键名',
+  `class_name` varchar(100) DEFAULT '' COMMENT '实体类名称',
+  `tpl_category` varchar(200) DEFAULT 'crud' COMMENT '使用的模板（crud单表操作 tree树表操作）',
+  `package_name` varchar(100) DEFAULT NULL COMMENT '生成包路径',
+  `module_name` varchar(30) DEFAULT NULL COMMENT '生成模块名',
+  `business_name` varchar(30) DEFAULT NULL COMMENT '生成业务名',
+  `function_name` varchar(50) DEFAULT NULL COMMENT '生成功能名',
+  `function_author` varchar(50) DEFAULT NULL COMMENT '生成功能作者',
+  `gen_type` char(1) DEFAULT '0' COMMENT '生成代码方式（0zip压缩包 1自定义路径）',
+  `gen_path` varchar(200) DEFAULT '/' COMMENT '生成路径（不填默认项目路径）',
+  `options` varchar(1000) DEFAULT NULL COMMENT '其它生成选项',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`table_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代码生成业务表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-insert into sys_tenant values(1, '000000', '管理组', '15888888888', 'XXX有限公司', NULL, NULL, '多租户通用后台管理管理系统', NULL, NULL, NULL, NULL, -1, '0', '0', 103, 1, sysdate(), NULL, NULL);
+--
+-- Dumping data for table `gen_table`
+--
 
+LOCK TABLES `gen_table` WRITE;
+/*!40000 ALTER TABLE `gen_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gen_table` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ----------------------------
--- 租户套餐表
--- ----------------------------
-create table sys_tenant_package (
-    package_id              bigint(20)     not null    comment '租户套餐id',
-    package_name            varchar(20)                comment '套餐名称',
-    menu_ids                varchar(3000)              comment '关联菜单id',
-    remark                  varchar(200)               comment '备注',
-    menu_check_strictly     tinyint(1)     default 1   comment '菜单树选择项是否关联显示',
-    status                  char(1)        default '0' comment '状态（0正常 1停用）',
-    del_flag                char(1)        default '0' comment '删除标志（0代表存在 1代表删除）',
-    create_dept             bigint(20)                 comment '创建部门',
-    create_by               bigint(20)                 comment '创建者',
-    create_time             datetime                   comment '创建时间',
-    update_by               bigint(20)                 comment '更新者',
-    update_time             datetime                   comment '更新时间',
-    primary key (package_id)
-) engine=innodb comment = '租户套餐表';
+--
+-- Table structure for table `gen_table_column`
+--
 
+DROP TABLE IF EXISTS `gen_table_column`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gen_table_column` (
+  `column_id` bigint NOT NULL COMMENT '编号',
+  `table_id` bigint DEFAULT NULL COMMENT '归属表编号',
+  `column_name` varchar(200) DEFAULT NULL COMMENT '列名称',
+  `column_comment` varchar(500) DEFAULT NULL COMMENT '列描述',
+  `column_type` varchar(100) DEFAULT NULL COMMENT '列类型',
+  `java_type` varchar(500) DEFAULT NULL COMMENT 'JAVA类型',
+  `java_field` varchar(200) DEFAULT NULL COMMENT 'JAVA字段名',
+  `is_pk` char(1) DEFAULT NULL COMMENT '是否主键（1是）',
+  `is_increment` char(1) DEFAULT NULL COMMENT '是否自增（1是）',
+  `is_required` char(1) DEFAULT NULL COMMENT '是否必填（1是）',
+  `is_insert` char(1) DEFAULT NULL COMMENT '是否为插入字段（1是）',
+  `is_edit` char(1) DEFAULT NULL COMMENT '是否编辑字段（1是）',
+  `is_list` char(1) DEFAULT NULL COMMENT '是否列表字段（1是）',
+  `is_query` char(1) DEFAULT NULL COMMENT '是否查询字段（1是）',
+  `query_type` varchar(200) DEFAULT 'EQ' COMMENT '查询方式（等于、不等于、大于、小于、范围）',
+  `html_type` varchar(200) DEFAULT NULL COMMENT '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
+  `dict_type` varchar(200) DEFAULT '' COMMENT '字典类型',
+  `sort` int DEFAULT NULL COMMENT '排序',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`column_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代码生成业务表字段';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------
--- 1、部门表
--- ----------------------------
-create table sys_dept (
-  dept_id           bigint(20)      not null                   comment '部门id',
-  tenant_id         varchar(20)     default '000000'           comment '租户编号',
-  parent_id         bigint(20)      default 0                  comment '父部门id',
-  ancestors         varchar(500)    default ''                 comment '祖级列表',
-  dept_name         varchar(30)     default ''                 comment '部门名称',
-  dept_category     varchar(100)    default null               comment '部门类别编码',
-  order_num         int(4)          default 0                  comment '显示顺序',
-  leader            bigint(20)      default null               comment '负责人',
-  phone             varchar(11)     default null               comment '联系电话',
-  email             varchar(50)     default null               comment '邮箱',
-  status            char(1)         default '0'                comment '部门状态（0正常 1停用）',
-  del_flag          char(1)         default '0'                comment '删除标志（0代表存在 1代表删除）',
-  create_dept       bigint(20)      default null               comment '创建部门',
-  create_by         bigint(20)      default null               comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         bigint(20)      default null               comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  primary key (dept_id)
-) engine=innodb comment = '部门表';
+--
+-- Dumping data for table `gen_table_column`
+--
 
--- ----------------------------
--- 初始化-部门表数据
--- ----------------------------
+LOCK TABLES `gen_table_column` WRITE;
+/*!40000 ALTER TABLE `gen_table_column` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gen_table_column` ENABLE KEYS */;
+UNLOCK TABLES;
 
+--
+-- Table structure for table `sys_client`
+--
 
-insert into sys_dept values(100, '000000', 0,   '0',          'XXX科技',   null, 0, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(101, '000000', 100, '0,100',      '深圳总公司', null, 1, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(102, '000000', 100, '0,100',      '长沙分公司', null, 2, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(103, '000000', 101, '0,100,101',  '研发部门',   null, 1, 1, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(104, '000000', 101, '0,100,101',  '市场部门',   null, 2, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(105, '000000', 101, '0,100,101',  '测试部门',   null, 3, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(106, '000000', 101, '0,100,101',  '财务部门',   null, 4, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(107, '000000', 101, '0,100,101',  '运维部门',   null, 5, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(108, '000000', 102, '0,100,102',  '市场部门',   null, 1, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(109, '000000', 102, '0,100,102',  '财务部门',   null, 2, null, '15888888888', 'xxx@qq.com', '0', '0', 103, 1, sysdate(), null, null);
+DROP TABLE IF EXISTS `sys_client`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_client` (
+  `id` bigint NOT NULL COMMENT 'id',
+  `client_id` varchar(64) DEFAULT NULL COMMENT '客户端id',
+  `client_key` varchar(32) DEFAULT NULL COMMENT '客户端key',
+  `client_secret` varchar(255) DEFAULT NULL COMMENT '客户端秘钥',
+  `grant_type` varchar(255) DEFAULT NULL COMMENT '授权类型',
+  `device_type` varchar(32) DEFAULT NULL COMMENT '设备类型',
+  `active_timeout` int DEFAULT '1800' COMMENT 'token活跃超时时间',
+  `timeout` int DEFAULT '604800' COMMENT 'token固定超时',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统授权表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `sys_client`
+--
 
--- ----------------------------
--- 2、用户信息表
--- ----------------------------
-create table sys_user (
-  user_id           bigint(20)      not null                   comment '用户ID',
-  tenant_id         varchar(20)     default '000000'           comment '租户编号',
-  dept_id           bigint(20)      default null               comment '部门ID',
-  user_name         varchar(30)     not null                   comment '用户账号',
-  nick_name         varchar(30)     not null                   comment '用户昵称',
-  user_type         varchar(10)     default 'sys_user'         comment '用户类型（sys_user系统用户）',
-  email             varchar(50)     default ''                 comment '用户邮箱',
-  phonenumber       varchar(11)     default ''                 comment '手机号码',
-  sex               char(1)         default '0'                comment '用户性别（0男 1女 2未知）',
-  avatar            bigint(20)                                 comment '头像地址',
-  password          varchar(100)    default ''                 comment '密码',
-  status            char(1)         default '0'                comment '帐号状态（0正常 1停用）',
-  del_flag          char(1)         default '0'                comment '删除标志（0代表存在 1代表删除）',
-  login_ip          varchar(128)    default ''                 comment '最后登录IP',
-  login_date        datetime                                   comment '最后登录时间',
-  create_dept       bigint(20)      default null               comment '创建部门',
-  create_by         bigint(20)      default null               comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         bigint(20)      default null               comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(500)    default null               comment '备注',
-  primary key (user_id)
-) engine=innodb comment = '用户信息表';
+LOCK TABLES `sys_client` WRITE;
+/*!40000 ALTER TABLE `sys_client` DISABLE KEYS */;
+INSERT INTO `sys_client` VALUES (1,'e5cd7e4891bf95d1d19206ce24a7b32e','pc','pc123','password,social','pc',1800,604800,'0','0',103,1,'2025-10-25 12:33:06',1,'2025-10-25 12:33:06'),(2,'428a8310cd442757ae699df5d894f051','app','app123','password,sms,social','android',1800,604800,'0','0',103,1,'2025-10-25 12:33:06',1,'2025-10-25 12:33:06');
+/*!40000 ALTER TABLE `sys_client` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ----------------------------
--- 初始化-用户信息表数据
--- ----------------------------
-insert into sys_user values(1, '000000', 103, 'admin', '疯狂的狮子Li', 'sys_user', 'crazyLionLi@163.com', '15888888888', '1', null, '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 103, 1, sysdate(), null, null, '管理员');
-insert into sys_user values(3, '000000', 108, 'test', '本部门及以下 密码666666', 'sys_user', '', '', '0', null, '$2a$10$b8yUzN0C71sbz.PhNOCgJe.Tu1yWC3RNrTyjSQ8p1W0.aaUXUJ.Ne', '0', '0', '127.0.0.1', sysdate(), 103, 1, sysdate(), null, null, '');
-insert into sys_user values(4, '000000', 102, 'test1', '仅本人 密码666666', 'sys_user', '', '', '0', null, '$2a$10$b8yUzN0C71sbz.PhNOCgJe.Tu1yWC3RNrTyjSQ8p1W0.aaUXUJ.Ne', '0', '0', '127.0.0.1', sysdate(), 103, 1, sysdate(), null, null, '');
+--
+-- Table structure for table `sys_config`
+--
 
+DROP TABLE IF EXISTS `sys_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_config` (
+  `config_id` bigint NOT NULL COMMENT '参数主键',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `config_name` varchar(100) DEFAULT '' COMMENT '参数名称',
+  `config_key` varchar(100) DEFAULT '' COMMENT '参数键名',
+  `config_value` varchar(500) DEFAULT '' COMMENT '参数键值',
+  `config_type` char(1) DEFAULT 'N' COMMENT '系统内置（Y是 N否）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`config_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='参数配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------
--- 3、岗位信息表
--- ----------------------------
-create table sys_post
-(
-  post_id       bigint(20)      not null                   comment '岗位ID',
-  tenant_id     varchar(20)     default '000000'           comment '租户编号',
-  dept_id       bigint(20)      not null                   comment '部门id',
-  post_code     varchar(64)     not null                   comment '岗位编码',
-  post_category varchar(100)    default null               comment '岗位类别编码',
-  post_name     varchar(50)     not null                   comment '岗位名称',
-  post_sort     int(4)          not null                   comment '显示顺序',
-  status        char(1)         not null                   comment '状态（0正常 1停用）',
-  create_dept   bigint(20)      default null               comment '创建部门',
-  create_by     bigint(20)      default null               comment '创建者',
-  create_time   datetime                                   comment '创建时间',
-  update_by     bigint(20)      default null               comment '更新者',
-  update_time   datetime                                   comment '更新时间',
-  remark        varchar(500)    default null               comment '备注',
-  primary key (post_id)
-) engine=innodb comment = '岗位信息表';
+--
+-- Dumping data for table `sys_config`
+--
 
--- ----------------------------
--- 初始化-岗位信息表数据
--- ----------------------------
-insert into sys_post values(1, '000000', 103, 'ceo',  null, '董事长',    1, '0', 103, 1, sysdate(), null, null, '');
-insert into sys_post values(2, '000000', 100, 'se',   null, '项目经理',  2, '0', 103, 1, sysdate(), null, null, '');
-insert into sys_post values(3, '000000', 100, 'hr',   null, '人力资源',  3, '0', 103, 1, sysdate(), null, null, '');
-insert into sys_post values(4, '000000', 100, 'user', null, '普通员工',  4, '0', 103, 1, sysdate(), null, null, '');
+LOCK TABLES `sys_config` WRITE;
+/*!40000 ALTER TABLE `sys_config` DISABLE KEYS */;
+INSERT INTO `sys_config` VALUES (1,'000000','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-25 12:32:59',NULL,NULL,'蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(2,'000000','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-25 12:32:59',NULL,NULL,'初始化密码 123456'),(3,'000000','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-25 12:32:59',NULL,NULL,'深色主题theme-dark，浅色主题theme-light'),(5,'000000','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-25 12:33:00',NULL,NULL,'是否开启注册用户功能（true开启，false关闭）'),(11,'000000','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-25 12:33:00',NULL,NULL,'true:开启, false:关闭'),(1983716894912712705,'898509','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983716894912712706,'898509','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','初始化密码 123456'),(1983716894912712707,'898509','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','深色主题theme-dark，浅色主题theme-light'),(1983716894912712708,'898509','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','是否开启注册用户功能（true开启，false关闭）'),(1983716894912712709,'898509','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','true:开启, false:关闭'),(1983726216262623234,'180427','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983726216271011842,'180427','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','初始化密码 123456'),(1983726216271011843,'180427','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','深色主题theme-dark，浅色主题theme-light'),(1983726216279400450,'180427','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','是否开启注册用户功能（true开启，false关闭）'),(1983726216283594754,'180427','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','true:开启, false:关闭'),(1983726285221175298,'380976','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983726285221175299,'380976','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','初始化密码 123456'),(1983726285221175300,'380976','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','深色主题theme-dark，浅色主题theme-light'),(1983726285221175301,'380976','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','是否开启注册用户功能（true开启，false关闭）'),(1983726285221175302,'380976','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','true:开启, false:关闭'),(1983726698938933250,'234087','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983726698938933251,'234087','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','初始化密码 123456'),(1983726698947321858,'234087','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','深色主题theme-dark，浅色主题theme-light'),(1983726698947321859,'234087','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','是否开启注册用户功能（true开启，false关闭）'),(1983726698947321860,'234087','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','true:开启, false:关闭'),(1983726843491426306,'751666','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983726843491426307,'751666','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','初始化密码 123456'),(1983726843491426308,'751666','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','深色主题theme-dark，浅色主题theme-light'),(1983726843491426309,'751666','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','是否开启注册用户功能（true开启，false关闭）'),(1983726843491426310,'751666','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','true:开启, false:关闭'),(1983729610477961218,'715928','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983729610477961219,'715928','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','初始化密码 123456'),(1983729610477961220,'715928','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','深色主题theme-dark，浅色主题theme-light'),(1983729610477961221,'715928','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','是否开启注册用户功能（true开启，false关闭）'),(1983729610477961222,'715928','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','true:开启, false:关闭'),(1983729779147702274,'279445','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983729779147702275,'279445','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','初始化密码 123456'),(1983729779147702276,'279445','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','深色主题theme-dark，浅色主题theme-light'),(1983729779147702277,'279445','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','是否开启注册用户功能（true开启，false关闭）'),(1983729779147702278,'279445','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','true:开启, false:关闭'),(1983734805903634434,'473381','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1983734805903634435,'473381','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','初始化密码 123456'),(1983734805903634436,'473381','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','深色主题theme-dark，浅色主题theme-light'),(1983734805903634437,'473381','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','是否开启注册用户功能（true开启，false关闭）'),(1983734805903634438,'473381','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','true:开启, false:关闭'),(1986691044942012417,'505898','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-11-07 15:03:51',1,'2025-11-07 15:03:51','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(1986691045004926978,'505898','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-11-07 15:03:51',1,'2025-11-07 15:03:51','初始化密码 123456'),(1986691045067841537,'505898','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-11-07 15:03:51',1,'2025-11-07 15:03:51','深色主题theme-dark，浅色主题theme-light'),(1986691045130756098,'505898','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-11-07 15:03:51',1,'2025-11-07 15:03:51','是否开启注册用户功能（true开启，false关闭）'),(1986691045193670657,'505898','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-11-07 15:03:51',1,'2025-11-07 15:03:51','true:开启, false:关闭'),(2001190146752811009,'863903','主框架页-默认皮肤样式名称','sys.index.skinName','skin-blue','Y',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow'),(2001190146819919874,'863903','用户管理-账号初始密码','sys.user.initPassword','123456','Y',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','初始化密码 123456'),(2001190146828308481,'863903','主框架页-侧边栏主题','sys.index.sideTheme','theme-dark','Y',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','深色主题theme-dark，浅色主题theme-light'),(2001190146828308482,'863903','账号自助-是否开启用户注册功能','sys.account.registerUser','false','Y',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','是否开启注册用户功能（true开启，false关闭）'),(2001190146828308483,'863903','OSS预览列表资源开关','sys.oss.previewListResource','true','Y',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','true:开启, false:关闭');
+/*!40000 ALTER TABLE `sys_config` ENABLE KEYS */;
+UNLOCK TABLES;
 
+--
+-- Table structure for table `sys_dept`
+--
 
--- ----------------------------
--- 4、角色信息表
--- ----------------------------
-create table sys_role (
-  role_id              bigint(20)      not null                   comment '角色ID',
-  tenant_id            varchar(20)     default '000000'           comment '租户编号',
-  role_name            varchar(30)     not null                   comment '角色名称',
-  role_key             varchar(100)    not null                   comment '角色权限字符串',
-  role_sort            int(4)          not null                   comment '显示顺序',
-  data_scope           char(1)         default '1'                comment '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限 6：部门及以下或本人数据权限）',
-  menu_check_strictly  tinyint(1)      default 1                  comment '菜单树选择项是否关联显示',
-  dept_check_strictly  tinyint(1)      default 1                  comment '部门树选择项是否关联显示',
-  status               char(1)         not null                   comment '角色状态（0正常 1停用）',
-  del_flag             char(1)         default '0'                comment '删除标志（0代表存在 1代表删除）',
-  create_dept          bigint(20)      default null               comment '创建部门',
-  create_by            bigint(20)      default null               comment '创建者',
-  create_time          datetime                                   comment '创建时间',
-  update_by            bigint(20)      default null               comment '更新者',
-  update_time          datetime                                   comment '更新时间',
-  remark               varchar(500)    default null               comment '备注',
-  primary key (role_id)
-) engine=innodb comment = '角色信息表';
+DROP TABLE IF EXISTS `sys_dept`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_dept` (
+  `dept_id` bigint NOT NULL COMMENT '部门id',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `parent_id` bigint DEFAULT '0' COMMENT '父部门id',
+  `ancestors` varchar(500) DEFAULT '' COMMENT '祖级列表',
+  `dept_name` varchar(30) DEFAULT '' COMMENT '部门名称',
+  `dept_category` varchar(100) DEFAULT NULL COMMENT '部门类别编码',
+  `order_num` int DEFAULT '0' COMMENT '显示顺序',
+  `leader` bigint DEFAULT NULL COMMENT '负责人',
+  `phone` varchar(11) DEFAULT NULL COMMENT '联系电话',
+  `email` varchar(50) DEFAULT NULL COMMENT '邮箱',
+  `status` char(1) DEFAULT '0' COMMENT '部门状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`dept_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='部门表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------
--- 初始化-角色信息表数据
--- ----------------------------
-insert into sys_role values(1, '000000', '超级管理员',  'superadmin',  1, 1, 1, 1, '0', '0', 103, 1, sysdate(), null, null, '超级管理员');
-insert into sys_role values(3, '000000', '本部门及以下', 'test1', 3, 4, 1, 1, '0', '0', 103, 1, sysdate(), null, null, '');
-insert into sys_role values(4, '000000', '仅本人',      'test2', 4, 5, 1, 1, '0', '0', 103, 1, sysdate(), null, null, '');
+--
+-- Dumping data for table `sys_dept`
+--
 
+LOCK TABLES `sys_dept` WRITE;
+/*!40000 ALTER TABLE `sys_dept` DISABLE KEYS */;
+INSERT INTO `sys_dept` VALUES (100,'000000',0,'0','XXX科技',NULL,0,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:31:59',NULL,NULL),(101,'000000',100,'0,100','深圳总公司',NULL,1,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(102,'000000',100,'0,100','长沙分公司',NULL,2,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(103,'000000',101,'0,100,101','研发部门',NULL,1,1,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(104,'000000',101,'0,100,101','市场部门',NULL,2,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(105,'000000',101,'0,100,101','测试部门',NULL,3,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(106,'000000',101,'0,100,101','财务部门',NULL,4,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(107,'000000',101,'0,100,101','运维部门',NULL,5,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(108,'000000',102,'0,100,102','市场部门',NULL,1,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(109,'000000',102,'0,100,102','财务部门',NULL,2,NULL,'15888888888','xxx@qq.com','0','0',103,1,'2025-10-25 12:32:00',NULL,NULL),(1983716893142716418,'898509',0,'0','66色2323情444332',NULL,0,1983716893667004418,NULL,NULL,'0','0',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38'),(1983726214853337089,'180427',0,'0','毒——品',NULL,0,1983726215323099137,NULL,NULL,'0','0',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40'),(1983726284298428419,'380976',0,'0','毒1品',NULL,0,1983726284696887298,NULL,NULL,'0','0',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57'),(1983726698251067393,'234087',0,'0','毒B品',NULL,0,1983726698653720578,NULL,NULL,'0','0',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35'),(1983726841964699651,'751666',0,'0','毒qq品',NULL,0,1983726842493181954,NULL,NULL,'0','0',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10'),(1983729609492299778,'715928',0,'0','ni毒edrfgdfgdfgdfg品',NULL,0,1983729609890758658,NULL,NULL,'0','0',103,1,'2025-10-30 10:56:09',1,'2025-10-30 10:56:10'),(1983729778287869955,'279445',0,'0','毒————品——',NULL,0,1983729778686328833,NULL,NULL,'0','0',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50'),(1983734804456599554,'473381',0,'0','毒@#@品',NULL,0,1983734804917972994,NULL,NULL,'0','0',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48'),(1986691029318230017,'505898',0,'0','RTYRTY',NULL,0,1986691036565987329,NULL,NULL,'0','0',103,1,'2025-11-07 15:03:47',1,'2025-11-07 15:03:49'),(2001190142130688001,'863903',0,'0','/**',NULL,0,2001190143011491842,NULL,NULL,'0','0',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05');
+/*!40000 ALTER TABLE `sys_dept` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ----------------------------
--- 5、菜单权限表
--- ----------------------------
-create table sys_menu (
-  menu_id           bigint(20)      not null                   comment '菜单ID',
-  menu_name         varchar(50)     not null                   comment '菜单名称',
-  parent_id         bigint(20)      default 0                  comment '父菜单ID',
-  order_num         int(4)          default 0                  comment '显示顺序',
-  path              varchar(200)    default ''                 comment '路由地址',
-  component         varchar(255)    default null               comment '组件路径',
-  query_param       varchar(255)    default null               comment '路由参数',
-  is_frame          int(1)          default 1                  comment '是否为外链（0是 1否）',
-  is_cache          int(1)          default 0                  comment '是否缓存（0缓存 1不缓存）',
-  menu_type         char(1)         default ''                 comment '菜单类型（M目录 C菜单 F按钮）',
-  visible           char(1)         default 0                  comment '显示状态（0显示 1隐藏）',
-  status            char(1)         default 0                  comment '菜单状态（0正常 1停用）',
-  perms             varchar(100)    default null               comment '权限标识',
-  icon              varchar(100)    default '#'                comment '菜单图标',
-  create_dept       bigint(20)      default null               comment '创建部门',
-  create_by         bigint(20)      default null               comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         bigint(20)      default null               comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(500)    default ''                 comment '备注',
-  primary key (menu_id)
-) engine=innodb comment = '菜单权限表';
+--
+-- Table structure for table `sys_dict_data`
+--
 
--- ----------------------------
--- 初始化-菜单信息表数据
--- ----------------------------
--- 一级菜单
-insert into sys_menu values('1', '系统管理', '0', '1', 'system',           null, '', 1, 0, 'M', '0', '0', '', 'system',   103, 1, sysdate(), null, null, '系统管理目录');
-insert into sys_menu values('6', '租户管理', '0', '2', 'tenant',           null, '', 1, 0, 'M', '0', '0', '', 'chart',    103, 1, sysdate(), null, null, '租户管理目录');
-insert into sys_menu values('2', '系统监控', '0', '3', 'monitor',          null, '', 1, 0, 'M', '0', '0', '', 'monitor',  103, 1, sysdate(), null, null, '系统监控目录');
-insert into sys_menu values('3', '系统工具', '0', '4', 'tool',             null, '', 1, 0, 'M', '0', '0', '', 'tool',     103, 1, sysdate(), null, null, '系统工具目录');
-insert into sys_menu values('4', 'PLUS官网', '0', '5', 'https://gitee.com/dromara/RuoYi-Cloud-Plus', null, '', 0, 0, 'M', '0', '0', '', 'guide',    103, 1, sysdate(), null, null, 'RuoYi-Cloud-Plus官网地址');
-insert into sys_menu values('5', '测试菜单', '0', '5', 'demo',             null, '', 1, 0, 'M', '0', '0', '', 'star',     103, 1, sysdate(), null, null, '测试菜单');
+DROP TABLE IF EXISTS `sys_dict_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_dict_data` (
+  `dict_code` bigint NOT NULL COMMENT '字典编码',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `dict_sort` int DEFAULT '0' COMMENT '字典排序',
+  `dict_label` varchar(100) DEFAULT '' COMMENT '字典标签',
+  `dict_value` varchar(100) DEFAULT '' COMMENT '字典键值',
+  `dict_type` varchar(100) DEFAULT '' COMMENT '字典类型',
+  `css_class` varchar(100) DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
+  `list_class` varchar(100) DEFAULT NULL COMMENT '表格回显样式',
+  `is_default` char(1) DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`dict_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='字典数据表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- 二级菜单
-insert into sys_menu values('100',  '用户管理',     '1',   '1', 'user',             'system/user/index',            '', 1, 0, 'C', '0', '0', 'system:user:list',            'user',          103, 1, sysdate(), null, null, '用户管理菜单');
-insert into sys_menu values('101',  '角色管理',     '1',   '2', 'role',             'system/role/index',            '', 1, 0, 'C', '0', '0', 'system:role:list',            'peoples',       103, 1, sysdate(), null, null, '角色管理菜单');
-insert into sys_menu values('102',  '菜单管理',     '1',   '3', 'menu',             'system/menu/index',            '', 1, 0, 'C', '0', '0', 'system:menu:list',            'tree-table',    103, 1, sysdate(), null, null, '菜单管理菜单');
-insert into sys_menu values('103',  '部门管理',     '1',   '4', 'dept',             'system/dept/index',            '', 1, 0, 'C', '0', '0', 'system:dept:list',            'tree',          103, 1, sysdate(), null, null, '部门管理菜单');
-insert into sys_menu values('104',  '岗位管理',     '1',   '5', 'post',             'system/post/index',            '', 1, 0, 'C', '0', '0', 'system:post:list',            'post',          103, 1, sysdate(), null, null, '岗位管理菜单');
-insert into sys_menu values('105',  '字典管理',     '1',   '6', 'dict',             'system/dict/index',            '', 1, 0, 'C', '0', '0', 'system:dict:list',            'dict',          103, 1, sysdate(), null, null, '字典管理菜单');
-insert into sys_menu values('106',  '参数设置',     '1',   '7', 'config',           'system/config/index',          '', 1, 0, 'C', '0', '0', 'system:config:list',          'edit',          103, 1, sysdate(), null, null, '参数设置菜单');
-insert into sys_menu values('107',  '通知公告',     '1',   '8', 'notice',           'system/notice/index',          '', 1, 0, 'C', '0', '0', 'system:notice:list',          'message',       103, 1, sysdate(), null, null, '通知公告菜单');
-insert into sys_menu values('108',  '日志管理',     '1',   '9', 'log',              '',                             '', 1, 0, 'M', '0', '0', '',                            'log',           103, 1, sysdate(), null, null, '日志管理菜单');
-insert into sys_menu values('109',  '在线用户',     '2',   '1', 'online',           'monitor/online/index',         '', 1, 0, 'C', '0', '0', 'monitor:online:list',         'online',        103, 1, sysdate(), null, null, '在线用户菜单');
-insert into sys_menu values('124',  '缓存监控',     '2',   '1',  'cache',           'monitor/cache/index',          '', 1, 0, 'C', '0', '0', 'monitor:cache:list',          'redis',         103, 1, sysdate(), null, null, '缓存监控');
-insert into sys_menu values('110',  'SnailJob控制台', '2', '2', 'http://localhost:8800/snail-job', '',             '', 0, 0, 'C', '0', '0', 'monitor:job:list',             'job',           103, 1, sysdate(), null, null, 'SJ定时任务菜单');
-insert into sys_menu values('112',  'Nacos控制台',  '2',   '4', 'http://localhost:8848/nacos',  '',                '', 0, 0, 'C', '0', '0', 'monitor:nacos:list',           'nacos',         103, 1, sysdate(), null, null, '服务治理菜单');
-insert into sys_menu values('113',  'Admin控制台',  '2',   '5', 'http://localhost:9100/login',  '',                '', 0, 0, 'C', '0', '0', 'monitor:server:list',          'server',        103, 1, sysdate(), null, null, '服务监控菜单');
-insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',              'tool/gen/index',               '', 1, 0, 'C', '0', '0', 'tool:gen:list',               'code',          103, 1, sysdate(), null, null, '代码生成菜单');
-insert into sys_menu values('121', '租户管理',      '6',   '1', 'tenant',           'system/tenant/index',          '', 1, 0, 'C', '0', '0', 'system:tenant:list',          'list',          103, 1, sysdate(), null, null, '租户管理菜单');
-insert into sys_menu values('122', '租户套餐管理',  '6',   '2', 'tenantPackage',    'system/tenantPackage/index',   '', 1, 0, 'C', '0', '0', 'system:tenantPackage:list',   'form',          103, 1, sysdate(), null, null, '租户套餐管理菜单');
-insert into sys_menu values('123',  '客户端管理',   '1',   '11', 'client',           'system/client/index',         '', 1, 0, 'C', '0', '0', 'system:client:list',          'international', 103, 1, sysdate(), null, null, '客户端管理菜单');
-insert into sys_menu values('116', '修改生成配置',  '3',   '2', 'gen-edit/index/:tableId', 'tool/gen/editTable', '', 1, 1, 'C', '1', '0', 'tool:gen:edit',           '#',               103, 1, sysdate(), null, null, '/tool/gen');
-insert into sys_menu values('130', '分配用户',     '1',   '2', 'role-auth/user/:roleId', 'system/role/authUser', '', 1, 1, 'C', '1', '0', 'system:role:edit',      '#',               103, 1, sysdate(), null, null, '/system/role');
-insert into sys_menu values('131', '分配角色',     '1',   '1', 'user-auth/role/:userId', 'system/user/authRole', '', 1, 1, 'C', '1', '0', 'system:user:edit',      '#',               103, 1, sysdate(), null, null, '/system/user');
-insert into sys_menu values('132', '字典数据',     '1',   '6', 'dict-data/index/:dictId', 'system/dict/data', '', 1, 1, 'C', '1', '0', 'system:dict:list',         '#',               103, 1, sysdate(), null, null, '/system/dict');
-insert into sys_menu values('133', '文件配置管理',  '1',   '10', 'oss-config/index',              'system/oss/config', '', 1, 1, 'C', '1', '0', 'system:ossConfig:list',  '#',                103, 1, sysdate(), null, null, '/system/oss');
+--
+-- Dumping data for table `sys_dict_data`
+--
 
--- oss菜单
-insert into sys_menu values('118',  '文件管理',     '1',   '10', 'oss',              'system/oss/index',            '', 1, 0, 'C', '0', '0', 'system:oss:list',              'upload',        103, 1, sysdate(), null, null, '文件管理菜单');
--- 三级菜单
-insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index',    '', 1, 0, 'C', '0', '0', 'monitor:operlog:list',    'form',          103, 1, sysdate(), null, null, '操作日志菜单');
-insert into sys_menu values('501',  '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', 1, 0, 'C', '0', '0', 'monitor:logininfor:list', 'logininfor',    103, 1, sysdate(), null, null, '登录日志菜单');
--- 用户管理按钮
-insert into sys_menu values('1001', '用户查询', '100', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:query',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1002', '用户新增', '100', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:add',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1003', '用户修改', '100', '3',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:edit',           '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1004', '用户删除', '100', '4',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:remove',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1005', '用户导出', '100', '5',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:export',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1006', '用户导入', '100', '6',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:import',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1007', '重置密码', '100', '7',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:resetPwd',       '#', 103, 1, sysdate(), null, null, '');
--- 角色管理按钮
-insert into sys_menu values('1008', '角色查询', '101', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:role:query',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1009', '角色新增', '101', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:role:add',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1010', '角色修改', '101', '3',  '', '', '', 1, 0, 'F', '0', '0', 'system:role:edit',           '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1011', '角色删除', '101', '4',  '', '', '', 1, 0, 'F', '0', '0', 'system:role:remove',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1012', '角色导出', '101', '5',  '', '', '', 1, 0, 'F', '0', '0', 'system:role:export',         '#', 103, 1, sysdate(), null, null, '');
--- 菜单管理按钮
-insert into sys_menu values('1013', '菜单查询', '102', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:menu:query',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1014', '菜单新增', '102', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:menu:add',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1015', '菜单修改', '102', '3',  '', '', '', 1, 0, 'F', '0', '0', 'system:menu:edit',           '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1016', '菜单删除', '102', '4',  '', '', '', 1, 0, 'F', '0', '0', 'system:menu:remove',         '#', 103, 1, sysdate(), null, null, '');
--- 部门管理按钮
-insert into sys_menu values('1017', '部门查询', '103', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:dept:query',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1018', '部门新增', '103', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:dept:add',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1019', '部门修改', '103', '3',  '', '', '', 1, 0, 'F', '0', '0', 'system:dept:edit',           '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1020', '部门删除', '103', '4',  '', '', '', 1, 0, 'F', '0', '0', 'system:dept:remove',         '#', 103, 1, sysdate(), null, null, '');
--- 岗位管理按钮
-insert into sys_menu values('1021', '岗位查询', '104', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:post:query',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1022', '岗位新增', '104', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:post:add',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1023', '岗位修改', '104', '3',  '', '', '', 1, 0, 'F', '0', '0', 'system:post:edit',           '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1024', '岗位删除', '104', '4',  '', '', '', 1, 0, 'F', '0', '0', 'system:post:remove',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1025', '岗位导出', '104', '5',  '', '', '', 1, 0, 'F', '0', '0', 'system:post:export',         '#', 103, 1, sysdate(), null, null, '');
--- 字典管理按钮
-insert into sys_menu values('1026', '字典查询', '105', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:dict:query',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1027', '字典新增', '105', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:dict:add',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1028', '字典修改', '105', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:dict:edit',           '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1029', '字典删除', '105', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:dict:remove',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1030', '字典导出', '105', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:dict:export',         '#', 103, 1, sysdate(), null, null, '');
--- 参数设置按钮
-insert into sys_menu values('1031', '参数查询', '106', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:config:query',        '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1032', '参数新增', '106', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:config:add',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1033', '参数修改', '106', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:config:edit',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1034', '参数删除', '106', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:config:remove',       '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1035', '参数导出', '106', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:config:export',       '#', 103, 1, sysdate(), null, null, '');
--- 通知公告按钮
-insert into sys_menu values('1036', '公告查询', '107', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:notice:query',        '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1037', '公告新增', '107', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:notice:add',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1038', '公告修改', '107', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:notice:edit',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1039', '公告删除', '107', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:notice:remove',       '#', 103, 1, sysdate(), null, null, '');
--- 操作日志按钮
-insert into sys_menu values('1040', '操作查询', '500', '1', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:query',      '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1041', '操作删除', '500', '2', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:remove',     '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1042', '日志导出', '500', '4', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:export',     '#', 103, 1, sysdate(), null, null, '');
--- 登录日志按钮
-insert into sys_menu values('1043', '登录查询', '501', '1', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:query',   '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1044', '登录删除', '501', '2', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:remove',  '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1045', '日志导出', '501', '3', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:export',  '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1050', '账户解锁', '501', '4', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:unlock',  '#', 103, 1, sysdate(), null, null, '');
--- 在线用户按钮
-insert into sys_menu values('1046', '在线查询', '109', '1', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:online:query',       '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1047', '批量强退', '109', '2', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:online:batchLogout', '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1048', '单条强退', '109', '3', '#', '', '', 1, 0, 'F', '0', '0', 'monitor:online:forceLogout', '#', 103, 1, sysdate(), null, null, '');
--- 代码生成按钮
-insert into sys_menu values('1055', '生成查询', '115', '1', '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:query',             '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1056', '生成修改', '115', '2', '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:edit',              '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1057', '生成删除', '115', '3', '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:remove',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1058', '导入代码', '115', '2', '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:import',            '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1059', '预览代码', '115', '4', '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:preview',           '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1060', '生成代码', '115', '5', '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code',              '#', 103, 1, sysdate(), null, null, '');
--- oss相关按钮
-insert into sys_menu values('1600', '文件查询', '118', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:query',        '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1601', '文件上传', '118', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:upload',       '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1602', '文件下载', '118', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:download',     '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1603', '文件删除', '118', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:remove',       '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1620', '配置列表', '118', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:list',        '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1621', '配置添加', '118', '6', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:add',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1622', '配置编辑', '118', '6', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:edit',        '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1623', '配置删除', '118', '6', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:remove',      '#', 103, 1, sysdate(), null, null, '');
--- 租户管理相关按钮
-insert into sys_menu values ('1606', '租户查询', '121', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:query',   '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1607', '租户新增', '121', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:add',     '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1608', '租户修改', '121', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:edit',    '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1609', '租户删除', '121', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:remove',  '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1610', '租户导出', '121', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:export',  '#', 103, 1, sysdate(), null, null, '');
--- 租户套餐管理相关按钮
-insert into sys_menu values ('1611', '租户套餐查询', '122', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:query',   '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1612', '租户套餐新增', '122', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:add',     '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1613', '租户套餐修改', '122', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:edit',    '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1614', '租户套餐删除', '122', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:remove',  '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1615', '租户套餐导出', '122', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:export',  '#', 103, 1, sysdate(), null, null, '');
--- 客户端管理按钮
-insert into sys_menu values('1061', '客户端管理查询', '123', '1',  '#', '', '', 1, 0, 'F', '0', '0', 'system:client:query',        '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1062', '客户端管理新增', '123', '2',  '#', '', '', 1, 0, 'F', '0', '0', 'system:client:add',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1063', '客户端管理修改', '123', '3',  '#', '', '', 1, 0, 'F', '0', '0', 'system:client:edit',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1064', '客户端管理删除', '123', '4',  '#', '', '', 1, 0, 'F', '0', '0', 'system:client:remove',       '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1065', '客户端管理导出', '123', '5',  '#', '', '', 1, 0, 'F', '0', '0', 'system:client:export',       '#', 103, 1, sysdate(), null, null, '');
--- 测试菜单
-insert into sys_menu values('1500', '测试单表',      '5',    '1', 'demo', 'demo/demo/index', '',  1, 0, 'C', '0', '0', 'demo:demo:list', '#', 103, 1, sysdate(), null, null, '测试单表菜单');
-insert into sys_menu values('1501', '测试单表查询',   '1500', '1', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:demo:query',               '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1502', '测试单表新增',   '1500', '2', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:demo:add',                 '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1503', '测试单表修改',   '1500', '3', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:demo:edit',                '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1504', '测试单表删除',   '1500', '4', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:demo:remove',              '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1505', '测试单表导出',   '1500', '5', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:demo:export',              '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1506', '测试树表',      '5',    '1', 'tree', 'demo/tree/index', '',  1, 0, 'C', '0', '0', 'demo:tree:list', '#', 103, 1, sysdate(), null, null, '测试树表菜单');
-insert into sys_menu values('1507', '测试树表查询',   '1506', '1', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:tree:query',               '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1508', '测试树表新增',   '1506', '2', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:tree:add',                 '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1509', '测试树表修改',   '1506', '3', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:tree:edit',                '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1510', '测试树表删除',   '1506', '4', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:tree:remove',              '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1511', '测试树表导出',   '1506', '5', '#',    '', '',  1, 0, 'F', '0', '0', 'demo:tree:export',              '#', 103, 1, sysdate(), null, null, '');
--- 工作流相关
-insert into sys_menu values ('11616', '工作流',   '0',     '6', 'workflow',        '',                             '', '1', '0', 'M', '0', '0', '', 'workflow', 103, 1, sysdate(),NULL, NULL, '');
-insert into sys_menu values ('11618', '我的任务', '0',     '7', 'task',             '',                             '', '1', '0', 'M', '0', '0', '', 'my-task', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11619', '我的待办', '11618', '2', 'taskWaiting',      'workflow/task/taskWaiting',    '', '1', '1', 'C', '0', '0', '', 'waiting', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11632', '我的已办', '11618', '3', 'taskFinish',       'workflow/task/taskFinish',     '', '1', '1', 'C', '0', '0', '', 'finish', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11633', '我的抄送', '11618', '4', 'taskCopyList',     'workflow/task/taskCopyList',   '', '1', '1', 'C', '0', '0', '', 'my-copy', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11620', '流程定义', '11616', '3', 'processDefinition', 'workflow/processDefinition/index', '', '1', '1', 'C', '0', '0', '', 'process-definition', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11621', '流程实例', '11630', '1', 'processInstance', 'workflow/processInstance/index', '', '1', '1', 'C', '0', '0', '', 'tree-table', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11622', '流程分类', '11616', '1', 'category',         'workflow/category/index',      '', '1', '0', 'C', '0', '0', 'workflow:category:list', 'category', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('11801', '流程表达式', '11616', '2', 'spel',    'workflow/spel/index', '', 1, 0, 'C', '0', '0', 'workflow:spel:list', 'input', 103, 1, sysdate(), 1, sysdate(), '流程达式定义菜单');
-insert into sys_menu values ('11629', '我发起的', '11618', '1', 'myDocument',       'workflow/task/myDocument',     '', '1', '1', 'C', '0', '0', '', 'guide', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11630', '流程监控', '11616', '4', 'monitor',          '',                             '', '1', '0', 'M', '0', '0', '', 'monitor', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11631', '待办任务', '11630', '2', 'allTaskWaiting',   'workflow/task/allTaskWaiting', '', '1', '1', 'C', '0', '0', '', 'waiting', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values ('11700', '流程设计', '11616', '5', 'design/index',   'workflow/processDefinition/design', '', 1, 1, 'C', '1', '0', 'workflow:leave:edit', '#', 103, 1, sysdate(), null, null, '/workflow/processDefinition');
-insert into sys_menu values ('11701', '请假申请', '11616', '6', 'leaveEdit/index', 'workflow/leave/leaveEdit', '', 1, 1, 'C', '1', '0', 'workflow:leave:edit', '#', 103, 1, sysdate(), null, null, '');
--- 流程分类管理相关按钮
-insert into sys_menu values ('11623', '流程分类查询', '11622', '1', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:category:query', '#', 103, 1,sysdate(), null, null, '');
-insert into sys_menu values ('11624', '流程分类新增', '11622', '2', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:category:add', '#', 103, 1,sysdate(), null, null, '');
-insert into sys_menu values ('11625', '流程分类修改', '11622', '3', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:category:edit', '#', 103, 1,sysdate(), null, null, '');
-insert into sys_menu values ('11626', '流程分类删除', '11622', '4', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:category:remove', '#', 103,1, sysdate(), null, null, '');
-insert into sys_menu values ('11627', '流程分类导出', '11622', '5', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:category:export', '#', 103,1, sysdate(), null, null, '');
--- 流程表达式管理相关按钮
-INSERT INTO sys_menu VALUES ('11802', '流程达式定义查询', '11801', 1, '#', '', NULL, 1, 0, 'F', '0', '0', 'workflow:spel:query', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('11803', '流程达式定义新增', '11801', 2, '#', '', NULL, 1, 0, 'F', '0', '0', 'workflow:spel:add', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('11804', '流程达式定义修改', '11801', 3, '#', '', NULL, 1, 0, 'F', '0', '0', 'workflow:spel:edit', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('11805', '流程达式定义删除', '11801', 4, '#', '', NULL, 1, 0, 'F', '0', '0', 'workflow:spel:remove', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('11806', '流程达式定义导出', '11801', 5, '#', '', NULL, 1, 0, 'F', '0', '0', 'workflow:spel:export', '#', 103, 1, sysdate(), NULL, NULL, '');
--- 请假测试相关按钮
-insert into sys_menu VALUES ('11638', '请假申请',    '5',     '1', 'leave', 'workflow/leave/index', '', '1', '0', 'C', '0', '0', 'workflow:leave:list', '#', 103, 1, sysdate(), NULL, NULL, '请假申请菜单');
-insert into sys_menu VALUES ('11639', '请假申请查询', '11638', '1', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:leave:query', '#', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu VALUES ('11640', '请假申请新增', '11638', '2', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:leave:add', '#', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu VALUES ('11641', '请假申请修改', '11638', '3', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:leave:edit', '#', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu VALUES ('11642', '请假申请删除', '11638', '4', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:leave:remove', '#', 103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu VALUES ('11643', '请假申请导出', '11638', '5', '#', '', '', '1', '0', 'F', '0', '0', 'workflow:leave:export', '#', 103, 1, sysdate(), NULL, NULL, '');
+LOCK TABLES `sys_dict_data` WRITE;
+/*!40000 ALTER TABLE `sys_dict_data` DISABLE KEYS */;
+INSERT INTO `sys_dict_data` VALUES (1,'000000',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-25 12:32:53',NULL,NULL,'性别男'),(2,'000000',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-25 12:32:53',NULL,NULL,'性别女'),(3,'000000',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-25 12:32:53',NULL,NULL,'性别未知'),(4,'000000',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-25 12:32:53',NULL,NULL,'显示菜单'),(5,'000000',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-25 12:32:53',NULL,NULL,'隐藏菜单'),(6,'000000',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-25 12:32:53',NULL,NULL,'正常状态'),(7,'000000',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-25 12:32:53',NULL,NULL,'停用状态'),(12,'000000',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-25 12:32:53',NULL,NULL,'系统默认是'),(13,'000000',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'系统默认否'),(14,'000000',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-25 12:32:54',NULL,NULL,'通知'),(15,'000000',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'公告'),(16,'000000',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-25 12:32:54',NULL,NULL,'正常状态'),(17,'000000',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'关闭状态'),(18,'000000',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'新增操作'),(19,'000000',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'修改操作'),(20,'000000',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'删除操作'),(21,'000000',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'授权操作'),(22,'000000',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'导出操作'),(23,'000000',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'导入操作'),(24,'000000',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'强退操作'),(25,'000000',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'生成操作'),(26,'000000',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'清空操作'),(27,'000000',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'正常状态'),(28,'000000',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'停用状态'),(29,'000000',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-25 12:32:54',NULL,NULL,'其他操作'),(30,'000000',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'密码认证'),(31,'000000',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'短信认证'),(32,'000000',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-25 12:32:55',NULL,NULL,'邮件认证'),(33,'000000',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'小程序认证'),(34,'000000',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'三方登录认证'),(35,'000000',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'PC'),(36,'000000',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'安卓'),(37,'000000',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'iOS'),(38,'000000',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'小程序'),(39,'000000',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'已撤销'),(40,'000000',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'草稿'),(41,'000000',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-25 12:32:56',NULL,NULL,'待审核'),(42,'000000',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'已完成'),(43,'000000',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'已作废'),(44,'000000',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'已退回'),(45,'000000',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'已终止'),(46,'000000',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'自定义表单'),(47,'000000',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'动态表单'),(48,'000000',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'撤销'),(49,'000000',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'通过'),(50,'000000',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-25 12:32:57',NULL,NULL,'待审核'),(51,'000000',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'作废'),(52,'000000',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'退回'),(53,'000000',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'终止'),(54,'000000',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'转办'),(55,'000000',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'委托'),(56,'000000',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'抄送'),(57,'000000',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'加签'),(58,'000000',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'减签'),(59,'000000',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-25 12:32:58',NULL,NULL,'超时'),(1983716894656860162,'898509',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','性别男'),(1983716894656860163,'898509',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','性别女'),(1983716894656860164,'898509',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','性别未知'),(1983716894656860165,'898509',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','显示菜单'),(1983716894715580418,'898509',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','隐藏菜单'),(1983716894715580419,'898509',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','正常状态'),(1983716894723969025,'898509',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','停用状态'),(1983716894723969026,'898509',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','系统默认是'),(1983716894723969027,'898509',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','系统默认否'),(1983716894723969028,'898509',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','通知'),(1983716894723969029,'898509',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','公告'),(1983716894723969030,'898509',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','正常状态'),(1983716894723969031,'898509',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','关闭状态'),(1983716894723969032,'898509',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','新增操作'),(1983716894723969033,'898509',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','修改操作'),(1983716894723969034,'898509',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','删除操作'),(1983716894723969035,'898509',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','授权操作'),(1983716894723969036,'898509',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','导出操作'),(1983716894723969037,'898509',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','导入操作'),(1983716894723969038,'898509',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','强退操作'),(1983716894723969039,'898509',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','生成操作'),(1983716894723969040,'898509',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','清空操作'),(1983716894723969041,'898509',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','正常状态'),(1983716894723969042,'898509',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','停用状态'),(1983716894723969043,'898509',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','其他操作'),(1983716894723969044,'898509',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','密码认证'),(1983716894723969045,'898509',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','短信认证'),(1983716894782689282,'898509',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','邮件认证'),(1983716894782689283,'898509',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','小程序认证'),(1983716894782689284,'898509',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','三方登录认证'),(1983716894782689285,'898509',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','PC'),(1983716894782689286,'898509',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','安卓'),(1983716894782689287,'898509',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','iOS'),(1983716894782689288,'898509',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','小程序'),(1983716894782689289,'898509',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','已撤销'),(1983716894782689290,'898509',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','草稿'),(1983716894782689291,'898509',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','待审核'),(1983716894782689292,'898509',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','已完成'),(1983716894782689293,'898509',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','已作废'),(1983716894782689294,'898509',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','已退回'),(1983716894782689295,'898509',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','已终止'),(1983716894782689296,'898509',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','自定义表单'),(1983716894782689297,'898509',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','动态表单'),(1983716894782689298,'898509',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','撤销'),(1983716894782689299,'898509',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','通过'),(1983716894782689300,'898509',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','待审核'),(1983716894849798146,'898509',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','作废'),(1983716894849798147,'898509',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','退回'),(1983716894858186753,'898509',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','终止'),(1983716894858186754,'898509',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','转办'),(1983716894858186755,'898509',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','委托'),(1983716894858186756,'898509',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','抄送'),(1983716894858186757,'898509',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','加签'),(1983716894858186758,'898509',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','减签'),(1983716894858186759,'898509',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','超时'),(1983726215557980161,'180427',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','性别男'),(1983726215570563073,'180427',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','性别女'),(1983726215570563074,'180427',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','性别未知'),(1983726215578951681,'180427',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','显示菜单'),(1983726215578951682,'180427',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','隐藏菜单'),(1983726215587340290,'180427',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','正常状态'),(1983726215591534594,'180427',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','停用状态'),(1983726215599923202,'180427',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','系统默认是'),(1983726215608311809,'180427',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','系统默认否'),(1983726215612506113,'180427',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','通知'),(1983726215612506114,'180427',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','公告'),(1983726215620894722,'180427',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','正常状态'),(1983726215620894723,'180427',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','关闭状态'),(1983726215620894724,'180427',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','新增操作'),(1983726215629283329,'180427',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','修改操作'),(1983726215633477633,'180427',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','删除操作'),(1983726215633477634,'180427',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','授权操作'),(1983726215641866242,'180427',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','导出操作'),(1983726215641866243,'180427',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','导入操作'),(1983726215650254850,'180427',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','强退操作'),(1983726215650254851,'180427',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','生成操作'),(1983726215650254852,'180427',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','清空操作'),(1983726215658643458,'180427',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','正常状态'),(1983726215662837761,'180427',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','停用状态'),(1983726215662837762,'180427',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','其他操作'),(1983726215671226369,'180427',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','密码认证'),(1983726215671226370,'180427',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','短信认证'),(1983726215679614977,'180427',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','邮件认证'),(1983726215679614978,'180427',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','小程序认证'),(1983726215679614979,'180427',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','三方登录认证'),(1983726215688003585,'180427',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','PC'),(1983726215688003586,'180427',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','安卓'),(1983726215688003587,'180427',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','iOS'),(1983726215696392194,'180427',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','小程序'),(1983726215700586497,'180427',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','已撤销'),(1983726215700586498,'180427',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','草稿'),(1983726215700586499,'180427',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','待审核'),(1983726215700586500,'180427',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','已完成'),(1983726215708975106,'180427',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','已作废'),(1983726215713169409,'180427',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','已退回'),(1983726215713169410,'180427',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','已终止'),(1983726215713169411,'180427',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','自定义表单'),(1983726215729946625,'180427',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','动态表单'),(1983726215734140929,'180427',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','撤销'),(1983726215742529538,'180427',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','通过'),(1983726215742529539,'180427',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','待审核'),(1983726215742529540,'180427',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','作废'),(1983726215750918145,'180427',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','退回'),(1983726215750918146,'180427',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','终止'),(1983726215759306753,'180427',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','转办'),(1983726215763501057,'180427',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','委托'),(1983726215763501058,'180427',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','抄送'),(1983726215763501059,'180427',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','加签'),(1983726215763501060,'180427',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','减签'),(1983726215771889665,'180427',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','超时'),(1983726284831105025,'380976',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','性别男'),(1983726284831105026,'380976',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','性别女'),(1983726284831105027,'380976',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','性别未知'),(1983726284831105028,'380976',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','显示菜单'),(1983726284831105029,'380976',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','隐藏菜单'),(1983726284831105030,'380976',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','正常状态'),(1983726284831105031,'380976',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','停用状态'),(1983726284831105032,'380976',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','系统默认是'),(1983726284831105033,'380976',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','系统默认否'),(1983726284831105034,'380976',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','通知'),(1983726284831105035,'380976',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','公告'),(1983726284831105036,'380976',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','正常状态'),(1983726284831105037,'380976',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','关闭状态'),(1983726284831105038,'380976',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','新增操作'),(1983726284831105039,'380976',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','修改操作'),(1983726284831105040,'380976',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','删除操作'),(1983726284831105041,'380976',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','授权操作'),(1983726284831105042,'380976',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','导出操作'),(1983726284831105043,'380976',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','导入操作'),(1983726284831105044,'380976',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','强退操作'),(1983726284831105045,'380976',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','生成操作'),(1983726284831105046,'380976',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','清空操作'),(1983726284831105047,'380976',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','正常状态'),(1983726284831105048,'380976',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','停用状态'),(1983726284898213889,'380976',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','其他操作'),(1983726284898213890,'380976',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','密码认证'),(1983726284898213891,'380976',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','短信认证'),(1983726284898213892,'380976',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','邮件认证'),(1983726284898213893,'380976',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','小程序认证'),(1983726284898213894,'380976',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','三方登录认证'),(1983726284898213895,'380976',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','PC'),(1983726284898213896,'380976',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','安卓'),(1983726284898213897,'380976',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','iOS'),(1983726284898213898,'380976',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','小程序'),(1983726284898213899,'380976',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','已撤销'),(1983726284898213900,'380976',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','草稿'),(1983726284898213901,'380976',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','待审核'),(1983726284898213902,'380976',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','已完成'),(1983726284898213903,'380976',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','已作废'),(1983726284898213904,'380976',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','已退回'),(1983726284898213905,'380976',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','已终止'),(1983726284898213906,'380976',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','自定义表单'),(1983726284898213907,'380976',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','动态表单'),(1983726284898213908,'380976',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','撤销'),(1983726284898213909,'380976',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','通过'),(1983726284898213910,'380976',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','待审核'),(1983726284898213911,'380976',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','作废'),(1983726284898213912,'380976',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','退回'),(1983726284898213913,'380976',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','终止'),(1983726284898213914,'380976',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','转办'),(1983726284898213915,'380976',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','委托'),(1983726284898213916,'380976',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','抄送'),(1983726284961128449,'380976',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','加签'),(1983726284961128450,'380976',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','减签'),(1983726284961128451,'380976',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','超时'),(1983726698758578178,'234087',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','性别男'),(1983726698766966785,'234087',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','性别女'),(1983726698766966786,'234087',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','性别未知'),(1983726698771161089,'234087',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','显示菜单'),(1983726698771161090,'234087',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','隐藏菜单'),(1983726698771161091,'234087',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','正常状态'),(1983726698771161092,'234087',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','停用状态'),(1983726698779549698,'234087',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','系统默认是'),(1983726698779549699,'234087',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','系统默认否'),(1983726698779549700,'234087',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','通知'),(1983726698779549701,'234087',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','公告'),(1983726698787938306,'234087',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','正常状态'),(1983726698787938307,'234087',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','关闭状态'),(1983726698787938308,'234087',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','新增操作'),(1983726698792132609,'234087',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','修改操作'),(1983726698792132610,'234087',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','删除操作'),(1983726698792132611,'234087',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','授权操作'),(1983726698800521217,'234087',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','导出操作'),(1983726698800521218,'234087',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','导入操作'),(1983726698804715521,'234087',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','强退操作'),(1983726698804715522,'234087',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','生成操作'),(1983726698808909825,'234087',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','清空操作'),(1983726698808909826,'234087',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','正常状态'),(1983726698808909827,'234087',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','停用状态'),(1983726698817298434,'234087',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','其他操作'),(1983726698817298435,'234087',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','密码认证'),(1983726698825687041,'234087',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','短信认证'),(1983726698825687042,'234087',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','邮件认证'),(1983726698834075650,'234087',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','小程序认证'),(1983726698838269954,'234087',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','三方登录认证'),(1983726698838269955,'234087',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','PC'),(1983726698838269956,'234087',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','安卓'),(1983726698846658562,'234087',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','iOS'),(1983726698850852866,'234087',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','小程序'),(1983726698850852867,'234087',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','已撤销'),(1983726698850852868,'234087',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','草稿'),(1983726698850852869,'234087',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','待审核'),(1983726698850852870,'234087',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','已完成'),(1983726698859241473,'234087',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','已作废'),(1983726698859241474,'234087',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','已退回'),(1983726698859241475,'234087',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','已终止'),(1983726698863435778,'234087',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','自定义表单'),(1983726698863435779,'234087',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','动态表单'),(1983726698867630082,'234087',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','撤销'),(1983726698867630083,'234087',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','通过'),(1983726698867630084,'234087',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','待审核'),(1983726698876018690,'234087',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','作废'),(1983726698880212994,'234087',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','退回'),(1983726698880212995,'234087',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','终止'),(1983726698880212996,'234087',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','转办'),(1983726698888601601,'234087',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','委托'),(1983726698888601602,'234087',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','抄送'),(1983726698888601603,'234087',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','加签'),(1983726698896990209,'234087',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','减签'),(1983726698896990210,'234087',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 10:44:36',1,'2025-10-30 10:44:36','超时'),(1983726842627399691,'751666',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','性别男'),(1983726842627399692,'751666',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','性别女'),(1983726842627399693,'751666',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','性别未知'),(1983726842627399694,'751666',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','显示菜单'),(1983726842627399695,'751666',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','隐藏菜单'),(1983726842627399696,'751666',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','正常状态'),(1983726842627399697,'751666',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','停用状态'),(1983726842627399698,'751666',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','系统默认是'),(1983726842627399699,'751666',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','系统默认否'),(1983726842627399700,'751666',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','通知'),(1983726842627399701,'751666',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','公告'),(1983726842627399702,'751666',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','正常状态'),(1983726842627399703,'751666',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','关闭状态'),(1983726842627399704,'751666',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','新增操作'),(1983726842627399705,'751666',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','修改操作'),(1983726842627399706,'751666',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','删除操作'),(1983726842627399707,'751666',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','授权操作'),(1983726842627399708,'751666',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','导出操作'),(1983726842627399709,'751666',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','导入操作'),(1983726842627399710,'751666',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','强退操作'),(1983726842627399711,'751666',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','生成操作'),(1983726842627399712,'751666',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','清空操作'),(1983726842627399713,'751666',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','正常状态'),(1983726842627399714,'751666',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','停用状态'),(1983726842694508546,'751666',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','其他操作'),(1983726842694508547,'751666',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','密码认证'),(1983726842694508548,'751666',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','短信认证'),(1983726842694508549,'751666',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','邮件认证'),(1983726842694508550,'751666',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','小程序认证'),(1983726842694508551,'751666',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','三方登录认证'),(1983726842694508552,'751666',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','PC'),(1983726842694508553,'751666',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','安卓'),(1983726842694508554,'751666',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','iOS'),(1983726842694508555,'751666',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','小程序'),(1983726842694508556,'751666',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','已撤销'),(1983726842694508557,'751666',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','草稿'),(1983726842694508558,'751666',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','待审核'),(1983726842694508559,'751666',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','已完成'),(1983726842694508560,'751666',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','已作废'),(1983726842694508561,'751666',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','已退回'),(1983726842694508562,'751666',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','已终止'),(1983726842694508563,'751666',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','自定义表单'),(1983726842694508564,'751666',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','动态表单'),(1983726842694508565,'751666',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','撤销'),(1983726842694508566,'751666',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','通过'),(1983726842694508567,'751666',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','待审核'),(1983726842694508568,'751666',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','作废'),(1983726842694508569,'751666',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','退回'),(1983726842694508570,'751666',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','终止'),(1983726842694508571,'751666',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','转办'),(1983726842694508572,'751666',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','委托'),(1983726842694508573,'751666',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','抄送'),(1983726842694508574,'751666',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','加签'),(1983726842694508575,'751666',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','减签'),(1983726842694508576,'751666',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','超时'),(1983729610154999809,'715928',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','性别男'),(1983729610154999810,'715928',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','性别女'),(1983729610154999811,'715928',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','性别未知'),(1983729610154999812,'715928',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','显示菜单'),(1983729610217914369,'715928',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','隐藏菜单'),(1983729610217914370,'715928',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','正常状态'),(1983729610217914371,'715928',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','停用状态'),(1983729610217914372,'715928',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','系统默认是'),(1983729610217914373,'715928',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','系统默认否'),(1983729610217914374,'715928',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','通知'),(1983729610217914375,'715928',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','公告'),(1983729610217914376,'715928',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','正常状态'),(1983729610217914377,'715928',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','关闭状态'),(1983729610217914378,'715928',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','新增操作'),(1983729610217914379,'715928',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','修改操作'),(1983729610217914380,'715928',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','删除操作'),(1983729610217914381,'715928',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','授权操作'),(1983729610280828929,'715928',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','导出操作'),(1983729610280828930,'715928',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','导入操作'),(1983729610280828931,'715928',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','强退操作'),(1983729610280828932,'715928',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','生成操作'),(1983729610280828933,'715928',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','清空操作'),(1983729610280828934,'715928',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','正常状态'),(1983729610280828935,'715928',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','停用状态'),(1983729610280828936,'715928',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','其他操作'),(1983729610280828937,'715928',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','密码认证'),(1983729610280828938,'715928',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','短信认证'),(1983729610280828939,'715928',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','邮件认证'),(1983729610280828940,'715928',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','小程序认证'),(1983729610280828941,'715928',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','三方登录认证'),(1983729610280828942,'715928',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','PC'),(1983729610280828943,'715928',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','安卓'),(1983729610280828944,'715928',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','iOS'),(1983729610280828945,'715928',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','小程序'),(1983729610343743489,'715928',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','已撤销'),(1983729610343743490,'715928',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','草稿'),(1983729610343743491,'715928',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','待审核'),(1983729610343743492,'715928',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','已完成'),(1983729610343743493,'715928',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','已作废'),(1983729610343743494,'715928',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','已退回'),(1983729610343743495,'715928',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','已终止'),(1983729610343743496,'715928',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','自定义表单'),(1983729610343743497,'715928',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','动态表单'),(1983729610343743498,'715928',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','撤销'),(1983729610343743499,'715928',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','通过'),(1983729610343743500,'715928',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','待审核'),(1983729610406658049,'715928',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','作废'),(1983729610406658050,'715928',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','退回'),(1983729610406658051,'715928',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','终止'),(1983729610406658052,'715928',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','转办'),(1983729610406658053,'715928',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','委托'),(1983729610406658054,'715928',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','抄送'),(1983729610406658055,'715928',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','加签'),(1983729610406658056,'715928',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','减签'),(1983729610406658057,'715928',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','超时'),(1983729778824740871,'279445',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','性别男'),(1983729778824740872,'279445',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','性别女'),(1983729778824740873,'279445',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','性别未知'),(1983729778824740874,'279445',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','显示菜单'),(1983729778824740875,'279445',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','隐藏菜单'),(1983729778824740876,'279445',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','正常状态'),(1983729778824740877,'279445',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','停用状态'),(1983729778824740878,'279445',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','系统默认是'),(1983729778824740879,'279445',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','系统默认否'),(1983729778824740880,'279445',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','通知'),(1983729778824740881,'279445',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','公告'),(1983729778824740882,'279445',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','正常状态'),(1983729778824740883,'279445',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','关闭状态'),(1983729778824740884,'279445',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','新增操作'),(1983729778824740885,'279445',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','修改操作'),(1983729778824740886,'279445',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','删除操作'),(1983729778883461121,'279445',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','授权操作'),(1983729778883461122,'279445',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','导出操作'),(1983729778883461123,'279445',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','导入操作'),(1983729778883461124,'279445',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','强退操作'),(1983729778883461125,'279445',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','生成操作'),(1983729778883461126,'279445',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','清空操作'),(1983729778883461127,'279445',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','正常状态'),(1983729778883461128,'279445',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','停用状态'),(1983729778883461129,'279445',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','其他操作'),(1983729778883461130,'279445',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','密码认证'),(1983729778883461131,'279445',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','短信认证'),(1983729778883461132,'279445',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','邮件认证'),(1983729778883461133,'279445',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','小程序认证'),(1983729778883461134,'279445',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','三方登录认证'),(1983729778883461135,'279445',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','PC'),(1983729778883461136,'279445',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','安卓'),(1983729778883461137,'279445',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','iOS'),(1983729778883461138,'279445',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','小程序'),(1983729778883461139,'279445',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','已撤销'),(1983729778883461140,'279445',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','草稿'),(1983729778883461141,'279445',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','待审核'),(1983729778883461142,'279445',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','已完成'),(1983729778883461143,'279445',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','已作废'),(1983729778883461144,'279445',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','已退回'),(1983729778883461145,'279445',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','已终止'),(1983729778883461146,'279445',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','自定义表单'),(1983729778883461147,'279445',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','动态表单'),(1983729778883461148,'279445',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','撤销'),(1983729778883461149,'279445',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','通过'),(1983729778883461150,'279445',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','待审核'),(1983729778883461151,'279445',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','作废'),(1983729778883461152,'279445',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','退回'),(1983729778883461153,'279445',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','终止'),(1983729778950569985,'279445',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','转办'),(1983729778950569986,'279445',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','委托'),(1983729778950569987,'279445',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','抄送'),(1983729778950569988,'279445',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','加签'),(1983729778950569989,'279445',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','减签'),(1983729778950569990,'279445',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','超时'),(1983734805647781889,'473381',1,'男','0','sys_user_sex','','','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','性别男'),(1983734805647781890,'473381',2,'女','1','sys_user_sex','','','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','性别女'),(1983734805647781891,'473381',3,'未知','2','sys_user_sex','','','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','性别未知'),(1983734805647781892,'473381',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','显示菜单'),(1983734805647781893,'473381',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','隐藏菜单'),(1983734805647781894,'473381',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','正常状态'),(1983734805647781895,'473381',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','停用状态'),(1983734805647781896,'473381',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','系统默认是'),(1983734805647781897,'473381',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','系统默认否'),(1983734805647781898,'473381',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','通知'),(1983734805647781899,'473381',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','公告'),(1983734805647781900,'473381',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','正常状态'),(1983734805647781901,'473381',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','关闭状态'),(1983734805706502146,'473381',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','新增操作'),(1983734805714890754,'473381',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','修改操作'),(1983734805723279362,'473381',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','删除操作'),(1983734805723279363,'473381',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','授权操作'),(1983734805731667969,'473381',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','导出操作'),(1983734805731667970,'473381',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','导入操作'),(1983734805731667971,'473381',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','强退操作'),(1983734805731667972,'473381',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','生成操作'),(1983734805731667973,'473381',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','清空操作'),(1983734805731667974,'473381',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','正常状态'),(1983734805731667975,'473381',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','停用状态'),(1983734805731667976,'473381',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','其他操作'),(1983734805731667977,'473381',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','密码认证'),(1983734805731667978,'473381',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','短信认证'),(1983734805731667979,'473381',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','邮件认证'),(1983734805731667980,'473381',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','小程序认证'),(1983734805731667981,'473381',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','三方登录认证'),(1983734805773611009,'473381',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','PC'),(1983734805773611010,'473381',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','安卓'),(1983734805773611011,'473381',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','iOS'),(1983734805773611012,'473381',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','小程序'),(1983734805773611013,'473381',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','已撤销'),(1983734805773611014,'473381',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','草稿'),(1983734805773611015,'473381',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','待审核'),(1983734805773611016,'473381',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','已完成'),(1983734805773611017,'473381',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','已作废'),(1983734805773611018,'473381',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','已退回'),(1983734805773611019,'473381',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','已终止'),(1983734805773611020,'473381',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','自定义表单'),(1983734805773611021,'473381',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','动态表单'),(1983734805773611022,'473381',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','撤销'),(1983734805773611023,'473381',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','通过'),(1983734805773611024,'473381',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','待审核'),(1983734805773611025,'473381',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','作废'),(1983734805773611026,'473381',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','退回'),(1983734805773611027,'473381',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','终止'),(1983734805840719874,'473381',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','转办'),(1983734805840719875,'473381',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','委托'),(1983734805840719876,'473381',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','抄送'),(1983734805840719877,'473381',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','加签'),(1983734805840719878,'473381',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','减签'),(1983734805840719879,'473381',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','超时'),(1986691040156311554,'505898',1,'男','0','sys_user_sex','','','Y',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','性别男'),(1986691040282140673,'505898',2,'女','1','sys_user_sex','','','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','性别女'),(1986691040345055234,'505898',3,'未知','2','sys_user_sex','','','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','性别未知'),(1986691040407969794,'505898',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','显示菜单'),(1986691040491855873,'505898',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','隐藏菜单'),(1986691040533798914,'505898',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','正常状态'),(1986691040596713474,'505898',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','停用状态'),(1986691040659628033,'505898',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','系统默认是'),(1986691040722542593,'505898',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','系统默认否'),(1986691040793845762,'505898',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','通知'),(1986691040827400193,'505898',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','公告'),(1986691040848371714,'505898',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','正常状态'),(1986691040949035010,'505898',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','关闭状态'),(1986691041007755265,'505898',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','新增操作'),(1986691041045504001,'505898',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','修改操作'),(1986691041125195778,'505898',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','删除操作'),(1986691041175527426,'505898',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','授权操作'),(1986691041242636290,'505898',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','导出操作'),(1986691041292967937,'505898',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','导入操作'),(1986691041330716673,'505898',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','强退操作'),(1986691041372659714,'505898',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','生成操作'),(1986691041443962882,'505898',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','清空操作'),(1986691041485905921,'505898',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','正常状态'),(1986691041540431874,'505898',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','停用状态'),(1986691041565597698,'505898',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','其他操作'),(1986691041628512257,'505898',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','密码认证'),(1986691041666260993,'505898',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','短信认证'),(1986691041691426818,'505898',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','邮件认证'),(1986691041779507201,'505898',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','小程序认证'),(1986691041821450242,'505898',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','三方登录认证'),(1986691041821450243,'505898',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','PC'),(1986691041917919234,'505898',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','安卓'),(1986691041955667970,'505898',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','iOS'),(1986691041955667971,'505898',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','小程序'),(1986691042043748354,'505898',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','已撤销'),(1986691042085691394,'505898',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','草稿'),(1986691042169577474,'505898',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','待审核'),(1986691042232492033,'505898',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','已完成'),(1986691042253463553,'505898',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','已作废'),(1986691042370904066,'505898',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','已退回'),(1986691042421235714,'505898',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','已终止'),(1986691042509316098,'505898',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','自定义表单'),(1986691042672893954,'505898',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','动态表单'),(1986691042672893955,'505898',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','撤销'),(1986691042760974337,'505898',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','通过'),(1986691042802917377,'505898',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','待审核'),(1986691042865831938,'505898',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','作废'),(1986691042928746498,'505898',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','退回'),(1986691042928746499,'505898',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','终止'),(1986691042991661057,'505898',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','转办'),(1986691043058769921,'505898',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','委托'),(1986691043117490177,'505898',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','抄送'),(1986691043180404738,'505898',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','加签'),(1986691043243319297,'505898',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','减签'),(1986691043264290817,'505898',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-11-07 15:03:50',1,'2025-11-07 15:03:50','超时'),(2001190144659853313,'863903',1,'男','0','sys_user_sex','','','Y',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','性别男'),(2001190144668241921,'863903',2,'女','1','sys_user_sex','','','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','性别女'),(2001190144668241922,'863903',3,'未知','2','sys_user_sex','','','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','性别未知'),(2001190144676630529,'863903',1,'显示','0','sys_show_hide','','primary','Y',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','显示菜单'),(2001190144676630530,'863903',2,'隐藏','1','sys_show_hide','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','隐藏菜单'),(2001190144685019138,'863903',1,'正常','0','sys_normal_disable','','primary','Y',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','正常状态'),(2001190144685019139,'863903',2,'停用','1','sys_normal_disable','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','停用状态'),(2001190144685019140,'863903',1,'是','Y','sys_yes_no','','primary','Y',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','系统默认是'),(2001190144685019141,'863903',2,'否','N','sys_yes_no','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','系统默认否'),(2001190144693407746,'863903',1,'通知','1','sys_notice_type','','warning','Y',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','通知'),(2001190144693407747,'863903',2,'公告','2','sys_notice_type','','success','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','公告'),(2001190144693407748,'863903',1,'正常','0','sys_notice_status','','primary','Y',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','正常状态'),(2001190144701796353,'863903',2,'关闭','1','sys_notice_status','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','关闭状态'),(2001190144701796354,'863903',1,'新增','1','sys_oper_type','','info','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','新增操作'),(2001190144705990658,'863903',2,'修改','2','sys_oper_type','','info','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','修改操作'),(2001190144710184962,'863903',3,'删除','3','sys_oper_type','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','删除操作'),(2001190144714379266,'863903',4,'授权','4','sys_oper_type','','primary','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','授权操作'),(2001190144714379267,'863903',5,'导出','5','sys_oper_type','','warning','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','导出操作'),(2001190144714379268,'863903',6,'导入','6','sys_oper_type','','warning','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','导入操作'),(2001190144714379269,'863903',7,'强退','7','sys_oper_type','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','强退操作'),(2001190144722767873,'863903',8,'生成代码','8','sys_oper_type','','warning','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','生成操作'),(2001190144722767874,'863903',9,'清空数据','9','sys_oper_type','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','清空操作'),(2001190144731156482,'863903',1,'成功','0','sys_common_status','','primary','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','正常状态'),(2001190144735350785,'863903',2,'失败','1','sys_common_status','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','停用状态'),(2001190144739545090,'863903',99,'其他','0','sys_oper_type','','info','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','其他操作'),(2001190144739545091,'863903',0,'密码认证','password','sys_grant_type','el-check-tag','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','密码认证'),(2001190144739545092,'863903',0,'短信认证','sms','sys_grant_type','el-check-tag','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','短信认证'),(2001190144739545093,'863903',0,'邮件认证','email','sys_grant_type','el-check-tag','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','邮件认证'),(2001190144739545094,'863903',0,'小程序认证','xcx','sys_grant_type','el-check-tag','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','小程序认证'),(2001190144739545095,'863903',0,'三方登录认证','social','sys_grant_type','el-check-tag','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','三方登录认证'),(2001190144739545096,'863903',0,'PC','pc','sys_device_type','','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','PC'),(2001190144739545097,'863903',0,'安卓','android','sys_device_type','','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','安卓'),(2001190144739545098,'863903',0,'iOS','ios','sys_device_type','','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','iOS'),(2001190144789876737,'863903',0,'小程序','xcx','sys_device_type','','default','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','小程序'),(2001190144789876738,'863903',1,'已撤销','cancel','wf_business_status','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','已撤销'),(2001190144789876739,'863903',2,'草稿','draft','wf_business_status','','info','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','草稿'),(2001190144789876740,'863903',3,'待审核','waiting','wf_business_status','','primary','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','待审核'),(2001190144789876741,'863903',4,'已完成','finish','wf_business_status','','success','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','已完成'),(2001190144789876742,'863903',5,'已作废','invalid','wf_business_status','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','已作废'),(2001190144789876743,'863903',6,'已退回','back','wf_business_status','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','已退回'),(2001190144789876744,'863903',7,'已终止','termination','wf_business_status','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','已终止'),(2001190144789876745,'863903',1,'自定义表单','static','wf_form_type','','success','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','自定义表单'),(2001190144789876746,'863903',2,'动态表单','dynamic','wf_form_type','','primary','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','动态表单'),(2001190144789876747,'863903',1,'撤销','cancel','wf_task_status','','danger','N',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','撤销'),(2001190144789876748,'863903',2,'通过','pass','wf_task_status','','success','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','通过'),(2001190144789876749,'863903',3,'待审核','waiting','wf_task_status','','primary','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','待审核'),(2001190144789876750,'863903',4,'作废','invalid','wf_task_status','','danger','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','作废'),(2001190144789876751,'863903',5,'退回','back','wf_task_status','','danger','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','退回'),(2001190144789876752,'863903',6,'终止','termination','wf_task_status','','danger','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','终止'),(2001190144789876753,'863903',7,'转办','transfer','wf_task_status','','primary','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','转办'),(2001190144789876754,'863903',8,'委托','depute','wf_task_status','','primary','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','委托'),(2001190144789876755,'863903',9,'抄送','copy','wf_task_status','','primary','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','抄送'),(2001190144789876756,'863903',10,'加签','sign','wf_task_status','','primary','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','加签'),(2001190144856985602,'863903',11,'减签','sign_off','wf_task_status','','danger','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','减签'),(2001190144856985603,'863903',11,'超时','timeout','wf_task_status','','danger','N',103,1,'2025-12-17 15:18:06',1,'2025-12-17 15:18:06','超时');
+/*!40000 ALTER TABLE `sys_dict_data` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ----------------------------
--- 6、用户和角色关联表  用户N-1角色
--- ----------------------------
-create table sys_user_role (
-  user_id   bigint(20) not null comment '用户ID',
-  role_id   bigint(20) not null comment '角色ID',
-  primary key(user_id, role_id)
-) engine=innodb comment = '用户和角色关联表';
+--
+-- Table structure for table `sys_dict_type`
+--
 
--- ----------------------------
--- 初始化-用户和角色关联表数据
--- ----------------------------
-insert into sys_user_role values ('1', '1');
-INSERT INTO sys_user_role values ('3', '3');
-INSERT INTO sys_user_role values ('4', '4');
+DROP TABLE IF EXISTS `sys_dict_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_dict_type` (
+  `dict_id` bigint NOT NULL COMMENT '字典主键',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `dict_name` varchar(100) DEFAULT '' COMMENT '字典名称',
+  `dict_type` varchar(100) DEFAULT '' COMMENT '字典类型',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`dict_id`),
+  UNIQUE KEY `tenant_id` (`tenant_id`,`dict_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='字典类型表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `sys_dict_type`
+--
 
--- ----------------------------
--- 7、角色和菜单关联表  角色1-N菜单
--- ----------------------------
-create table sys_role_menu (
-  role_id   bigint(20) not null comment '角色ID',
-  menu_id   bigint(20) not null comment '菜单ID',
-  primary key(role_id, menu_id)
-) engine=innodb comment = '角色和菜单关联表';
+LOCK TABLES `sys_dict_type` WRITE;
+/*!40000 ALTER TABLE `sys_dict_type` DISABLE KEYS */;
+INSERT INTO `sys_dict_type` VALUES (1,'000000','用户性别','sys_user_sex',103,1,'2025-10-25 12:32:51',NULL,NULL,'用户性别列表'),(2,'000000','菜单状态','sys_show_hide',103,1,'2025-10-25 12:32:51',NULL,NULL,'菜单状态列表'),(3,'000000','系统开关','sys_normal_disable',103,1,'2025-10-25 12:32:51',NULL,NULL,'系统开关列表'),(6,'000000','系统是否','sys_yes_no',103,1,'2025-10-25 12:32:51',NULL,NULL,'系统是否列表'),(7,'000000','通知类型','sys_notice_type',103,1,'2025-10-25 12:32:51',NULL,NULL,'通知类型列表'),(8,'000000','通知状态','sys_notice_status',103,1,'2025-10-25 12:32:51',NULL,NULL,'通知状态列表'),(9,'000000','操作类型','sys_oper_type',103,1,'2025-10-25 12:32:51',NULL,NULL,'操作类型列表'),(10,'000000','系统状态','sys_common_status',103,1,'2025-10-25 12:32:51',NULL,NULL,'登录状态列表'),(11,'000000','授权类型','sys_grant_type',103,1,'2025-10-25 12:32:51',NULL,NULL,'认证授权类型'),(12,'000000','设备类型','sys_device_type',103,1,'2025-10-25 12:32:52',NULL,NULL,'客户端设备类型'),(13,'000000','业务状态','wf_business_status',103,1,'2025-10-25 12:32:52',NULL,NULL,'业务状态列表'),(14,'000000','表单类型','wf_form_type',103,1,'2025-10-25 12:32:52',NULL,NULL,'表单类型列表'),(15,'000000','任务状态','wf_task_status',103,1,'2025-10-25 12:32:52',NULL,NULL,'任务状态'),(1983716893918662657,'898509','用户性别','sys_user_sex',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','用户性别列表'),(1983716893918662658,'898509','菜单状态','sys_show_hide',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','菜单状态列表'),(1983716893918662659,'898509','系统开关','sys_normal_disable',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','系统开关列表'),(1983716893918662660,'898509','系统是否','sys_yes_no',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','系统是否列表'),(1983716893918662661,'898509','通知类型','sys_notice_type',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','通知类型列表'),(1983716893918662662,'898509','通知状态','sys_notice_status',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','通知状态列表'),(1983716893918662663,'898509','操作类型','sys_oper_type',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','操作类型列表'),(1983716893918662664,'898509','系统状态','sys_common_status',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','登录状态列表'),(1983716893918662665,'898509','授权类型','sys_grant_type',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','认证授权类型'),(1983716893918662666,'898509','设备类型','sys_device_type',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','客户端设备类型'),(1983716893918662667,'898509','业务状态','wf_business_status',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','业务状态列表'),(1983716893918662668,'898509','表单类型','wf_form_type',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','表单类型列表'),(1983716893918662669,'898509','任务状态','wf_task_status',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38','任务状态'),(1983726215457316866,'180427','系统状态','sys_common_status',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','登录状态列表'),(1983726215465705473,'180427','设备类型','sys_device_type',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','客户端设备类型'),(1983726215465705474,'180427','授权类型','sys_grant_type',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','认证授权类型'),(1983726215474094081,'180427','系统开关','sys_normal_disable',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','系统开关列表'),(1983726215474094082,'180427','通知状态','sys_notice_status',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','通知状态列表'),(1983726215478288385,'180427','通知类型','sys_notice_type',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','通知类型列表'),(1983726215478288386,'180427','操作类型','sys_oper_type',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','操作类型列表'),(1983726215478288387,'180427','菜单状态','sys_show_hide',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','菜单状态列表'),(1983726215486676994,'180427','用户性别','sys_user_sex',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','用户性别列表'),(1983726215486676995,'180427','系统是否','sys_yes_no',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','系统是否列表'),(1983726215486676996,'180427','业务状态','wf_business_status',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','业务状态列表'),(1983726215495065602,'180427','表单类型','wf_form_type',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','表单类型列表'),(1983726215499259906,'180427','任务状态','wf_task_status',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40','任务状态'),(1983726284763996162,'380976','系统状态','sys_common_status',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','登录状态列表'),(1983726284763996163,'380976','设备类型','sys_device_type',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','客户端设备类型'),(1983726284763996164,'380976','授权类型','sys_grant_type',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','认证授权类型'),(1983726284763996165,'380976','系统开关','sys_normal_disable',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','系统开关列表'),(1983726284763996166,'380976','通知状态','sys_notice_status',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','通知状态列表'),(1983726284763996167,'380976','通知类型','sys_notice_type',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','通知类型列表'),(1983726284763996168,'380976','操作类型','sys_oper_type',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','操作类型列表'),(1983726284763996169,'380976','菜单状态','sys_show_hide',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','菜单状态列表'),(1983726284763996170,'380976','用户性别','sys_user_sex',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','用户性别列表'),(1983726284763996171,'380976','系统是否','sys_yes_no',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','系统是否列表'),(1983726284763996172,'380976','业务状态','wf_business_status',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','业务状态列表'),(1983726284763996173,'380976','表单类型','wf_form_type',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','表单类型列表'),(1983726284763996174,'380976','任务状态','wf_task_status',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57','任务状态'),(1983726698720829441,'234087','系统状态','sys_common_status',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','登录状态列表'),(1983726698720829442,'234087','设备类型','sys_device_type',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','客户端设备类型'),(1983726698720829443,'234087','授权类型','sys_grant_type',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','认证授权类型'),(1983726698729218050,'234087','系统开关','sys_normal_disable',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','系统开关列表'),(1983726698729218051,'234087','通知状态','sys_notice_status',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','通知状态列表'),(1983726698729218052,'234087','通知类型','sys_notice_type',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','通知类型列表'),(1983726698729218053,'234087','操作类型','sys_oper_type',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','操作类型列表'),(1983726698729218054,'234087','菜单状态','sys_show_hide',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','菜单状态列表'),(1983726698729218055,'234087','用户性别','sys_user_sex',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','用户性别列表'),(1983726698737606658,'234087','系统是否','sys_yes_no',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','系统是否列表'),(1983726698737606659,'234087','业务状态','wf_business_status',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','业务状态列表'),(1983726698741800962,'234087','表单类型','wf_form_type',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','表单类型列表'),(1983726698741800963,'234087','任务状态','wf_task_status',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35','任务状态'),(1983726842560290818,'751666','系统状态','sys_common_status',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','登录状态列表'),(1983726842560290819,'751666','设备类型','sys_device_type',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','客户端设备类型'),(1983726842560290820,'751666','授权类型','sys_grant_type',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','认证授权类型'),(1983726842560290821,'751666','系统开关','sys_normal_disable',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','系统开关列表'),(1983726842627399682,'751666','通知状态','sys_notice_status',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','通知状态列表'),(1983726842627399683,'751666','通知类型','sys_notice_type',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','通知类型列表'),(1983726842627399684,'751666','操作类型','sys_oper_type',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','操作类型列表'),(1983726842627399685,'751666','菜单状态','sys_show_hide',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','菜单状态列表'),(1983726842627399686,'751666','用户性别','sys_user_sex',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','用户性别列表'),(1983726842627399687,'751666','系统是否','sys_yes_no',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','系统是否列表'),(1983726842627399688,'751666','业务状态','wf_business_status',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','业务状态列表'),(1983726842627399689,'751666','表单类型','wf_form_type',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','表单类型列表'),(1983726842627399690,'751666','任务状态','wf_task_status',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10','任务状态'),(1983729610087890945,'715928','系统状态','sys_common_status',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','登录状态列表'),(1983729610087890946,'715928','设备类型','sys_device_type',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','客户端设备类型'),(1983729610087890947,'715928','授权类型','sys_grant_type',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','认证授权类型'),(1983729610087890948,'715928','系统开关','sys_normal_disable',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','系统开关列表'),(1983729610087890949,'715928','通知状态','sys_notice_status',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','通知状态列表'),(1983729610087890950,'715928','通知类型','sys_notice_type',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','通知类型列表'),(1983729610087890951,'715928','操作类型','sys_oper_type',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','操作类型列表'),(1983729610087890952,'715928','菜单状态','sys_show_hide',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','菜单状态列表'),(1983729610087890953,'715928','用户性别','sys_user_sex',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','用户性别列表'),(1983729610087890954,'715928','系统是否','sys_yes_no',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','系统是否列表'),(1983729610087890955,'715928','业务状态','wf_business_status',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','业务状态列表'),(1983729610087890956,'715928','表单类型','wf_form_type',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','表单类型列表'),(1983729610087890957,'715928','任务状态','wf_task_status',103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10','任务状态'),(1983729778749243393,'279445','系统状态','sys_common_status',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','登录状态列表'),(1983729778749243394,'279445','设备类型','sys_device_type',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','客户端设备类型'),(1983729778749243395,'279445','授权类型','sys_grant_type',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','认证授权类型'),(1983729778749243396,'279445','系统开关','sys_normal_disable',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','系统开关列表'),(1983729778816352258,'279445','通知状态','sys_notice_status',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','通知状态列表'),(1983729778816352259,'279445','通知类型','sys_notice_type',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','通知类型列表'),(1983729778816352260,'279445','操作类型','sys_oper_type',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','操作类型列表'),(1983729778816352261,'279445','菜单状态','sys_show_hide',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','菜单状态列表'),(1983729778824740866,'279445','用户性别','sys_user_sex',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','用户性别列表'),(1983729778824740867,'279445','系统是否','sys_yes_no',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','系统是否列表'),(1983729778824740868,'279445','业务状态','wf_business_status',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','业务状态列表'),(1983729778824740869,'279445','表单类型','wf_form_type',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','表单类型列表'),(1983729778824740870,'279445','任务状态','wf_task_status',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50','任务状态'),(1983734805123493889,'473381','系统状态','sys_common_status',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','登录状态列表'),(1983734805123493890,'473381','设备类型','sys_device_type',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','客户端设备类型'),(1983734805123493891,'473381','授权类型','sys_grant_type',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','认证授权类型'),(1983734805123493892,'473381','系统开关','sys_normal_disable',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','系统开关列表'),(1983734805123493893,'473381','通知状态','sys_notice_status',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','通知状态列表'),(1983734805123493894,'473381','通知类型','sys_notice_type',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','通知类型列表'),(1983734805123493895,'473381','操作类型','sys_oper_type',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','操作类型列表'),(1983734805123493896,'473381','菜单状态','sys_show_hide',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','菜单状态列表'),(1983734805123493897,'473381','用户性别','sys_user_sex',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','用户性别列表'),(1983734805123493898,'473381','系统是否','sys_yes_no',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','系统是否列表'),(1983734805123493899,'473381','业务状态','wf_business_status',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','业务状态列表'),(1983734805182214146,'473381','表单类型','wf_form_type',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','表单类型列表'),(1983734805182214147,'473381','任务状态','wf_task_status',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48','任务状态'),(1986691038717665281,'505898','系统状态','sys_common_status',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','登录状态列表'),(1986691038860271618,'505898','设备类型','sys_device_type',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','客户端设备类型'),(1986691038860271619,'505898','授权类型','sys_grant_type',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','认证授权类型'),(1986691038939963394,'505898','系统开关','sys_normal_disable',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','系统开关列表'),(1986691038969323521,'505898','通知状态','sys_notice_status',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','通知状态列表'),(1986691039007072257,'505898','通知类型','sys_notice_type',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','通知类型列表'),(1986691039053209601,'505898','操作类型','sys_oper_type',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','操作类型列表'),(1986691039053209602,'505898','菜单状态','sys_show_hide',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','菜单状态列表'),(1986691039116124161,'505898','用户性别','sys_user_sex',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','用户性别列表'),(1986691039116124162,'505898','系统是否','sys_yes_no',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','系统是否列表'),(1986691039195815938,'505898','业务状态','wf_business_status',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','业务状态列表'),(1986691039195815939,'505898','表单类型','wf_form_type',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','表单类型列表'),(1986691039279702017,'505898','任务状态','wf_task_status',103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49','任务状态'),(2001190143682580482,'863903','系统状态','sys_common_status',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','登录状态列表'),(2001190143690969090,'863903','设备类型','sys_device_type',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','客户端设备类型'),(2001190143699357697,'863903','授权类型','sys_grant_type',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','认证授权类型'),(2001190143699357698,'863903','系统开关','sys_normal_disable',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','系统开关列表'),(2001190143707746306,'863903','通知状态','sys_notice_status',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','通知状态列表'),(2001190143707746307,'863903','通知类型','sys_notice_type',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','通知类型列表'),(2001190143716134913,'863903','操作类型','sys_oper_type',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','操作类型列表'),(2001190143720329217,'863903','菜单状态','sys_show_hide',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','菜单状态列表'),(2001190143770660865,'863903','用户性别','sys_user_sex',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','用户性别列表'),(2001190143779049474,'863903','系统是否','sys_yes_no',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','系统是否列表'),(2001190143783243778,'863903','业务状态','wf_business_status',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','业务状态列表'),(2001190143783243779,'863903','表单类型','wf_form_type',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','表单类型列表'),(2001190143791632385,'863903','任务状态','wf_task_status',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05','任务状态');
+/*!40000 ALTER TABLE `sys_dict_type` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ----------------------------
--- 初始化-角色和菜单关联表数据
--- ----------------------------
-insert into sys_role_menu values ('3', '1');
-insert into sys_role_menu values ('3', '5');
-insert into sys_role_menu values ('3', '100');
-insert into sys_role_menu values ('3', '101');
-insert into sys_role_menu values ('3', '102');
-insert into sys_role_menu values ('3', '103');
-insert into sys_role_menu values ('3', '104');
-insert into sys_role_menu values ('3', '105');
-insert into sys_role_menu values ('3', '106');
-insert into sys_role_menu values ('3', '107');
-insert into sys_role_menu values ('3', '108');
-insert into sys_role_menu values ('3', '118');
-insert into sys_role_menu values ('3', '123');
-insert into sys_role_menu values ('3', '130');
-insert into sys_role_menu values ('3', '131');
-insert into sys_role_menu values ('3', '132');
-insert into sys_role_menu values ('3', '133');
-insert into sys_role_menu values ('3', '500');
-insert into sys_role_menu values ('3', '501');
-insert into sys_role_menu values ('3', '1001');
-insert into sys_role_menu values ('3', '1002');
-insert into sys_role_menu values ('3', '1003');
-insert into sys_role_menu values ('3', '1004');
-insert into sys_role_menu values ('3', '1005');
-insert into sys_role_menu values ('3', '1006');
-insert into sys_role_menu values ('3', '1007');
-insert into sys_role_menu values ('3', '1008');
-insert into sys_role_menu values ('3', '1009');
-insert into sys_role_menu values ('3', '1010');
-insert into sys_role_menu values ('3', '1011');
-insert into sys_role_menu values ('3', '1012');
-insert into sys_role_menu values ('3', '1013');
-insert into sys_role_menu values ('3', '1014');
-insert into sys_role_menu values ('3', '1015');
-insert into sys_role_menu values ('3', '1016');
-insert into sys_role_menu values ('3', '1017');
-insert into sys_role_menu values ('3', '1018');
-insert into sys_role_menu values ('3', '1019');
-insert into sys_role_menu values ('3', '1020');
-insert into sys_role_menu values ('3', '1021');
-insert into sys_role_menu values ('3', '1022');
-insert into sys_role_menu values ('3', '1023');
-insert into sys_role_menu values ('3', '1024');
-insert into sys_role_menu values ('3', '1025');
-insert into sys_role_menu values ('3', '1026');
-insert into sys_role_menu values ('3', '1027');
-insert into sys_role_menu values ('3', '1028');
-insert into sys_role_menu values ('3', '1029');
-insert into sys_role_menu values ('3', '1030');
-insert into sys_role_menu values ('3', '1031');
-insert into sys_role_menu values ('3', '1032');
-insert into sys_role_menu values ('3', '1033');
-insert into sys_role_menu values ('3', '1034');
-insert into sys_role_menu values ('3', '1035');
-insert into sys_role_menu values ('3', '1036');
-insert into sys_role_menu values ('3', '1037');
-insert into sys_role_menu values ('3', '1038');
-insert into sys_role_menu values ('3', '1039');
-insert into sys_role_menu values ('3', '1040');
-insert into sys_role_menu values ('3', '1041');
-insert into sys_role_menu values ('3', '1042');
-insert into sys_role_menu values ('3', '1043');
-insert into sys_role_menu values ('3', '1044');
-insert into sys_role_menu values ('3', '1045');
-insert into sys_role_menu values ('3', '1050');
-insert into sys_role_menu values ('3', '1061');
-insert into sys_role_menu values ('3', '1062');
-insert into sys_role_menu values ('3', '1063');
-insert into sys_role_menu values ('3', '1064');
-insert into sys_role_menu values ('3', '1065');
-insert into sys_role_menu values ('3', '1500');
-insert into sys_role_menu values ('3', '1501');
-insert into sys_role_menu values ('3', '1502');
-insert into sys_role_menu values ('3', '1503');
-insert into sys_role_menu values ('3', '1504');
-insert into sys_role_menu values ('3', '1505');
-insert into sys_role_menu values ('3', '1506');
-insert into sys_role_menu values ('3', '1507');
-insert into sys_role_menu values ('3', '1508');
-insert into sys_role_menu values ('3', '1509');
-insert into sys_role_menu values ('3', '1510');
-insert into sys_role_menu values ('3', '1511');
-insert into sys_role_menu values ('3', '1600');
-insert into sys_role_menu values ('3', '1601');
-insert into sys_role_menu values ('3', '1602');
-insert into sys_role_menu values ('3', '1603');
-insert into sys_role_menu values ('3', '1620');
-insert into sys_role_menu values ('3', '1621');
-insert into sys_role_menu values ('3', '1622');
-insert into sys_role_menu values ('3', '1623');
-insert into sys_role_menu values ('3', '11616');
-insert into sys_role_menu values ('3', '11618');
-insert into sys_role_menu values ('3', '11619');
-insert into sys_role_menu values ('3', '11622');
-insert into sys_role_menu values ('3', '11623');
-insert into sys_role_menu values ('3', '11629');
-insert into sys_role_menu values ('3', '11632');
-insert into sys_role_menu values ('3', '11633');
-insert into sys_role_menu values ('3', '11638');
-insert into sys_role_menu values ('3', '11639');
-insert into sys_role_menu values ('3', '11640');
-insert into sys_role_menu values ('3', '11641');
-insert into sys_role_menu values ('3', '11642');
-insert into sys_role_menu values ('3', '11643');
-insert into sys_role_menu values ('3', '11701');
-insert into sys_role_menu values ('4', '5');
-insert into sys_role_menu values ('4', '1500');
-insert into sys_role_menu values ('4', '1501');
-insert into sys_role_menu values ('4', '1502');
-insert into sys_role_menu values ('4', '1503');
-insert into sys_role_menu values ('4', '1504');
-insert into sys_role_menu values ('4', '1505');
-insert into sys_role_menu values ('4', '1506');
-insert into sys_role_menu values ('4', '1507');
-insert into sys_role_menu values ('4', '1508');
-insert into sys_role_menu values ('4', '1509');
-insert into sys_role_menu values ('4', '1510');
-insert into sys_role_menu values ('4', '1511');
+--
+-- Table structure for table `sys_logininfor`
+--
 
--- ----------------------------
--- 8、角色和部门关联表  角色1-N部门
--- ----------------------------
-create table sys_role_dept (
-  role_id   bigint(20) not null comment '角色ID',
-  dept_id   bigint(20) not null comment '部门ID',
-  primary key(role_id, dept_id)
-) engine=innodb comment = '角色和部门关联表';
+DROP TABLE IF EXISTS `sys_logininfor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_logininfor` (
+  `info_id` bigint NOT NULL COMMENT '访问ID',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `user_name` varchar(50) DEFAULT '' COMMENT '用户账号',
+  `client_key` varchar(32) DEFAULT '' COMMENT '客户端',
+  `device_type` varchar(32) DEFAULT '' COMMENT '设备类型',
+  `ipaddr` varchar(128) DEFAULT '' COMMENT '登录IP地址',
+  `login_location` varchar(255) DEFAULT '' COMMENT '登录地点',
+  `browser` varchar(50) DEFAULT '' COMMENT '浏览器类型',
+  `os` varchar(50) DEFAULT '' COMMENT '操作系统',
+  `status` char(1) DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
+  `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
+  `login_time` datetime DEFAULT NULL COMMENT '访问时间',
+  PRIMARY KEY (`info_id`),
+  KEY `idx_sys_logininfor_s` (`status`),
+  KEY `idx_sys_logininfor_lt` (`login_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统访问记录';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `sys_logininfor`
+--
 
--- ----------------------------
--- 9、用户与岗位关联表  用户1-N岗位
--- ----------------------------
-create table sys_user_post
-(
-  user_id   bigint(20) not null comment '用户ID',
-  post_id   bigint(20) not null comment '岗位ID',
-  primary key (user_id, post_id)
-) engine=innodb comment = '用户与岗位关联表';
+LOCK TABLES `sys_logininfor` WRITE;
+/*!40000 ALTER TABLE `sys_logininfor` DISABLE KEYS */;
+INSERT INTO `sys_logininfor` VALUES (1982032514100125697,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-25 18:32:30'),(1982270780313329665,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-26 10:19:17'),(1982686973666942978,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-27 13:53:06'),(1982710742053769218,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-27 15:27:33'),(1982814200123527170,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-27 22:18:39'),(1983019720868532225,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-28 11:55:19'),(1983716730277892098,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-30 10:04:59'),(1983748302913859586,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-10-30 12:10:26'),(1986643072296411137,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-07 11:53:13'),(1986690022576218114,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-07 14:59:47'),(1987011019879612418,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-08 12:15:19'),(1987038302610894850,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-08 14:03:43'),(1987772550011604993,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-10 14:41:22'),(1988108973969436674,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','1','验证码错误','2025-11-11 12:58:11'),(1988108990310445058,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-11 12:58:15'),(1988120085209214977,'000000','yan','pc','pc','10.11.7.128','内网IP','Chrome','Windows 10 or Windows Server 2016','0','登录成功','2025-11-11 13:42:20'),(1988830200505741313,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-13 12:44:05'),(1989886320301223938,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-16 10:40:44'),(1991333074976550913,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-20 10:29:37'),(1991348267722940418,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-20 11:29:59'),(1991348554252623874,'000000','yan','pc','pc','10.11.7.128','内网IP','Chrome','Windows 10 or Windows Server 2016','0','登录成功','2025-11-20 11:31:07'),(1991371078080339969,'000000','admin','pc','pc','10.11.7.128','内网IP','Chrome','Windows 10 or Windows Server 2016','0','登录成功','2025-11-20 13:00:38'),(1991371162243244033,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','1','验证码错误','2025-11-20 13:00:58'),(1991371175665016833,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-11-20 13:01:01'),(1991728515476037634,'000000','admin','pc','pc','10.11.7.128','内网IP','Chrome','Windows 10 or Windows Server 2016','1','验证码已失效','2025-11-21 12:40:57'),(1991728535361232897,'000000','admin','pc','pc','10.11.7.128','内网IP','Chrome','Windows 10 or Windows Server 2016','1','验证码错误','2025-11-21 12:41:02'),(1991728550913712129,'000000','admin','pc','pc','10.11.7.128','内网IP','Chrome','Windows 10 or Windows Server 2016','0','登录成功','2025-11-21 12:41:06'),(1998737523198033922,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-10 20:52:15'),(1998957735117750273,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-11 11:27:18'),(2001184915692347393,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-17 14:57:19'),(2001205104060305409,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-17 16:17:32'),(2001222813753970689,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-17 17:27:54'),(2001233566506586113,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-17 18:10:38'),(2001262817310052354,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-17 20:06:52'),(2001494530300743682,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-18 11:27:37'),(2001516699084820482,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-18 12:55:42'),(2001883558275616770,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-19 13:13:28'),(2003765771812339713,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-24 17:52:43'),(2003765776304439298,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','1','验证码已失效','2025-12-24 17:52:44'),(2004033201767841793,'000000','admin','pc','pc','10.11.7.128','内网IP','MSEdge','Windows 10 or Windows Server 2016','0','登录成功','2025-12-25 11:35:23');
+/*!40000 ALTER TABLE `sys_logininfor` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ----------------------------
--- 初始化-用户与岗位关联表数据
--- ----------------------------
-insert into sys_user_post values ('1', '1');
+--
+-- Table structure for table `sys_menu`
+--
 
--- ----------------------------
--- 10、操作日志记录
--- ----------------------------
-create table sys_oper_log (
-  oper_id           bigint(20)      not null                   comment '日志主键',
-  tenant_id         varchar(20)     default '000000'           comment '租户编号',
-  title             varchar(50)     default ''                 comment '模块标题',
-  business_type     int(2)          default 0                  comment '业务类型（0其它 1新增 2修改 3删除）',
-  method            varchar(100)    default ''                 comment '方法名称',
-  request_method    varchar(10)     default ''                 comment '请求方式',
-  operator_type     int(1)          default 0                  comment '操作类别（0其它 1后台用户 2手机端用户）',
-  oper_name         varchar(50)     default ''                 comment '操作人员',
-  dept_name         varchar(50)     default ''                 comment '部门名称',
-  oper_url          varchar(255)    default ''                 comment '请求URL',
-  oper_ip           varchar(128)    default ''                 comment '主机地址',
-  oper_location     varchar(255)    default ''                 comment '操作地点',
-  oper_param        varchar(4000)   default ''                 comment '请求参数',
-  json_result       varchar(4000)   default ''                 comment '返回参数',
-  status            int(1)          default 0                  comment '操作状态（0正常 1异常）',
-  error_msg         varchar(4000)   default ''                 comment '错误消息',
-  oper_time         datetime                                   comment '操作时间',
-  cost_time         bigint(20)      default 0                  comment '消耗时间',
-  primary key (oper_id),
-  key idx_sys_oper_log_bt (business_type),
-  key idx_sys_oper_log_s  (status),
-  key idx_sys_oper_log_ot (oper_time)
-) engine=innodb comment = '操作日志记录';
+DROP TABLE IF EXISTS `sys_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_menu` (
+  `menu_id` bigint NOT NULL COMMENT '菜单ID',
+  `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
+  `parent_id` bigint DEFAULT '0' COMMENT '父菜单ID',
+  `order_num` int DEFAULT '0' COMMENT '显示顺序',
+  `path` varchar(200) DEFAULT '' COMMENT '路由地址',
+  `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
+  `query_param` varchar(255) DEFAULT NULL COMMENT '路由参数',
+  `is_frame` int DEFAULT '1' COMMENT '是否为外链（0是 1否）',
+  `is_cache` int DEFAULT '0' COMMENT '是否缓存（0缓存 1不缓存）',
+  `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+  `visible` char(1) DEFAULT '0' COMMENT '显示状态（0显示 1隐藏）',
+  `status` char(1) DEFAULT '0' COMMENT '菜单状态（0正常 1停用）',
+  `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
+  `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT '' COMMENT '备注',
+  PRIMARY KEY (`menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `sys_menu`
+--
 
--- ----------------------------
--- 11、字典类型表
--- ----------------------------
-create table sys_dict_type
-(
-  dict_id          bigint(20)      not null                   comment '字典主键',
-  tenant_id        varchar(20)     default '000000'           comment '租户编号',
-  dict_name        varchar(100)    default ''                 comment '字典名称',
-  dict_type        varchar(100)    default ''                 comment '字典类型',
-  create_dept      bigint(20)      default null               comment '创建部门',
-  create_by        bigint(20)      default null               comment '创建者',
-  create_time      datetime                                   comment '创建时间',
-  update_by        bigint(20)      default null               comment '更新者',
-  update_time      datetime                                   comment '更新时间',
-  remark           varchar(500)    default null               comment '备注',
-  primary key (dict_id),
-  unique (tenant_id, dict_type)
-) engine=innodb comment = '字典类型表';
+LOCK TABLES `sys_menu` WRITE;
+/*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
+INSERT INTO `sys_menu` VALUES (1,'系统管理',0,1,'system',NULL,'',1,0,'M','0','0','','system',103,1,'2025-10-25 12:32:05',NULL,NULL,'系统管理目录'),(2,'系统监控',0,3,'monitor',NULL,'',1,0,'M','0','0','','monitor',103,1,'2025-10-25 12:32:05',NULL,NULL,'系统监控目录'),(3,'系统工具',0,4,'tool',NULL,'',1,0,'M','0','0','','tool',103,1,'2025-10-25 12:32:05',NULL,NULL,'系统工具目录'),(4,'PLUS官网',0,5,'https://gitee.com/dromara/RuoYi-Cloud-Plus',NULL,'',0,0,'M','0','0','','guide',103,1,'2025-10-25 12:32:05',NULL,NULL,'RuoYi-Cloud-Plus官网地址'),(5,'测试菜单',0,5,'demo',NULL,'',1,0,'M','0','0','','star',103,1,'2025-10-25 12:32:05',NULL,NULL,'测试菜单'),(6,'租户管理',0,2,'tenant',NULL,'',1,0,'M','0','0','','chart',103,1,'2025-10-25 12:32:05',NULL,NULL,'租户管理目录'),(100,'用户管理',1,1,'user','system/user/index','',1,0,'C','0','0','system:user:list','user',103,1,'2025-10-25 12:32:05',NULL,NULL,'用户管理菜单'),(101,'角色管理',1,2,'role','system/role/index','',1,0,'C','0','0','system:role:list','peoples',103,1,'2025-10-25 12:32:06',NULL,NULL,'角色管理菜单'),(102,'菜单管理',1,3,'menu','system/menu/index','',1,0,'C','0','0','system:menu:list','tree-table',103,1,'2025-10-25 12:32:06',NULL,NULL,'菜单管理菜单'),(103,'部门管理',1,4,'dept','system/dept/index','',1,0,'C','0','0','system:dept:list','tree',103,1,'2025-10-25 12:32:06',NULL,NULL,'部门管理菜单'),(104,'岗位管理',1,5,'post','system/post/index','',1,0,'C','0','0','system:post:list','post',103,1,'2025-10-25 12:32:06',NULL,NULL,'岗位管理菜单'),(105,'字典管理',1,6,'dict','system/dict/index','',1,0,'C','0','0','system:dict:list','dict',103,1,'2025-10-25 12:32:06',NULL,NULL,'字典管理菜单'),(106,'参数设置',1,7,'config','system/config/index','',1,0,'C','0','0','system:config:list','edit',103,1,'2025-10-25 12:32:06',NULL,NULL,'参数设置菜单'),(107,'通知公告',1,8,'notice','system/notice/index','',1,0,'C','0','0','system:notice:list','message',103,1,'2025-10-25 12:32:06',NULL,NULL,'通知公告菜单'),(108,'日志管理',1,9,'log','','',1,0,'M','0','0','','log',103,1,'2025-10-25 12:32:07',NULL,NULL,'日志管理菜单'),(109,'在线用户',2,1,'online','monitor/online/index','',1,0,'C','0','0','monitor:online:list','online',103,1,'2025-10-25 12:32:07',NULL,NULL,'在线用户菜单'),(110,'SnailJob控制台',2,2,'http://localhost:8800/snail-job','','',0,0,'C','0','0','monitor:job:list','job',103,1,'2025-10-25 12:32:07',NULL,NULL,'SJ定时任务菜单'),(112,'Nacos控制台',2,4,'http://localhost:8848/nacos','','',0,0,'C','0','0','monitor:nacos:list','nacos',103,1,'2025-10-25 12:32:07',NULL,NULL,'服务治理菜单'),(113,'Admin控制台',2,5,'http://localhost:9100/login','','',0,0,'C','0','0','monitor:server:list','server',103,1,'2025-10-25 12:32:07',NULL,NULL,'服务监控菜单'),(115,'代码生成',3,2,'gen','tool/gen/index','',1,0,'C','0','0','tool:gen:list','code',103,1,'2025-10-25 12:32:07',NULL,NULL,'代码生成菜单'),(116,'修改生成配置',3,2,'gen-edit/index/:tableId','tool/gen/editTable','',1,1,'C','1','0','tool:gen:edit','#',103,1,'2025-10-25 12:32:08',NULL,NULL,'/tool/gen'),(118,'文件管理',1,10,'oss','system/oss/index','',1,0,'C','0','0','system:oss:list','upload',103,1,'2025-10-25 12:32:09',NULL,NULL,'文件管理菜单'),(121,'租户管理',6,1,'tenant','system/tenant/index','',1,0,'C','0','0','system:tenant:list','list',103,1,'2025-10-25 12:32:08',NULL,NULL,'租户管理菜单'),(122,'租户套餐管理',6,2,'tenantPackage','system/tenantPackage/index','',1,0,'C','0','0','system:tenantPackage:list','form',103,1,'2025-10-25 12:32:08',NULL,NULL,'租户套餐管理菜单'),(123,'客户端管理',1,11,'client','system/client/index','',1,0,'C','0','0','system:client:list','international',103,1,'2025-10-25 12:32:08',NULL,NULL,'客户端管理菜单'),(124,'缓存监控',2,1,'cache','monitor/cache/index','',1,0,'C','0','0','monitor:cache:list','redis',103,1,'2025-10-25 12:32:07',NULL,NULL,'缓存监控'),(130,'分配用户',1,2,'role-auth/user/:roleId','system/role/authUser','',1,1,'C','1','0','system:role:edit','#',103,1,'2025-10-25 12:32:08',NULL,NULL,'/system/role'),(131,'分配角色',1,1,'user-auth/role/:userId','system/user/authRole','',1,1,'C','1','0','system:user:edit','#',103,1,'2025-10-25 12:32:08',NULL,NULL,'/system/user'),(132,'字典数据',1,6,'dict-data/index/:dictId','system/dict/data','',1,1,'C','1','0','system:dict:list','#',103,1,'2025-10-25 12:32:08',NULL,NULL,'/system/dict'),(133,'文件配置管理',1,10,'oss-config/index','system/oss/config','',1,1,'C','1','0','system:ossConfig:list','#',103,1,'2025-10-25 12:32:09',NULL,NULL,'/system/oss'),(500,'操作日志',108,1,'operlog','monitor/operlog/index','',1,0,'C','0','0','monitor:operlog:list','form',103,1,'2025-10-25 12:32:09',NULL,NULL,'操作日志菜单'),(501,'登录日志',108,2,'logininfor','monitor/logininfor/index','',1,0,'C','0','0','monitor:logininfor:list','logininfor',103,1,'2025-10-25 12:32:09',NULL,NULL,'登录日志菜单'),(1001,'用户查询',100,1,'','','',1,0,'F','0','0','system:user:query','#',103,1,'2025-10-25 12:32:09',NULL,NULL,''),(1002,'用户新增',100,2,'','','',1,0,'F','0','0','system:user:add','#',103,1,'2025-10-25 12:32:09',NULL,NULL,''),(1003,'用户修改',100,3,'','','',1,0,'F','0','0','system:user:edit','#',103,1,'2025-10-25 12:32:10',NULL,NULL,''),(1004,'用户删除',100,4,'','','',1,0,'F','0','0','system:user:remove','#',103,1,'2025-10-25 12:32:10',NULL,NULL,''),(1005,'用户导出',100,5,'','','',1,0,'F','0','0','system:user:export','#',103,1,'2025-10-25 12:32:10',NULL,NULL,''),(1006,'用户导入',100,6,'','','',1,0,'F','0','0','system:user:import','#',103,1,'2025-10-25 12:32:10',NULL,NULL,''),(1007,'重置密码',100,7,'','','',1,0,'F','0','0','system:user:resetPwd','#',103,1,'2025-10-25 12:32:10',NULL,NULL,''),(1008,'角色查询',101,1,'','','',1,0,'F','0','0','system:role:query','#',103,1,'2025-10-25 12:32:10',NULL,NULL,''),(1009,'角色新增',101,2,'','','',1,0,'F','0','0','system:role:add','#',103,1,'2025-10-25 12:32:10',NULL,NULL,''),(1010,'角色修改',101,3,'','','',1,0,'F','0','0','system:role:edit','#',103,1,'2025-10-25 12:32:11',NULL,NULL,''),(1011,'角色删除',101,4,'','','',1,0,'F','0','0','system:role:remove','#',103,1,'2025-10-25 12:32:11',NULL,NULL,''),(1012,'角色导出',101,5,'','','',1,0,'F','0','0','system:role:export','#',103,1,'2025-10-25 12:32:11',NULL,NULL,''),(1013,'菜单查询',102,1,'','','',1,0,'F','0','0','system:menu:query','#',103,1,'2025-10-25 12:32:11',NULL,NULL,''),(1014,'菜单新增',102,2,'','','',1,0,'F','0','0','system:menu:add','#',103,1,'2025-10-25 12:32:11',NULL,NULL,''),(1015,'菜单修改',102,3,'','','',1,0,'F','0','0','system:menu:edit','#',103,1,'2025-10-25 12:32:11',NULL,NULL,''),(1016,'菜单删除',102,4,'','','',1,0,'F','0','0','system:menu:remove','#',103,1,'2025-10-25 12:32:12',NULL,NULL,''),(1017,'部门查询',103,1,'','','',1,0,'F','0','0','system:dept:query','#',103,1,'2025-10-25 12:32:12',NULL,NULL,''),(1018,'部门新增',103,2,'','','',1,0,'F','0','0','system:dept:add','#',103,1,'2025-10-25 12:32:12',NULL,NULL,''),(1019,'部门修改',103,3,'','','',1,0,'F','0','0','system:dept:edit','#',103,1,'2025-10-25 12:32:12',NULL,NULL,''),(1020,'部门删除',103,4,'','','',1,0,'F','0','0','system:dept:remove','#',103,1,'2025-10-25 12:32:12',NULL,NULL,''),(1021,'岗位查询',104,1,'','','',1,0,'F','0','0','system:post:query','#',103,1,'2025-10-25 12:32:12',NULL,NULL,''),(1022,'岗位新增',104,2,'','','',1,0,'F','0','0','system:post:add','#',103,1,'2025-10-25 12:32:12',NULL,NULL,''),(1023,'岗位修改',104,3,'','','',1,0,'F','0','0','system:post:edit','#',103,1,'2025-10-25 12:32:13',NULL,NULL,''),(1024,'岗位删除',104,4,'','','',1,0,'F','0','0','system:post:remove','#',103,1,'2025-10-25 12:32:13',NULL,NULL,''),(1025,'岗位导出',104,5,'','','',1,0,'F','0','0','system:post:export','#',103,1,'2025-10-25 12:32:13',NULL,NULL,''),(1026,'字典查询',105,1,'#','','',1,0,'F','0','0','system:dict:query','#',103,1,'2025-10-25 12:32:13',NULL,NULL,''),(1027,'字典新增',105,2,'#','','',1,0,'F','0','0','system:dict:add','#',103,1,'2025-10-25 12:32:13',NULL,NULL,''),(1028,'字典修改',105,3,'#','','',1,0,'F','0','0','system:dict:edit','#',103,1,'2025-10-25 12:32:13',NULL,NULL,''),(1029,'字典删除',105,4,'#','','',1,0,'F','0','0','system:dict:remove','#',103,1,'2025-10-25 12:32:14',NULL,NULL,''),(1030,'字典导出',105,5,'#','','',1,0,'F','0','0','system:dict:export','#',103,1,'2025-10-25 12:32:14',NULL,NULL,''),(1031,'参数查询',106,1,'#','','',1,0,'F','0','0','system:config:query','#',103,1,'2025-10-25 12:32:14',NULL,NULL,''),(1032,'参数新增',106,2,'#','','',1,0,'F','0','0','system:config:add','#',103,1,'2025-10-25 12:32:14',NULL,NULL,''),(1033,'参数修改',106,3,'#','','',1,0,'F','0','0','system:config:edit','#',103,1,'2025-10-25 12:32:14',NULL,NULL,''),(1034,'参数删除',106,4,'#','','',1,0,'F','0','0','system:config:remove','#',103,1,'2025-10-25 12:32:14',NULL,NULL,''),(1035,'参数导出',106,5,'#','','',1,0,'F','0','0','system:config:export','#',103,1,'2025-10-25 12:32:15',NULL,NULL,''),(1036,'公告查询',107,1,'#','','',1,0,'F','0','0','system:notice:query','#',103,1,'2025-10-25 12:32:15',NULL,NULL,''),(1037,'公告新增',107,2,'#','','',1,0,'F','0','0','system:notice:add','#',103,1,'2025-10-25 12:32:15',NULL,NULL,''),(1038,'公告修改',107,3,'#','','',1,0,'F','0','0','system:notice:edit','#',103,1,'2025-10-25 12:32:15',NULL,NULL,''),(1039,'公告删除',107,4,'#','','',1,0,'F','0','0','system:notice:remove','#',103,1,'2025-10-25 12:32:15',NULL,NULL,''),(1040,'操作查询',500,1,'#','','',1,0,'F','0','0','monitor:operlog:query','#',103,1,'2025-10-25 12:32:16',NULL,NULL,''),(1041,'操作删除',500,2,'#','','',1,0,'F','0','0','monitor:operlog:remove','#',103,1,'2025-10-25 12:32:16',NULL,NULL,''),(1042,'日志导出',500,4,'#','','',1,0,'F','0','0','monitor:operlog:export','#',103,1,'2025-10-25 12:32:16',NULL,NULL,''),(1043,'登录查询',501,1,'#','','',1,0,'F','0','0','monitor:logininfor:query','#',103,1,'2025-10-25 12:32:16',NULL,NULL,''),(1044,'登录删除',501,2,'#','','',1,0,'F','0','0','monitor:logininfor:remove','#',103,1,'2025-10-25 12:32:16',NULL,NULL,''),(1045,'日志导出',501,3,'#','','',1,0,'F','0','0','monitor:logininfor:export','#',103,1,'2025-10-25 12:32:16',NULL,NULL,''),(1046,'在线查询',109,1,'#','','',1,0,'F','0','0','monitor:online:query','#',103,1,'2025-10-25 12:32:17',NULL,NULL,''),(1047,'批量强退',109,2,'#','','',1,0,'F','0','0','monitor:online:batchLogout','#',103,1,'2025-10-25 12:32:17',NULL,NULL,''),(1048,'单条强退',109,3,'#','','',1,0,'F','0','0','monitor:online:forceLogout','#',103,1,'2025-10-25 12:32:17',NULL,NULL,''),(1050,'账户解锁',501,4,'#','','',1,0,'F','0','0','monitor:logininfor:unlock','#',103,1,'2025-10-25 12:32:16',NULL,NULL,''),(1055,'生成查询',115,1,'#','','',1,0,'F','0','0','tool:gen:query','#',103,1,'2025-10-25 12:32:17',NULL,NULL,''),(1056,'生成修改',115,2,'#','','',1,0,'F','0','0','tool:gen:edit','#',103,1,'2025-10-25 12:32:17',NULL,NULL,''),(1057,'生成删除',115,3,'#','','',1,0,'F','0','0','tool:gen:remove','#',103,1,'2025-10-25 12:32:17',NULL,NULL,''),(1058,'导入代码',115,2,'#','','',1,0,'F','0','0','tool:gen:import','#',103,1,'2025-10-25 12:32:18',NULL,NULL,''),(1059,'预览代码',115,4,'#','','',1,0,'F','0','0','tool:gen:preview','#',103,1,'2025-10-25 12:32:18',NULL,NULL,''),(1060,'生成代码',115,5,'#','','',1,0,'F','0','0','tool:gen:code','#',103,1,'2025-10-25 12:32:18',NULL,NULL,''),(1061,'客户端管理查询',123,1,'#','','',1,0,'F','0','0','system:client:query','#',103,1,'2025-10-25 12:32:21',NULL,NULL,''),(1062,'客户端管理新增',123,2,'#','','',1,0,'F','0','0','system:client:add','#',103,1,'2025-10-25 12:32:21',NULL,NULL,''),(1063,'客户端管理修改',123,3,'#','','',1,0,'F','0','0','system:client:edit','#',103,1,'2025-10-25 12:32:21',NULL,NULL,''),(1064,'客户端管理删除',123,4,'#','','',1,0,'F','0','0','system:client:remove','#',103,1,'2025-10-25 12:32:21',NULL,NULL,''),(1065,'客户端管理导出',123,5,'#','','',1,0,'F','0','0','system:client:export','#',103,1,'2025-10-25 12:32:22',NULL,NULL,''),(1500,'测试单表',5,1,'demo','demo/demo/index','',1,0,'C','0','0','demo:demo:list','#',103,1,'2025-10-25 12:32:22',NULL,NULL,'测试单表菜单'),(1501,'测试单表查询',1500,1,'#','','',1,0,'F','0','0','demo:demo:query','#',103,1,'2025-10-25 12:32:22',NULL,NULL,''),(1502,'测试单表新增',1500,2,'#','','',1,0,'F','0','0','demo:demo:add','#',103,1,'2025-10-25 12:32:22',NULL,NULL,''),(1503,'测试单表修改',1500,3,'#','','',1,0,'F','0','0','demo:demo:edit','#',103,1,'2025-10-25 12:32:22',NULL,NULL,''),(1504,'测试单表删除',1500,4,'#','','',1,0,'F','0','0','demo:demo:remove','#',103,1,'2025-10-25 12:32:22',NULL,NULL,''),(1505,'测试单表导出',1500,5,'#','','',1,0,'F','0','0','demo:demo:export','#',103,1,'2025-10-25 12:32:23',NULL,NULL,''),(1506,'测试树表',5,1,'tree','demo/tree/index','',1,0,'C','0','0','demo:tree:list','#',103,1,'2025-10-25 12:32:23',NULL,NULL,'测试树表菜单'),(1507,'测试树表查询',1506,1,'#','','',1,0,'F','0','0','demo:tree:query','#',103,1,'2025-10-25 12:32:23',NULL,NULL,''),(1508,'测试树表新增',1506,2,'#','','',1,0,'F','0','0','demo:tree:add','#',103,1,'2025-10-25 12:32:23',NULL,NULL,''),(1509,'测试树表修改',1506,3,'#','','',1,0,'F','0','0','demo:tree:edit','#',103,1,'2025-10-25 12:32:23',NULL,NULL,''),(1510,'测试树表删除',1506,4,'#','','',1,0,'F','0','0','demo:tree:remove','#',103,1,'2025-10-25 12:32:24',NULL,NULL,''),(1511,'测试树表导出',1506,5,'#','','',1,0,'F','0','0','demo:tree:export','#',103,1,'2025-10-25 12:32:24',NULL,NULL,''),(1600,'文件查询',118,1,'#','','',1,0,'F','0','0','system:oss:query','#',103,1,'2025-10-25 12:32:18',NULL,NULL,''),(1601,'文件上传',118,2,'#','','',1,0,'F','0','0','system:oss:upload','#',103,1,'2025-10-25 12:32:18',NULL,NULL,''),(1602,'文件下载',118,3,'#','','',1,0,'F','0','0','system:oss:download','#',103,1,'2025-10-25 12:32:18',NULL,NULL,''),(1603,'文件删除',118,4,'#','','',1,0,'F','0','0','system:oss:remove','#',103,1,'2025-10-25 12:32:19',NULL,NULL,''),(1606,'租户查询',121,1,'#','','',1,0,'F','0','0','system:tenant:query','#',103,1,'2025-10-25 12:32:19',NULL,NULL,''),(1607,'租户新增',121,2,'#','','',1,0,'F','0','0','system:tenant:add','#',103,1,'2025-10-25 12:32:20',NULL,NULL,''),(1608,'租户修改',121,3,'#','','',1,0,'F','0','0','system:tenant:edit','#',103,1,'2025-10-25 12:32:20',NULL,NULL,''),(1609,'租户删除',121,4,'#','','',1,0,'F','0','0','system:tenant:remove','#',103,1,'2025-10-25 12:32:20',NULL,NULL,''),(1610,'租户导出',121,5,'#','','',1,0,'F','0','0','system:tenant:export','#',103,1,'2025-10-25 12:32:20',NULL,NULL,''),(1611,'租户套餐查询',122,1,'#','','',1,0,'F','0','0','system:tenantPackage:query','#',103,1,'2025-10-25 12:32:20',NULL,NULL,''),(1612,'租户套餐新增',122,2,'#','','',1,0,'F','0','0','system:tenantPackage:add','#',103,1,'2025-10-25 12:32:20',NULL,NULL,''),(1613,'租户套餐修改',122,3,'#','','',1,0,'F','0','0','system:tenantPackage:edit','#',103,1,'2025-10-25 12:32:20',NULL,NULL,''),(1614,'租户套餐删除',122,4,'#','','',1,0,'F','0','0','system:tenantPackage:remove','#',103,1,'2025-10-25 12:32:21',NULL,NULL,''),(1615,'租户套餐导出',122,5,'#','','',1,0,'F','0','0','system:tenantPackage:export','#',103,1,'2025-10-25 12:32:21',NULL,NULL,''),(1620,'配置列表',118,5,'#','','',1,0,'F','0','0','system:ossConfig:list','#',103,1,'2025-10-25 12:32:19',NULL,NULL,''),(1621,'配置添加',118,6,'#','','',1,0,'F','0','0','system:ossConfig:add','#',103,1,'2025-10-25 12:32:19',NULL,NULL,''),(1622,'配置编辑',118,6,'#','','',1,0,'F','0','0','system:ossConfig:edit','#',103,1,'2025-10-25 12:32:19',NULL,NULL,''),(1623,'配置删除',118,6,'#','','',1,0,'F','0','0','system:ossConfig:remove','#',103,1,'2025-10-25 12:32:19',NULL,NULL,''),(11616,'工作流',0,6,'workflow','','',1,0,'M','0','0','','workflow',103,1,'2025-10-25 12:32:24',NULL,NULL,''),(11618,'我的任务',0,7,'task','','',1,0,'M','0','0','','my-task',103,1,'2025-10-25 12:32:24',NULL,NULL,''),(11619,'我的待办',11618,2,'taskWaiting','workflow/task/taskWaiting','',1,1,'C','0','0','','waiting',103,1,'2025-10-25 12:32:24',NULL,NULL,''),(11620,'流程定义',11616,3,'processDefinition','workflow/processDefinition/index','',1,1,'C','0','0','','process-definition',103,1,'2025-10-25 12:32:25',NULL,NULL,''),(11621,'流程实例',11630,1,'processInstance','workflow/processInstance/index','',1,1,'C','0','0','','tree-table',103,1,'2025-10-25 12:32:25',NULL,NULL,''),(11622,'流程分类',11616,1,'category','workflow/category/index','',1,0,'C','0','0','workflow:category:list','category',103,1,'2025-10-25 12:32:26',NULL,NULL,''),(11623,'流程分类查询',11622,1,'#','','',1,0,'F','0','0','workflow:category:query','#',103,1,'2025-10-25 12:32:27',NULL,NULL,''),(11624,'流程分类新增',11622,2,'#','','',1,0,'F','0','0','workflow:category:add','#',103,1,'2025-10-25 12:32:27',NULL,NULL,''),(11625,'流程分类修改',11622,3,'#','','',1,0,'F','0','0','workflow:category:edit','#',103,1,'2025-10-25 12:32:27',NULL,NULL,''),(11626,'流程分类删除',11622,4,'#','','',1,0,'F','0','0','workflow:category:remove','#',103,1,'2025-10-25 12:32:27',NULL,NULL,''),(11627,'流程分类导出',11622,5,'#','','',1,0,'F','0','0','workflow:category:export','#',103,1,'2025-10-25 12:32:27',NULL,NULL,''),(11629,'我发起的',11618,1,'myDocument','workflow/task/myDocument','',1,1,'C','0','0','','guide',103,1,'2025-10-25 12:32:26',NULL,NULL,''),(11630,'流程监控',11616,4,'monitor','','',1,0,'M','0','0','','monitor',103,1,'2025-10-25 12:32:26',NULL,NULL,''),(11631,'待办任务',11630,2,'allTaskWaiting','workflow/task/allTaskWaiting','',1,1,'C','0','0','','waiting',103,1,'2025-10-25 12:32:26',NULL,NULL,''),(11632,'我的已办',11618,3,'taskFinish','workflow/task/taskFinish','',1,1,'C','0','0','','finish',103,1,'2025-10-25 12:32:25',NULL,NULL,''),(11633,'我的抄送',11618,4,'taskCopyList','workflow/task/taskCopyList','',1,1,'C','0','0','','my-copy',103,1,'2025-10-25 12:32:25',NULL,NULL,''),(11638,'请假申请',5,1,'leave','workflow/leave/index','',1,0,'C','0','0','workflow:leave:list','#',103,1,'2025-10-25 12:32:28',NULL,NULL,'请假申请菜单'),(11639,'请假申请查询',11638,1,'#','','',1,0,'F','0','0','workflow:leave:query','#',103,1,'2025-10-25 12:32:28',NULL,NULL,''),(11640,'请假申请新增',11638,2,'#','','',1,0,'F','0','0','workflow:leave:add','#',103,1,'2025-10-25 12:32:28',NULL,NULL,''),(11641,'请假申请修改',11638,3,'#','','',1,0,'F','0','0','workflow:leave:edit','#',103,1,'2025-10-25 12:32:29',NULL,NULL,''),(11642,'请假申请删除',11638,4,'#','','',1,0,'F','0','0','workflow:leave:remove','#',103,1,'2025-10-25 12:32:29',NULL,NULL,''),(11643,'请假申请导出',11638,5,'#','','',1,0,'F','0','0','workflow:leave:export','#',103,1,'2025-10-25 12:32:29',NULL,NULL,''),(11700,'流程设计',11616,5,'design/index','workflow/processDefinition/design','',1,1,'C','1','0','workflow:leave:edit','#',103,1,'2025-10-25 12:32:26',NULL,NULL,'/workflow/processDefinition'),(11701,'请假申请',11616,6,'leaveEdit/index','workflow/leave/leaveEdit','',1,1,'C','1','0','workflow:leave:edit','#',103,1,'2025-10-25 12:32:27',NULL,NULL,''),(11801,'流程表达式',11616,2,'spel','workflow/spel/index','',1,0,'C','0','0','workflow:spel:list','input',103,1,'2025-10-25 12:32:26',1,'2025-10-25 12:32:26','流程达式定义菜单'),(11802,'流程达式定义查询',11801,1,'#','',NULL,1,0,'F','0','0','workflow:spel:query','#',103,1,'2025-10-25 12:32:28',NULL,NULL,''),(11803,'流程达式定义新增',11801,2,'#','',NULL,1,0,'F','0','0','workflow:spel:add','#',103,1,'2025-10-25 12:32:28',NULL,NULL,''),(11804,'流程达式定义修改',11801,3,'#','',NULL,1,0,'F','0','0','workflow:spel:edit','#',103,1,'2025-10-25 12:32:28',NULL,NULL,''),(11805,'流程达式定义删除',11801,4,'#','',NULL,1,0,'F','0','0','workflow:spel:remove','#',103,1,'2025-10-25 12:32:28',NULL,NULL,''),(11806,'流程达式定义导出',11801,5,'#','',NULL,1,0,'F','0','0','workflow:spel:export','#',103,1,'2025-10-25 12:32:28',NULL,NULL,''),(1987789809333489666,'敏感詞',0,1,'sensitive',NULL,NULL,1,0,'M','0','0',NULL,'eye',103,1,'2025-11-10 15:49:57',1,'2025-11-10 15:49:57',''),(1987790263509504002,'日志',1987789809333489666,1,'log','sensitive/log/index',NULL,1,0,'C','0','0','sensitive:log:list','checkbox',103,1,'2025-11-10 15:51:45',1,'2025-11-11 13:20:22',''),(2001233994346565633,'词字典',1987789809333489666,1,'word','sensitive/word/index',NULL,1,0,'C','0','0','sensitive:log:list','build',103,1,'2025-12-17 18:12:20',1,'2025-12-17 18:12:20','');
+/*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
+UNLOCK TABLES;
 
-insert into sys_dict_type values(1, '000000', '用户性别', 'sys_user_sex',        103, 1, sysdate(), null, null, '用户性别列表');
-insert into sys_dict_type values(2, '000000', '菜单状态', 'sys_show_hide',       103, 1, sysdate(), null, null, '菜单状态列表');
-insert into sys_dict_type values(3, '000000', '系统开关', 'sys_normal_disable',  103, 1, sysdate(), null, null, '系统开关列表');
-insert into sys_dict_type values(6, '000000', '系统是否', 'sys_yes_no',          103, 1, sysdate(), null, null, '系统是否列表');
-insert into sys_dict_type values(7, '000000', '通知类型', 'sys_notice_type',     103, 1, sysdate(), null, null, '通知类型列表');
-insert into sys_dict_type values(8, '000000', '通知状态', 'sys_notice_status',   103, 1, sysdate(), null, null, '通知状态列表');
-insert into sys_dict_type values(9, '000000', '操作类型', 'sys_oper_type',       103, 1, sysdate(), null, null, '操作类型列表');
-insert into sys_dict_type values(10, '000000', '系统状态', 'sys_common_status',   103, 1, sysdate(), null, null, '登录状态列表');
-insert into sys_dict_type values(11, '000000', '授权类型', 'sys_grant_type',     103, 1, sysdate(), null, null, '认证授权类型');
-insert into sys_dict_type values(12, '000000', '设备类型', 'sys_device_type',    103, 1, sysdate(), null, null, '客户端设备类型');
-insert into sys_dict_type values(13, '000000', '业务状态', 'wf_business_status', 103, 1, sysdate(), NULL, NULL, '业务状态列表');
-insert into sys_dict_type values(14, '000000', '表单类型', 'wf_form_type',      103, 1, sysdate(), NULL, NULL, '表单类型列表');
-insert into sys_dict_type values(15, '000000', '任务状态', 'wf_task_status',    103, 1, sysdate(), NULL, NULL, '任务状态');
+--
+-- Table structure for table `sys_notice`
+--
 
--- ----------------------------
--- 12、字典数据表
--- ----------------------------
-create table sys_dict_data
-(
-  dict_code        bigint(20)      not null                   comment '字典编码',
-  tenant_id        varchar(20)     default '000000'           comment '租户编号',
-  dict_sort        int(4)          default 0                  comment '字典排序',
-  dict_label       varchar(100)    default ''                 comment '字典标签',
-  dict_value       varchar(100)    default ''                 comment '字典键值',
-  dict_type        varchar(100)    default ''                 comment '字典类型',
-  css_class        varchar(100)    default null               comment '样式属性（其他样式扩展）',
-  list_class       varchar(100)    default null               comment '表格回显样式',
-  is_default       char(1)         default 'N'                comment '是否默认（Y是 N否）',
-  create_dept      bigint(20)      default null               comment '创建部门',
-  create_by        bigint(20)      default null               comment '创建者',
-  create_time      datetime                                   comment '创建时间',
-  update_by        bigint(20)      default null               comment '更新者',
-  update_time      datetime                                   comment '更新时间',
-  remark           varchar(500)    default null               comment '备注',
-  primary key (dict_code)
-) engine=innodb comment = '字典数据表';
+DROP TABLE IF EXISTS `sys_notice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_notice` (
+  `notice_id` bigint NOT NULL COMMENT '公告ID',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `notice_title` varchar(50) NOT NULL COMMENT '公告标题',
+  `notice_type` char(1) NOT NULL COMMENT '公告类型（1通知 2公告）',
+  `notice_content` longblob COMMENT '公告内容',
+  `status` char(1) DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`notice_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通知公告表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-insert into sys_dict_data values(1, '000000', 1,  '男',       '0',       'sys_user_sex',        '',   '',        'Y', 103, 1, sysdate(), null, null, '性别男');
-insert into sys_dict_data values(2, '000000', 2,  '女',       '1',       'sys_user_sex',        '',   '',        'N', 103, 1, sysdate(), null, null, '性别女');
-insert into sys_dict_data values(3, '000000', 3,  '未知',     '2',       'sys_user_sex',        '',   '',        'N', 103, 1, sysdate(), null, null, '性别未知');
-insert into sys_dict_data values(4, '000000', 1,  '显示',     '0',       'sys_show_hide',       '',   'primary', 'Y', 103, 1, sysdate(), null, null, '显示菜单');
-insert into sys_dict_data values(5, '000000', 2,  '隐藏',     '1',       'sys_show_hide',       '',   'danger',  'N', 103, 1, sysdate(), null, null, '隐藏菜单');
-insert into sys_dict_data values(6, '000000', 1,  '正常',     '0',       'sys_normal_disable',  '',   'primary', 'Y', 103, 1, sysdate(), null, null, '正常状态');
-insert into sys_dict_data values(7, '000000', 2,  '停用',     '1',       'sys_normal_disable',  '',   'danger',  'N', 103, 1, sysdate(), null, null, '停用状态');
-insert into sys_dict_data values(12, '000000', 1,  '是',       'Y',       'sys_yes_no',          '',   'primary', 'Y', 103, 1, sysdate(), null, null, '系统默认是');
-insert into sys_dict_data values(13, '000000', 2,  '否',       'N',       'sys_yes_no',          '',   'danger',  'N', 103, 1, sysdate(), null, null, '系统默认否');
-insert into sys_dict_data values(14, '000000', 1,  '通知',     '1',       'sys_notice_type',     '',   'warning', 'Y', 103, 1, sysdate(), null, null, '通知');
-insert into sys_dict_data values(15, '000000', 2,  '公告',     '2',       'sys_notice_type',     '',   'success', 'N', 103, 1, sysdate(), null, null, '公告');
-insert into sys_dict_data values(16, '000000', 1,  '正常',     '0',       'sys_notice_status',   '',   'primary', 'Y', 103, 1, sysdate(), null, null, '正常状态');
-insert into sys_dict_data values(17, '000000', 2,  '关闭',     '1',       'sys_notice_status',   '',   'danger',  'N', 103, 1, sysdate(), null, null, '关闭状态');
-insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'info',    'N', 103, 1, sysdate(), null, null, '其他操作');
-insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'info',    'N', 103, 1, sysdate(), null, null, '新增操作');
-insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'info',    'N', 103, 1, sysdate(), null, null, '修改操作');
-insert into sys_dict_data values(20, '000000', 3,  '删除',     '3',       'sys_oper_type',       '',   'danger',  'N', 103, 1, sysdate(), null, null, '删除操作');
-insert into sys_dict_data values(21, '000000', 4,  '授权',     '4',       'sys_oper_type',       '',   'primary', 'N', 103, 1, sysdate(), null, null, '授权操作');
-insert into sys_dict_data values(22, '000000', 5,  '导出',     '5',       'sys_oper_type',       '',   'warning', 'N', 103, 1, sysdate(), null, null, '导出操作');
-insert into sys_dict_data values(23, '000000', 6,  '导入',     '6',       'sys_oper_type',       '',   'warning', 'N', 103, 1, sysdate(), null, null, '导入操作');
-insert into sys_dict_data values(24, '000000', 7,  '强退',     '7',       'sys_oper_type',       '',   'danger',  'N', 103, 1, sysdate(), null, null, '强退操作');
-insert into sys_dict_data values(25, '000000', 8,  '生成代码', '8',       'sys_oper_type',       '',   'warning', 'N', 103, 1, sysdate(), null, null, '生成操作');
-insert into sys_dict_data values(26, '000000', 9,  '清空数据', '9',       'sys_oper_type',       '',   'danger',  'N', 103, 1, sysdate(), null, null, '清空操作');
-insert into sys_dict_data values(27, '000000', 1,  '成功',     '0',       'sys_common_status',   '',   'primary', 'N', 103, 1, sysdate(), null, null, '正常状态');
-insert into sys_dict_data values(28, '000000', 2,  '失败',     '1',       'sys_common_status',   '',   'danger',  'N', 103, 1, sysdate(), null, null, '停用状态');
-insert into sys_dict_data values(30, '000000', 0,  '密码认证', 'password',   'sys_grant_type',   'el-check-tag',   'default', 'N', 103, 1, sysdate(), null, null, '密码认证');
-insert into sys_dict_data values(31, '000000', 0,  '短信认证', 'sms',        'sys_grant_type',   'el-check-tag',   'default', 'N', 103, 1, sysdate(), null, null, '短信认证');
-insert into sys_dict_data values(32, '000000', 0,  '邮件认证', 'email',      'sys_grant_type',   'el-check-tag',   'default', 'N', 103, 1, sysdate(), null, null, '邮件认证');
-insert into sys_dict_data values(33, '000000', 0,  '小程序认证', 'xcx',      'sys_grant_type',   'el-check-tag',   'default', 'N', 103, 1, sysdate(), null, null, '小程序认证');
-insert into sys_dict_data values(34, '000000', 0,  '三方登录认证', 'social', 'sys_grant_type',   'el-check-tag',   'default', 'N', 103, 1, sysdate(), null, null, '三方登录认证');
-insert into sys_dict_data values(35, '000000', 0,  'PC',    'pc',         'sys_device_type',     '',   'default', 'N', 103, 1, sysdate(), null, null, 'PC');
-insert into sys_dict_data values(36, '000000', 0,  '安卓', 'android',     'sys_device_type',     '',   'default', 'N', 103, 1, sysdate(), null, null, '安卓');
-insert into sys_dict_data values(37, '000000', 0,  'iOS', 'ios',          'sys_device_type',     '',   'default', 'N', 103, 1, sysdate(), null, null, 'iOS');
-insert into sys_dict_data values(38, '000000', 0,  '小程序', 'xcx',       'sys_device_type',     '',   'default', 'N', 103, 1, sysdate(), null, null, '小程序');
-INSERT INTO sys_dict_data VALUES (39, '000000', 1, '已撤销', 'cancel', 'wf_business_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL,'已撤销');
-INSERT INTO sys_dict_data VALUES (40, '000000', 2, '草稿', 'draft', 'wf_business_status', '', 'info', 'N', 103, 1, sysdate(), NULL, NULL, '草稿');
-INSERT INTO sys_dict_data VALUES (41, '000000', 3, '待审核', 'waiting', 'wf_business_status', '', 'primary', 'N', 103, 1, sysdate(), NULL, NULL,'待审核');
-INSERT INTO sys_dict_data VALUES (42, '000000', 4, '已完成', 'finish', 'wf_business_status', '', 'success', 'N', 103, 1, sysdate(), NULL, NULL,'已完成');
-INSERT INTO sys_dict_data VALUES (43, '000000', 5, '已作废', 'invalid', 'wf_business_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL,'已作废');
-INSERT INTO sys_dict_data VALUES (44, '000000', 6, '已退回', 'back', 'wf_business_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL,'已退回');
-INSERT INTO sys_dict_data VALUES (45, '000000', 7, '已终止', 'termination', 'wf_business_status', '', 'danger', 'N', 103, 1, sysdate(), NULL,NULL, '已终止');
-INSERT INTO sys_dict_data VALUES (46, '000000', 1, '自定义表单', 'static', 'wf_form_type', '', 'success', 'N', 103, 1, sysdate(), NULL, NULL,'自定义表单');
-INSERT INTO sys_dict_data VALUES (47, '000000', 2, '动态表单', 'dynamic', 'wf_form_type', '', 'primary', 'N', 103, 1, sysdate(), NULL, NULL,'动态表单');
-INSERT INTO sys_dict_data VALUES (48, '000000', 1, '撤销', 'cancel', 'wf_task_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL, '撤销');
-INSERT INTO sys_dict_data VALUES (49, '000000', 2, '通过', 'pass', 'wf_task_status', '', 'success', 'N', 103, 1, sysdate(), NULL, NULL, '通过');
-INSERT INTO sys_dict_data VALUES (50, '000000', 3, '待审核', 'waiting', 'wf_task_status', '', 'primary', 'N', 103, 1, sysdate(), NULL, NULL, '待审核');
-INSERT INTO sys_dict_data VALUES (51, '000000', 4, '作废', 'invalid', 'wf_task_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL, '作废');
-INSERT INTO sys_dict_data VALUES (52, '000000', 5, '退回', 'back', 'wf_task_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL, '退回');
-INSERT INTO sys_dict_data VALUES (53, '000000', 6, '终止', 'termination', 'wf_task_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL, '终止');
-INSERT INTO sys_dict_data VALUES (54, '000000', 7, '转办', 'transfer', 'wf_task_status', '', 'primary', 'N', 103, 1, sysdate(), NULL, NULL, '转办');
-INSERT INTO sys_dict_data VALUES (55, '000000', 8, '委托', 'depute', 'wf_task_status', '', 'primary', 'N', 103, 1, sysdate(), NULL, NULL, '委托');
-INSERT INTO sys_dict_data VALUES (56, '000000', 9, '抄送', 'copy', 'wf_task_status', '', 'primary', 'N', 103, 1, sysdate(), NULL, NULL, '抄送');
-INSERT INTO sys_dict_data VALUES (57, '000000', 10, '加签', 'sign', 'wf_task_status', '', 'primary', 'N', 103, 1, sysdate(), NULL, NULL, '加签');
-INSERT INTO sys_dict_data VALUES (58, '000000', 11, '减签', 'sign_off', 'wf_task_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL, '减签');
-INSERT INTO sys_dict_data VALUES (59, '000000', 11, '超时', 'timeout', 'wf_task_status', '', 'danger', 'N', 103, 1, sysdate(), NULL, NULL, '超时');
+--
+-- Dumping data for table `sys_notice`
+--
 
--- ----------------------------
--- 13、参数配置表
--- ----------------------------
-create table sys_config (
-  config_id         bigint(20)      not null                   comment '参数主键',
-  tenant_id         varchar(20)     default '000000'           comment '租户编号',
-  config_name       varchar(100)    default ''                 comment '参数名称',
-  config_key        varchar(100)    default ''                 comment '参数键名',
-  config_value      varchar(500)    default ''                 comment '参数键值',
-  config_type       char(1)         default 'N'                comment '系统内置（Y是 N否）',
-  create_dept       bigint(20)      default null               comment '创建部门',
-  create_by         bigint(20)      default null               comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         bigint(20)      default null               comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(500)    default null               comment '备注',
-  primary key (config_id)
-) engine=innodb comment = '参数配置表';
+LOCK TABLES `sys_notice` WRITE;
+/*!40000 ALTER TABLE `sys_notice` DISABLE KEYS */;
+INSERT INTO `sys_notice` VALUES (1,'000000','温馨提醒：2018-07-01 新版本发布啦','2',0xE696B0E78988E69CACE58685E5AEB9,'0',103,1,'2025-10-25 12:33:01',NULL,NULL,'管理员'),(2,'000000','维护通知：2018-07-01 系统凌晨维护','1',0xE7BBB4E68AA4E58685E5AEB9,'0',103,1,'2025-10-25 12:33:02',NULL,NULL,'管理员');
+/*!40000 ALTER TABLE `sys_notice` ENABLE KEYS */;
+UNLOCK TABLES;
 
-insert into sys_config values(1, '000000', '主框架页-默认皮肤样式名称',     'sys.index.skinName',            'skin-blue',     'Y', 103, 1, sysdate(), null, null, '蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow' );
-insert into sys_config values(2, '000000', '用户管理-账号初始密码',        'sys.user.initPassword',         '123456',        'Y', 103, 1, sysdate(), null, null, '初始化密码 123456' );
-insert into sys_config values(3, '000000', '主框架页-侧边栏主题',          'sys.index.sideTheme',           'theme-dark',    'Y', 103, 1, sysdate(), null, null, '深色主题theme-dark，浅色主题theme-light' );
-insert into sys_config values(5, '000000', '账号自助-是否开启用户注册功能',  'sys.account.registerUser',      'false',         'Y', 103, 1, sysdate(), null, null, '是否开启注册用户功能（true开启，false关闭）');
-insert into sys_config values(11, '000000', 'OSS预览列表资源开关',         'sys.oss.previewListResource',   'true',          'Y', 103, 1, sysdate(), null, null, 'true:开启, false:关闭');
+--
+-- Table structure for table `sys_oper_log`
+--
 
+DROP TABLE IF EXISTS `sys_oper_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_oper_log` (
+  `oper_id` bigint NOT NULL COMMENT '日志主键',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `title` varchar(50) DEFAULT '' COMMENT '模块标题',
+  `business_type` int DEFAULT '0' COMMENT '业务类型（0其它 1新增 2修改 3删除）',
+  `method` varchar(100) DEFAULT '' COMMENT '方法名称',
+  `request_method` varchar(10) DEFAULT '' COMMENT '请求方式',
+  `operator_type` int DEFAULT '0' COMMENT '操作类别（0其它 1后台用户 2手机端用户）',
+  `oper_name` varchar(50) DEFAULT '' COMMENT '操作人员',
+  `dept_name` varchar(50) DEFAULT '' COMMENT '部门名称',
+  `oper_url` varchar(255) DEFAULT '' COMMENT '请求URL',
+  `oper_ip` varchar(128) DEFAULT '' COMMENT '主机地址',
+  `oper_location` varchar(255) DEFAULT '' COMMENT '操作地点',
+  `oper_param` varchar(4000) DEFAULT '' COMMENT '请求参数',
+  `json_result` varchar(4000) DEFAULT '' COMMENT '返回参数',
+  `status` int DEFAULT '0' COMMENT '操作状态（0正常 1异常）',
+  `error_msg` varchar(4000) DEFAULT '' COMMENT '错误消息',
+  `oper_time` datetime DEFAULT NULL COMMENT '操作时间',
+  `cost_time` bigint DEFAULT '0' COMMENT '消耗时间',
+  PRIMARY KEY (`oper_id`),
+  KEY `idx_sys_oper_log_bt` (`business_type`),
+  KEY `idx_sys_oper_log_s` (`status`),
+  KEY `idx_sys_oper_log_ot` (`oper_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='操作日志记录';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------
--- 14、系统访问记录
--- ----------------------------
-create table sys_logininfor (
-  info_id        bigint(20)     not null                  comment '访问ID',
-  tenant_id      varchar(20)    default '000000'          comment '租户编号',
-  user_name      varchar(50)    default ''                comment '用户账号',
-  client_key     varchar(32)    default ''                comment '客户端',
-  device_type    varchar(32)    default ''                comment '设备类型',
-  ipaddr         varchar(128)   default ''                comment '登录IP地址',
-  login_location varchar(255)   default ''                comment '登录地点',
-  browser        varchar(50)    default ''                comment '浏览器类型',
-  os             varchar(50)    default ''                comment '操作系统',
-  status         char(1)        default '0'               comment '登录状态（0成功 1失败）',
-  msg            varchar(255)   default ''                comment '提示消息',
-  login_time     datetime                                 comment '访问时间',
-  primary key (info_id),
-  key idx_sys_logininfor_s  (status),
-  key idx_sys_logininfor_lt (login_time)
-) engine=innodb comment = '系统访问记录';
+--
+-- Dumping data for table `sys_oper_log`
+--
 
+LOCK TABLES `sys_oper_log` WRITE;
+/*!40000 ALTER TABLE `sys_oper_log` DISABLE KEYS */;
+INSERT INTO `sys_oper_log` VALUES (1982033076984111105,'000000','用户管理',1,'org.dromara.system.controller.system.SysUserController.add()','POST',1,'admin','研发部门','/user','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"userId\":\"1982033075667099649\",\"deptId\":null,\"userName\":\"1212\",\"nickName\":\"1212\",\"userType\":null,\"email\":null,\"phonenumber\":null,\"sex\":null,\"status\":\"0\",\"remark\":\"\",\"roleIds\":[4,3],\"postIds\":[],\"roleId\":null,\"userIds\":null,\"excludeUserIds\":null,\"superAdmin\":false}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-25 18:34:45',425),(1982033837377871873,'000000','用户管理',1,'org.dromara.system.controller.system.SysUserController.add()','POST',1,'admin','研发部门','/user','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"userId\":\"1982033836870361090\",\"deptId\":null,\"userName\":\"1025ceshi\",\"nickName\":\"1025ceshi\",\"userType\":null,\"email\":null,\"phonenumber\":null,\"sex\":null,\"status\":\"0\",\"remark\":\"\",\"roleIds\":[3],\"postIds\":[],\"roleId\":null,\"userIds\":null,\"excludeUserIds\":null,\"superAdmin\":false}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-25 18:37:46',246),(1982714867919261697,'000000','租户套餐',1,'org.dromara.system.controller.system.SysTenantPackageController.add()','POST',1,'admin','研发部门','/tenant/package','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"packageId\":\"1982714866774216706\",\"packageName\":\"1212\",\"menuIds\":[],\"remark\":\"\",\"menuCheckStrictly\":true,\"status\":null}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-27 15:43:56',224),(1982714922210332674,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"12\",\"companyName\":\"毒品\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:44:09',1),(1982714945711017985,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"12\",\"companyName\":\"毒品\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:44:15',1),(1982714962249158658,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"12\",\"companyName\":\"毒品\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:44:19',2),(1982715186875109378,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"12\",\"companyName\":\"毒品\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:45:12',1),(1982715220035276802,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"12\",\"companyName\":\"毒品\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:45:20',1),(1982716552087506946,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"1\",\"companyName\":\"毒品\",\"username\":\"112\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:50:38',1),(1982716560367063041,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"1\",\"companyName\":\"毒品\",\"username\":\"112\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:50:40',1),(1982716565769326593,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"1\",\"companyName\":\"毒品\",\"username\":\"112\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:50:41',0),(1982716849702735874,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"1\",\"companyName\":\"毒品\",\"username\":\"112\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 15:51:49',1),(1982814320361639938,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"11\",\"companyName\":\"暴力\",\"username\":\"11\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 22:19:08',3),(1982814352154464258,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"11\",\"companyName\":\"暴力\",\"username\":\"11\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 22:19:15',1),(1982815502421364738,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"11\",\"companyName\":\"暴力\",\"username\":\"11\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 22:23:49',2),(1982815860539428865,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1\",\"contactPhone\":\"11\",\"companyName\":\"暴力\",\"username\":\"11\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-27 22:25:15',0),(1983716863220551681,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"1212\",\"companyName\":\"66色情444332\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:05:31',1),(1983716896976310274,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983716893075607553\",\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"1212\",\"companyName\":\"66色2323情444332\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:05:39',952),(1983716942270599169,'000000','租户管理',3,'org.dromara.system.controller.system.SysTenantController.remove()','DELETE',1,'admin','研发部门','/tenant/1983716893075607553','10.11.7.128','','[\"1983716893075607553\"]','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:05:49',199),(1983719904380399617,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"12\",\"companyName\":\"12\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"抵制毒品\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：简介包含敏感词\",\"data\":null}',0,'','2025-10-30 10:17:36',38),(1983719934252232706,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"12\",\"contactPhone\":\"12\",\"companyName\":\"12\",\"username\":\"12\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"232323232毒品\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：简介包含敏感词\",\"data\":null}',0,'','2025-10-30 10:17:43',2),(1983721106891550721,'000000','菜单管理',1,'org.dromara.system.controller.system.SysMenuController.add()','POST',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"menuId\":null,\"parentId\":1,\"menuName\":\"敏感词\",\"orderNum\":2,\"path\":\"https://10\",\"component\":null,\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"M\",\"visible\":\"0\",\"status\":\"0\",\"icon\":\"lock\",\"remark\":null}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:22:22',434),(1983726082669846529,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-10-30 10:22:22\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1983721106421788673\",\"parentId\":1,\"menuName\":\"敏感词\",\"orderNum\":2,\"path\":\"https://10\",\"component\":null,\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"M\",\"visible\":\"1\",\"status\":\"0\",\"icon\":\"lock\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:42:09',173),(1983726194179612673,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"34343\",\"contactPhone\":\"343434\",\"companyName\":\"毒 品\",\"username\":\"34343\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:42:35',1),(1983726216954683394,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983726214786228225\",\"tenantId\":null,\"contactUserName\":\"34343\",\"contactPhone\":\"343434\",\"companyName\":\"毒——品\",\"username\":\"34343\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:42:41',569),(1983726286001315841,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983726284235513857\",\"tenantId\":null,\"contactUserName\":\"2323\",\"contactPhone\":\"2323\",\"companyName\":\"毒1品\",\"username\":\"23232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:42:57',459),(1983726379177779201,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒_品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:43:19',0),(1983726385095942146,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒_品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:43:21',1),(1983726438514597889,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒       品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:43:33',1),(1983726444806053889,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒       品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:43:35',0),(1983726445925933057,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒       品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:43:35',1),(1983726468843610113,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒     品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:43:41',1),(1983726699425472513,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983726698230095874\",\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒B品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:44:36',292),(1983726807328137218,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"2323\",\"contactPhone\":\"2323\",\"companyName\":\"毒b品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户\'毒b品\'失败，企业名称已存在\",\"data\":null}',0,'','2025-10-30 10:45:01',8),(1983726844594528257,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983726841964699649\",\"tenantId\":null,\"contactUserName\":\"2323\",\"contactPhone\":\"2323\",\"companyName\":\"毒qq品\",\"username\":\"2323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:45:10',633),(1983729510884212738,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"2323\",\"contactPhone\":\"23232\",\"companyName\":\"毒****品\",\"username\":\"3232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:55:46',9),(1983729537799061506,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"2323\",\"contactPhone\":\"23232\",\"companyName\":\"毒--------品\",\"username\":\"3232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 10:55:52',2),(1983729611002249218,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983729609425190914\",\"tenantId\":null,\"contactUserName\":\"2323\",\"contactPhone\":\"23232\",\"companyName\":\"ni毒edrfgdfgdfgdfg品\",\"username\":\"3232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:56:10',405),(1983729722256162818,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23424\",\"contactPhone\":\"34343\",\"companyName\":\"毒——品\",\"username\":\"4343434\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户\'毒——品\'失败，企业名称已存在\",\"data\":null}',0,'','2025-10-30 10:56:36',13),(1983729779734904834,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983729778287869953\",\"tenantId\":null,\"contactUserName\":\"23424\",\"contactPhone\":\"34343\",\"companyName\":\"毒————品——\",\"username\":\"4343434\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 10:56:50',342),(1983731238870347777,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒————品\",\"username\":\"323232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 11:02:38',26),(1983731275213991938,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"23232\",\"companyName\":\"毒###品\",\"username\":\"323232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 11:02:47',3),(1983731366045839362,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"2323\",\"contactPhone\":\"2323\",\"companyName\":\"去问驱蚊器毒#品请问请问\",\"username\":\"23232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 11:03:08',1),(1983734753252536321,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"32323\",\"companyName\":\"毒品\",\"username\":\"232323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 11:16:36',11),(1983734769480298497,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"32323\",\"companyName\":\"毒 品\",\"username\":\"232323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 11:16:40',1),(1983734806629249025,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1983734804322381826\",\"tenantId\":null,\"contactUserName\":\"23232\",\"contactPhone\":\"32323\",\"companyName\":\"毒@#@品\",\"username\":\"232323\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-10-30 11:16:49',576),(1983734923180568578,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"232333\",\"contactPhone\":\"23232\",\"companyName\":\"毒 品\",\"username\":\"2323232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 11:17:16',1),(1983739954738950145,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"232333\",\"contactPhone\":\"23232\",\"companyName\":\"毒 品\",\"username\":\"2323232\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 11:37:16',1),(1983754004088680449,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"毒品\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 12:33:06',119),(1983754021838974977,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"毒  品\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 12:33:10',4),(1983754038779768833,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"毒 *品\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败：企业名称包含敏感词\",\"data\":null}',0,'','2025-10-30 12:33:14',1),(1986691048138072065,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"1986691028680695810\",\"tenantId\":null,\"contactUserName\":\"RTYRTYR\",\"contactPhone\":\"RTYRTYR\",\"companyName\":\"RTYRTY\",\"username\":\"TYRTYRTY\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-07 15:03:51',73147),(1986691278677991426,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"RTYRTYR\",\"contactPhone\":\"RTYRTYR\",\"companyName\":\"RTYRTY\",\"username\":\"TYRTYRTY\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户\'RTYRTY\'失败，企业名称已存在\",\"data\":null}',0,'','2025-11-07 15:04:46',52371),(1986698069943934977,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"RTYRTYR\",\"contactPhone\":\"RTYRTYR\",\"companyName\":\"测试敏感词1\",\"username\":\"TYRTYRTY\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-07 15:31:46',172),(1986698088495341570,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"RTYRTYR\",\"contactPhone\":\"RTYRTYR\",\"companyName\":\"测试敏感词1\",\"username\":\"TYRTYRTY\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-07 15:31:50',11),(1987011167527501826,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 12:15:54',75),(1987015561505550337,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 12:33:21',243658),(1987016444163272706,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 12:36:52',195294),(1987022691063222273,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 13:01:41',184),(1987023100355989505,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 13:03:19',80552),(1987023221386825730,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 13:03:48',4063),(1987024426007711746,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 13:08:35',235647),(1987025017287147522,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 13:10:56',1422),(1987025196102909953,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 13:11:39',10388),(1987029191026446338,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 13:27:31',924),(1987038398178111490,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:04:06',854),(1987041339727302658,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:15:47',1633),(1987041931602309121,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:18:09',889),(1987042754810023937,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:21:25',919),(1987045914551226369,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:33:58',1136),(1987047133336178690,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:38:49',973),(1987048525467643905,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:44:21',880),(1987048580354306050,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:44:34',33),(1987051441884676098,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"测试敏感词1\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-08 14:55:56',414),(1987773772923850753,'000000','菜单管理',1,'org.dromara.system.controller.system.SysMenuController.add()','POST',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"menuId\":null,\"parentId\":2,\"menuName\":\"敏感詞管理\",\"orderNum\":1,\"path\":\"http://localhost:8088/sensitive/log/list\",\"component\":null,\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"M\",\"visible\":\"0\",\"status\":\"0\",\"icon\":\"eye\",\"remark\":null}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 14:46:13',195),(1987782824194134018,'000000','菜单管理',1,'org.dromara.system.controller.system.SysMenuController.add()','POST',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"menuId\":null,\"parentId\":\"1987773772160487426\",\"menuName\":\"敏感詞日志\",\"orderNum\":1,\"path\":\"sensitive/log\",\"component\":\"sensitive/sensitive-word-log/index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"education\",\"remark\":null}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:22:11',113),(1987782916426878977,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 14:46:13\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987773772160487426\",\"parentId\":2,\"menuName\":\"敏感詞管理\",\"orderNum\":1,\"path\":\"sensitive\",\"component\":null,\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"M\",\"visible\":\"0\",\"status\":\"0\",\"icon\":\"eye\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:22:33',89),(1987785399979134977,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:22:11\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987782823674040322\",\"parentId\":\"1987773772160487426\",\"menuName\":\"敏感詞日志\",\"orderNum\":1,\"path\":\"sensitive/log\",\"component\":\"sensitive/sensitive-word-log/index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"1\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"education\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:32:25',116),(1987785780050186241,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:22:11\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987782823674040322\",\"parentId\":\"1987773772160487426\",\"menuName\":\"敏感詞日志\",\"orderNum\":1,\"path\":\"/log\",\"component\":\"/sensitive-word-log/index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"1\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"education\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:33:56',170),(1987789572971876353,'000000','菜单管理',3,'org.dromara.system.controller.system.SysMenuController.remove()','DELETE',1,'admin','研发部门','/menu/1983721106421788673','10.11.7.128','','\"1983721106421788673\"','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:49:00',411),(1987789607000264705,'000000','菜单管理',3,'org.dromara.system.controller.system.SysMenuController.remove()','DELETE',1,'admin','研发部门','/menu/1987773772160487426','10.11.7.128','','\"1987773772160487426\"','{\"code\":601,\"msg\":\"存在子菜单,不允许删除\",\"data\":null}',0,'','2025-11-10 15:49:08',8),(1987789636972761090,'000000','菜单管理',3,'org.dromara.system.controller.system.SysMenuController.remove()','DELETE',1,'admin','研发部门','/menu/1987782823674040322','10.11.7.128','','\"1987782823674040322\"','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:49:15',167),(1987789667897364481,'000000','菜单管理',3,'org.dromara.system.controller.system.SysMenuController.remove()','DELETE',1,'admin','研发部门','/menu/1987773772160487426','10.11.7.128','','\"1987773772160487426\"','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:49:23',114),(1987789809841000449,'000000','菜单管理',1,'org.dromara.system.controller.system.SysMenuController.add()','POST',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"menuId\":null,\"parentId\":0,\"menuName\":\"敏感詞\",\"orderNum\":1,\"path\":\"sensitive\",\"component\":null,\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"M\",\"visible\":\"0\",\"status\":\"0\",\"icon\":\"eye\",\"remark\":null}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:49:57',125),(1987790264021209089,'000000','菜单管理',1,'org.dromara.system.controller.system.SysMenuController.add()','POST',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"menuId\":null,\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"sensitive/log\",\"component\":\"sensitive/sensitive-word-log\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":null}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:51:45',133),(1987790902612381697,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:51:45\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987790263509504002\",\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"/log\",\"component\":\"/sensitive-word-log\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-10 15:54:17',127),(1988109270691278849,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:51:45\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987790263509504002\",\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"log\",\"component\":\"sensitive-word-log\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 12:59:22',203),(1988109454234021889,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:51:45\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987790263509504002\",\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"log\",\"component\":\"sensitive-word-log/index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 13:00:06',102),(1988110195803746305,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:51:45\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987790263509504002\",\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"log\",\"component\":\"sensitive-word-log\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 13:03:03',129),(1988114152848551937,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:51:45\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987790263509504002\",\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"log\",\"component\":\"index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 13:18:46',121),(1988114332788387841,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:51:45\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987790263509504002\",\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"log\",\"component\":\"log/index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 13:19:29',77),(1988114556449648642,'000000','菜单管理',2,'org.dromara.system.controller.system.SysMenuController.edit()','PUT',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":103,\"createBy\":null,\"createTime\":\"2025-11-10 15:51:45\",\"updateBy\":null,\"updateTime\":null,\"menuId\":\"1987790263509504002\",\"parentId\":\"1987789809333489666\",\"menuName\":\"日志\",\"orderNum\":1,\"path\":\"log\",\"component\":\"sensitive/log/index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"checkbox\",\"remark\":\"\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 13:20:22',89),(1988119742450692098,'000000','角色管理',1,'org.dromara.system.controller.system.SysRoleController.add()','POST',1,'admin','研发部门','/role','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"roleId\":\"1988119740642947074\",\"roleName\":\"yanadmin\",\"roleKey\":\"yan\",\"roleSort\":1,\"dataScope\":\"1\",\"menuCheckStrictly\":true,\"deptCheckStrictly\":true,\"status\":\"0\",\"remark\":\"\",\"menuIds\":[1,100,1001,1002,1003,1004,1005,1006,1007,131,101,1008,1009,1010,1011,1012,130,102,1013,1014,1015,1016,103,1017,1018,1019,1020,104,1021,1022,1023,1024,1025,105,1026,1027,1028,1029,1030,132,106,1031,1032,1033,1034,1035,107,1036,1037,1038,1039,108,500,1040,1041,1042,501,1043,1044,1045,1050,118,1600,1601,1602,1603,1620,1621,1622,1623,133,123,1061,1062,1063,1064,1065,\"1987789809333489666\",\"1987790263509504002\",6,121,1606,1607,1608,1609,1610,122,1611,1612,1613,1614,1615,2,109,1046,1047,1048,124,110,112,113,3,115,1055,1056,1058,1057,1059,1060,116,4,5,1500,1501,1502,1503,1504,1505,1506,1507,1508,1509,1510,1511,11638,11639,11640,11641,11642,11643,11616,11622,11623,11624,11625,11626,11627,11801,11802,11803,11804,11805,11806,11620,11630,11621,11631,11700,11701,11618,11629,11619,11632,11633],\"deptIds\":[],\"superAdmin\":false}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 13:40:59',468),(1988119924949053441,'000000','用户管理',1,'org.dromara.system.controller.system.SysUserController.add()','POST',1,'admin','研发部门','/user','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"userId\":\"1988119924387016706\",\"deptId\":100,\"userName\":\"yan\",\"nickName\":\"yanmin\",\"userType\":null,\"email\":null,\"phonenumber\":null,\"sex\":null,\"status\":\"0\",\"remark\":\"\",\"roleIds\":[\"1988119740642947074\"],\"postIds\":[],\"roleId\":null,\"userIds\":null,\"excludeUserIds\":null,\"superAdmin\":false}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-11-11 13:41:42',256),(1988141983766867970,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"特殊@敏感词\",\"username\":\"123123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：特殊@敏感词\",\"data\":null}',0,'','2025-11-11 15:09:21',132),(1991348858134142978,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"测试敏感词1\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-20 11:32:20',200),(1991348881227980801,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"测试敏感词1\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-20 11:32:25',217),(1991348883765534721,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"测试敏感词1\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-20 11:32:26',118),(1991348902832840705,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"测试敏感词1\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-20 11:32:31',127),(1991348904661557249,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"测试敏感词1\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-20 11:32:31',86),(1991348908931358722,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"测试敏感词1\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-20 11:32:32',104),(1991348910667800577,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"1212\",\"contactPhone\":\"12121\",\"companyName\":\"测试敏感词1\",\"username\":\"12121\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：测试敏感词1\",\"data\":null}',0,'','2025-11-20 11:32:32',83),(2001186259803201537,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":null,\"tenantId\":null,\"contactUserName\":\"123\",\"contactPhone\":\"123\",\"companyName\":\"毒品\",\"username\":\"123\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":500,\"msg\":\"新增租户失败，企业名称包含敏感词：毒品\",\"data\":null}',0,'','2025-12-17 15:02:39',426),(2001190148862545922,'000000','租户管理',1,'org.dromara.system.controller.system.SysTenantController.add()','POST',1,'admin','研发部门','/tenant','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":\"2001190142013247489\",\"tenantId\":null,\"contactUserName\":\"1231\",\"contactPhone\":\"12312312\",\"companyName\":\"/**\",\"username\":\"1231231\",\"licenseNumber\":\"\",\"address\":\"\",\"domain\":\"\",\"intro\":\"\",\"remark\":\"\",\"packageId\":\"1982714866774216706\",\"expireTime\":null,\"accountCount\":0,\"status\":\"0\"}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-12-17 15:18:06',1724),(2001233994795356162,'000000','菜单管理',1,'org.dromara.system.controller.system.SysMenuController.add()','POST',1,'admin','研发部门','/menu','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"menuId\":null,\"parentId\":\"1987789809333489666\",\"menuName\":\"词字典\",\"orderNum\":1,\"path\":\"word\",\"component\":\"sensitive/word/index\",\"queryParam\":null,\"isFrame\":\"1\",\"isCache\":\"0\",\"menuType\":\"C\",\"visible\":\"0\",\"status\":\"0\",\"perms\":\"sensitive:log:list\",\"icon\":\"build\",\"remark\":null}','{\"code\":200,\"msg\":\"操作成功\",\"data\":null}',0,'','2025-12-17 18:12:20',116),(2001884044282204161,'000000','租户管理',2,'org.dromara.system.controller.system.SysTenantController.changeStatus()','PUT',1,'admin','研发部门','/tenant/changeStatus','10.11.7.128','','{\"createDept\":null,\"createBy\":null,\"createTime\":null,\"updateBy\":null,\"updateTime\":null,\"id\":1,\"tenantId\":\"000000\",\"contactUserName\":null,\"contactPhone\":null,\"companyName\":null,\"username\":null,\"licenseNumber\":null,\"address\":null,\"domain\":null,\"intro\":null,\"remark\":null,\"packageId\":null,\"expireTime\":null,\"accountCount\":null,\"status\":\"1\"}','',1,'不允许操作管理租户','2025-12-19 13:15:24',6);
+/*!40000 ALTER TABLE `sys_oper_log` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ----------------------------
--- 17、通知公告表
--- ----------------------------
-create table sys_notice (
-  notice_id         bigint(20)      not null                   comment '公告ID',
-  tenant_id         varchar(20)     default '000000'           comment '租户编号',
-  notice_title      varchar(50)     not null                   comment '公告标题',
-  notice_type       char(1)         not null                   comment '公告类型（1通知 2公告）',
-  notice_content    longblob        default null               comment '公告内容',
-  status            char(1)         default '0'                comment '公告状态（0正常 1关闭）',
-  create_dept       bigint(20)      default null               comment '创建部门',
-  create_by         bigint(20)      default null               comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         bigint(20)      default null               comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(255)    default null               comment '备注',
-  primary key (notice_id)
-) engine=innodb comment = '通知公告表';
+--
+-- Table structure for table `sys_oss`
+--
 
--- ----------------------------
--- 初始化-公告信息表数据
--- ----------------------------
-insert into sys_notice values('1', '000000', '温馨提醒：2018-07-01 新版本发布啦', '2', '新版本内容', '0', 103, 1, sysdate(), null, null, '管理员');
-insert into sys_notice values('2', '000000', '维护通知：2018-07-01 系统凌晨维护', '1', '维护内容',   '0', 103, 1, sysdate(), null, null, '管理员');
+DROP TABLE IF EXISTS `sys_oss`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_oss` (
+  `oss_id` bigint NOT NULL COMMENT '对象存储主键',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `file_name` varchar(255) NOT NULL DEFAULT '' COMMENT '文件名',
+  `original_name` varchar(255) NOT NULL DEFAULT '' COMMENT '原名',
+  `file_suffix` varchar(10) NOT NULL DEFAULT '' COMMENT '文件后缀名',
+  `url` varchar(500) NOT NULL COMMENT 'URL地址',
+  `ext1` text COMMENT '扩展字段',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` bigint DEFAULT NULL COMMENT '上传人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新人',
+  `service` varchar(20) NOT NULL DEFAULT 'minio' COMMENT '服务商',
+  PRIMARY KEY (`oss_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='OSS对象存储表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `sys_oss`
+--
 
--- ----------------------------
--- 18、代码生成业务表
--- ----------------------------
-create table gen_table (
-  table_id          bigint(20)      not null                   comment '编号',
-  data_name         varchar(200)    default ''                 comment '数据源名称',
-  table_name        varchar(200)    default ''                 comment '表名称',
-  table_comment     varchar(500)    default ''                 comment '表描述',
-  sub_table_name    varchar(64)     default null               comment '关联子表的表名',
-  sub_table_fk_name varchar(64)     default null               comment '子表关联的外键名',
-  class_name        varchar(100)    default ''                 comment '实体类名称',
-  tpl_category      varchar(200)    default 'crud'             comment '使用的模板（crud单表操作 tree树表操作）',
-  package_name      varchar(100)                               comment '生成包路径',
-  module_name       varchar(30)                                comment '生成模块名',
-  business_name     varchar(30)                                comment '生成业务名',
-  function_name     varchar(50)                                comment '生成功能名',
-  function_author   varchar(50)                                comment '生成功能作者',
-  gen_type          char(1)         default '0'                comment '生成代码方式（0zip压缩包 1自定义路径）',
-  gen_path          varchar(200)    default '/'                comment '生成路径（不填默认项目路径）',
-  options           varchar(1000)                              comment '其它生成选项',
-  create_dept       bigint(20)      default null               comment '创建部门',
-  create_by         bigint(20)      default null               comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         bigint(20)      default null               comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(500)    default null               comment '备注',
-  primary key (table_id)
-) engine=innodb comment = '代码生成业务表';
+LOCK TABLES `sys_oss` WRITE;
+/*!40000 ALTER TABLE `sys_oss` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sys_oss` ENABLE KEYS */;
+UNLOCK TABLES;
 
+--
+-- Table structure for table `sys_oss_config`
+--
 
--- ----------------------------
--- 19、代码生成业务表字段
--- ----------------------------
-create table gen_table_column (
-  column_id         bigint(20)      not null                   comment '编号',
-  table_id          bigint(20)                                 comment '归属表编号',
-  column_name       varchar(200)                               comment '列名称',
-  column_comment    varchar(500)                               comment '列描述',
-  column_type       varchar(100)                               comment '列类型',
-  java_type         varchar(500)                               comment 'JAVA类型',
-  java_field        varchar(200)                               comment 'JAVA字段名',
-  is_pk             char(1)                                    comment '是否主键（1是）',
-  is_increment      char(1)                                    comment '是否自增（1是）',
-  is_required       char(1)                                    comment '是否必填（1是）',
-  is_insert         char(1)                                    comment '是否为插入字段（1是）',
-  is_edit           char(1)                                    comment '是否编辑字段（1是）',
-  is_list           char(1)                                    comment '是否列表字段（1是）',
-  is_query          char(1)                                    comment '是否查询字段（1是）',
-  query_type        varchar(200)    default 'EQ'               comment '查询方式（等于、不等于、大于、小于、范围）',
-  html_type         varchar(200)                               comment '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
-  dict_type         varchar(200)    default ''                 comment '字典类型',
-  sort              int                                        comment '排序',
-  create_dept       bigint(20)      default null               comment '创建部门',
-  create_by         bigint(20)      default null               comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         bigint(20)      default null               comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  primary key (column_id)
-) engine=innodb comment = '代码生成业务表字段';
+DROP TABLE IF EXISTS `sys_oss_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_oss_config` (
+  `oss_config_id` bigint NOT NULL COMMENT '主键',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `config_key` varchar(20) NOT NULL DEFAULT '' COMMENT '配置key',
+  `access_key` varchar(255) DEFAULT '' COMMENT 'accessKey',
+  `secret_key` varchar(255) DEFAULT '' COMMENT '秘钥',
+  `bucket_name` varchar(255) DEFAULT '' COMMENT '桶名称',
+  `prefix` varchar(255) DEFAULT '' COMMENT '前缀',
+  `endpoint` varchar(255) DEFAULT '' COMMENT '访问站点',
+  `domain` varchar(255) DEFAULT '' COMMENT '自定义域名',
+  `is_https` char(1) DEFAULT 'N' COMMENT '是否https（Y=是,N=否）',
+  `region` varchar(255) DEFAULT '' COMMENT '域',
+  `access_policy` char(1) NOT NULL DEFAULT '1' COMMENT '桶权限类型(0=private 1=public 2=custom)',
+  `status` char(1) DEFAULT '1' COMMENT '是否默认（0=是,1=否）',
+  `ext1` varchar(255) DEFAULT '' COMMENT '扩展字段',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`oss_config_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='对象存储配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------
--- OSS对象存储表
--- ----------------------------
-create table sys_oss (
-  oss_id          bigint(20)   not null                   comment '对象存储主键',
-  tenant_id       varchar(20)           default '000000'  comment '租户编号',
-  file_name       varchar(255) not null default ''        comment '文件名',
-  original_name   varchar(255) not null default ''        comment '原名',
-  file_suffix     varchar(10)  not null default ''        comment '文件后缀名',
-  url             varchar(500) not null                   comment 'URL地址',
-  ext1            text                  default null      comment '扩展字段',
-  create_dept     bigint(20)            default null      comment '创建部门',
-  create_time     datetime              default null      comment '创建时间',
-  create_by       bigint(20)            default null      comment '上传人',
-  update_time     datetime              default null      comment '更新时间',
-  update_by       bigint(20)            default null      comment '更新人',
-  service         varchar(20)  not null default 'minio'   comment '服务商',
-  primary key (oss_id)
-) engine=innodb comment ='OSS对象存储表';
+--
+-- Dumping data for table `sys_oss_config`
+--
 
--- ----------------------------
--- OSS对象存储动态配置表
--- ----------------------------
-create table sys_oss_config (
-  oss_config_id   bigint(20)    not null                  comment '主键',
-  tenant_id       varchar(20)             default '000000'comment '租户编号',
-  config_key      varchar(20)   not null  default ''      comment '配置key',
-  access_key      varchar(255)            default ''      comment 'accessKey',
-  secret_key      varchar(255)            default ''      comment '秘钥',
-  bucket_name     varchar(255)            default ''      comment '桶名称',
-  prefix          varchar(255)            default ''      comment '前缀',
-  endpoint        varchar(255)            default ''      comment '访问站点',
-  domain          varchar(255)            default ''      comment '自定义域名',
-  is_https        char(1)                 default 'N'     comment '是否https（Y=是,N=否）',
-  region          varchar(255)            default ''      comment '域',
-  access_policy   char(1)       not null  default '1'     comment '桶权限类型(0=private 1=public 2=custom)',
-  status          char(1)                 default '1'     comment '是否默认（0=是,1=否）',
-  ext1            varchar(255)            default ''      comment '扩展字段',
-  create_dept     bigint(20)              default null    comment '创建部门',
-  create_by       bigint(20)              default null    comment '创建者',
-  create_time     datetime                default null    comment '创建时间',
-  update_by       bigint(20)              default null    comment '更新者',
-  update_time     datetime                default null    comment '更新时间',
-  remark          varchar(500)            default null    comment '备注',
-  primary key (oss_config_id)
-) engine=innodb comment='对象存储配置表';
+LOCK TABLES `sys_oss_config` WRITE;
+/*!40000 ALTER TABLE `sys_oss_config` DISABLE KEYS */;
+INSERT INTO `sys_oss_config` VALUES (1,'000000','minio','ruoyi','ruoyi123','ruoyi','','127.0.0.1:9000','','N','','1','0','',103,1,'2025-10-25 12:33:05',1,'2025-10-25 12:33:05',NULL),(2,'000000','qiniu','XXXXXXXXXXXXXXX','XXXXXXXXXXXXXXX','ruoyi','','s3-cn-north-1.qiniucs.com','','N','','1','1','',103,1,'2025-10-25 12:33:05',1,'2025-10-25 12:33:05',NULL),(3,'000000','aliyun','XXXXXXXXXXXXXXX','XXXXXXXXXXXXXXX','ruoyi','','oss-cn-beijing.aliyuncs.com','','N','','1','1','',103,1,'2025-10-25 12:33:05',1,'2025-10-25 12:33:05',NULL),(4,'000000','qcloud','XXXXXXXXXXXXXXX','XXXXXXXXXXXXXXX','ruoyi-1240000000','','cos.ap-beijing.myqcloud.com','','N','ap-beijing','1','1','',103,1,'2025-10-25 12:33:05',1,'2025-10-25 12:33:05',NULL),(5,'000000','image','ruoyi','ruoyi123','ruoyi','image','127.0.0.1:9000','','N','','1','1','',103,1,'2025-10-25 12:33:05',1,'2025-10-25 12:33:05',NULL);
+/*!40000 ALTER TABLE `sys_oss_config` ENABLE KEYS */;
+UNLOCK TABLES;
 
-insert into sys_oss_config values (1, '000000', 'minio',  'ruoyi',            'ruoyi123',        'ruoyi',             '', '127.0.0.1:9000',                '','N', '',             '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (2, '000000', 'qiniu',  'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 's3-cn-north-1.qiniucs.com',     '','N', '',             '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 'oss-cn-beijing.aliyuncs.com',   '','N', '',             '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1240000000',  '', 'cos.ap-beijing.myqcloud.com',   '','N', 'ap-beijing',   '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',           '','N', '',             '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
+--
+-- Table structure for table `sys_post`
+--
 
+DROP TABLE IF EXISTS `sys_post`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_post` (
+  `post_id` bigint NOT NULL COMMENT '岗位ID',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `dept_id` bigint NOT NULL COMMENT '部门id',
+  `post_code` varchar(64) NOT NULL COMMENT '岗位编码',
+  `post_category` varchar(100) DEFAULT NULL COMMENT '岗位类别编码',
+  `post_name` varchar(50) NOT NULL COMMENT '岗位名称',
+  `post_sort` int NOT NULL COMMENT '显示顺序',
+  `status` char(1) NOT NULL COMMENT '状态（0正常 1停用）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`post_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='岗位信息表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------
--- 系统授权表
--- ----------------------------
-create table sys_client (
-    id                  bigint(20)    not null            comment 'id',
-    client_id           varchar(64)   default null        comment '客户端id',
-    client_key          varchar(32)   default null        comment '客户端key',
-    client_secret       varchar(255)  default null        comment '客户端秘钥',
-    grant_type          varchar(255)  default null        comment '授权类型',
-    device_type         varchar(32)   default null        comment '设备类型',
-    active_timeout      int(11)       default 1800        comment 'token活跃超时时间',
-    timeout             int(11)       default 604800      comment 'token固定超时',
-    status              char(1)       default '0'         comment '状态（0正常 1停用）',
-    del_flag            char(1)       default '0'         comment '删除标志（0代表存在 1代表删除）',
-    create_dept         bigint(20)    default null        comment '创建部门',
-    create_by           bigint(20)    default null        comment '创建者',
-    create_time         datetime      default null        comment '创建时间',
-    update_by           bigint(20)    default null        comment '更新者',
-    update_time         datetime      default null        comment '更新时间',
-    primary key (id)
-) engine=innodb comment='系统授权表';
+--
+-- Dumping data for table `sys_post`
+--
 
-insert into sys_client values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password,social', 'pc', 1800, 604800, 0, 0, 103, 1, sysdate(), 1, sysdate());
-insert into sys_client values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms,social', 'android', 1800, 604800, 0, 0, 103, 1, sysdate(), 1, sysdate());
+LOCK TABLES `sys_post` WRITE;
+/*!40000 ALTER TABLE `sys_post` DISABLE KEYS */;
+INSERT INTO `sys_post` VALUES (1,'000000',103,'ceo',NULL,'董事长',1,'0',103,1,'2025-10-25 12:32:02',NULL,NULL,''),(2,'000000',100,'se',NULL,'项目经理',2,'0',103,1,'2025-10-25 12:32:02',NULL,NULL,''),(3,'000000',100,'hr',NULL,'人力资源',3,'0',103,1,'2025-10-25 12:32:02',NULL,NULL,''),(4,'000000',100,'user',NULL,'普通员工',4,'0',103,1,'2025-10-25 12:32:02',NULL,NULL,'');
+/*!40000 ALTER TABLE `sys_post` ENABLE KEYS */;
+UNLOCK TABLES;
 
-CREATE TABLE test_demo
-(
-    id          bigint(0)    NOT NULL COMMENT '主键',
-    tenant_id   varchar(20)  NULL DEFAULT '000000' COMMENT '租户编号',
-    dept_id     bigint(0)    NULL DEFAULT NULL COMMENT '部门id',
-    user_id     bigint(0)    NULL DEFAULT NULL COMMENT '用户id',
-    order_num   int(0)       NULL DEFAULT 0 COMMENT '排序号',
-    test_key    varchar(255) NULL DEFAULT NULL COMMENT 'key键',
-    value       varchar(255) NULL DEFAULT NULL COMMENT '值',
-    version     int(0)       NULL DEFAULT 0 COMMENT '版本',
-    create_dept bigint(0)    NULL DEFAULT NULL COMMENT '创建部门',
-    create_time datetime(0)  NULL DEFAULT NULL COMMENT '创建时间',
-    create_by   bigint(0)    NULL DEFAULT NULL COMMENT '创建人',
-    update_time datetime(0)  NULL DEFAULT NULL COMMENT '更新时间',
-    update_by   bigint(0)    NULL DEFAULT NULL COMMENT '更新人',
-    del_flag    int(0)       NULL DEFAULT 0 COMMENT '删除标志',
-    PRIMARY KEY (id) USING BTREE
-) ENGINE = InnoDB COMMENT = '测试单表';
+--
+-- Table structure for table `sys_role`
+--
 
-CREATE TABLE test_tree
-(
-    id          bigint(0)    NOT NULL COMMENT '主键',
-    tenant_id   varchar(20)  NULL DEFAULT '000000' COMMENT '租户编号',
-    parent_id   bigint(0)    NULL DEFAULT 0 COMMENT '父id',
-    dept_id     bigint(0)    NULL DEFAULT NULL COMMENT '部门id',
-    user_id     bigint(0)    NULL DEFAULT NULL COMMENT '用户id',
-    tree_name   varchar(255) NULL DEFAULT NULL COMMENT '值',
-    version     int(0)       NULL DEFAULT 0 COMMENT '版本',
-    create_dept bigint(0)    NULL DEFAULT NULL COMMENT '创建部门',
-    create_time datetime(0)  NULL DEFAULT NULL COMMENT '创建时间',
-    create_by   bigint(0)    NULL DEFAULT NULL COMMENT '创建人',
-    update_time datetime(0)  NULL DEFAULT NULL COMMENT '更新时间',
-    update_by   bigint(0)    NULL DEFAULT NULL COMMENT '更新人',
-    del_flag    int(0)       NULL DEFAULT 0 COMMENT '删除标志',
-    PRIMARY KEY (id) USING BTREE
-) ENGINE = InnoDB COMMENT = '测试树表';
+DROP TABLE IF EXISTS `sys_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_role` (
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `role_name` varchar(30) NOT NULL COMMENT '角色名称',
+  `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
+  `role_sort` int NOT NULL COMMENT '显示顺序',
+  `data_scope` char(1) DEFAULT '1' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限 6：部门及以下或本人数据权限）',
+  `menu_check_strictly` tinyint(1) DEFAULT '1' COMMENT '菜单树选择项是否关联显示',
+  `dept_check_strictly` tinyint(1) DEFAULT '1' COMMENT '部门树选择项是否关联显示',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色信息表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-INSERT INTO test_demo VALUES (1, '000000', 102, 4, 1, '测试数据权限', '测试', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (2, '000000', 102, 3, 2, '子节点1', '111', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (3, '000000', 102, 3, 3, '子节点2', '222', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (4, '000000', 108, 4, 4, '测试数据', 'demo', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (5, '000000', 108, 3, 13, '子节点11', '1111', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (6, '000000', 108, 3, 12, '子节点22', '2222', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (7, '000000', 108, 3, 11, '子节点33', '3333', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (8, '000000', 108, 3, 10, '子节点44', '4444', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (9, '000000', 108, 3, 9, '子节点55', '5555', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (10, '000000', 108, 3, 8, '子节点66', '6666', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (11, '000000', 108, 3, 7, '子节点77', '7777', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (12, '000000', 108, 3, 6, '子节点88', '8888', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_demo VALUES (13, '000000', 108, 3, 5, '子节点99', '9999', 0, 103, sysdate(), 1, NULL, NULL, 0);
+--
+-- Dumping data for table `sys_role`
+--
 
-INSERT INTO test_tree VALUES (1, '000000', 0, 102, 4, '测试数据权限', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (2, '000000', 1, 102, 3, '子节点1', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (3, '000000', 2, 102, 3, '子节点2', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (4, '000000', 0, 108, 4, '测试树1', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (5, '000000', 4, 108, 3, '子节点11', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (6, '000000', 4, 108, 3, '子节点22', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (7, '000000', 4, 108, 3, '子节点33', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (8, '000000', 5, 108, 3, '子节点44', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (9, '000000', 6, 108, 3, '子节点55', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (10, '000000', 7, 108, 3, '子节点66', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (11, '000000', 7, 108, 3, '子节点77', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (12, '000000', 10, 108, 3, '子节点88', 0, 103, sysdate(), 1, NULL, NULL, 0);
-INSERT INTO test_tree VALUES (13, '000000', 10, 108, 3, '子节点99', 0, 103, sysdate(), 1, NULL, NULL, 0);
+LOCK TABLES `sys_role` WRITE;
+/*!40000 ALTER TABLE `sys_role` DISABLE KEYS */;
+INSERT INTO `sys_role` VALUES (1,'000000','超级管理员','superadmin',1,'1',1,1,'0','0',103,1,'2025-10-25 12:32:03',NULL,NULL,'超级管理员'),(3,'000000','本部门及以下','test1',3,'4',1,1,'0','0',103,1,'2025-10-25 12:32:03',NULL,NULL,''),(4,'000000','仅本人','test2',4,'5',1,1,'0','0',103,1,'2025-10-25 12:32:03',NULL,NULL,''),(1983716893075607554,'898509','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38',NULL),(1983726214819782657,'180427','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40',NULL),(1983726284298428418,'380976','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57',NULL),(1983726698246873089,'234087','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35',NULL),(1983726841964699650,'751666','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10',NULL),(1983729609425190915,'715928','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 10:56:09',1,'2025-10-30 10:56:09',NULL),(1983729778287869954,'279445','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50',NULL),(1983734804389490689,'473381','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48',NULL),(1986691029049794562,'505898','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-11-07 15:03:47',1,'2025-11-07 15:03:47',NULL),(1988119740642947074,'000000','yanadmin','yan',1,'1',1,1,'0','0',103,1,'2025-11-11 13:40:58',1,'2025-11-11 13:40:58',''),(2001190142097133569,'863903','管理员','admin',1,'1',1,1,'0','0',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05',NULL);
+/*!40000 ALTER TABLE `sys_role` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- for AT mode you must to init this sql for you business database. the seata server not need it.
-CREATE TABLE IF NOT EXISTS undo_log
-(
-    branch_id     BIGINT(20)   NOT NULL COMMENT 'branch transaction id',
-    xid           VARCHAR(100) NOT NULL COMMENT 'global transaction id',
-    context       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    rollback_info LONGBLOB     NOT NULL COMMENT 'rollback info',
-    log_status    INT(11)      NOT NULL COMMENT '0:normal status,1:defense status',
-    log_created   DATETIME(6)  NOT NULL COMMENT 'create datetime',
-    log_modified  DATETIME(6)  NOT NULL COMMENT 'modify datetime',
-    UNIQUE KEY ux_undo_log (xid, branch_id)
-) ENGINE = InnoDB COMMENT ='AT transaction mode undo table';
+--
+-- Table structure for table `sys_role_dept`
+--
+
+DROP TABLE IF EXISTS `sys_role_dept`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_role_dept` (
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `dept_id` bigint NOT NULL COMMENT '部门ID',
+  PRIMARY KEY (`role_id`,`dept_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色和部门关联表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_role_dept`
+--
+
+LOCK TABLES `sys_role_dept` WRITE;
+/*!40000 ALTER TABLE `sys_role_dept` DISABLE KEYS */;
+INSERT INTO `sys_role_dept` VALUES (1983716893075607554,1983716893142716418),(1983726214819782657,1983726214853337089),(1983726284298428418,1983726284298428419),(1983726698246873089,1983726698251067393),(1983726841964699650,1983726841964699651),(1983729609425190915,1983729609492299778),(1983729778287869954,1983729778287869955),(1983734804389490689,1983734804456599554),(1986691029049794562,1986691029318230017),(2001190142097133569,2001190142130688001);
+/*!40000 ALTER TABLE `sys_role_dept` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_role_menu`
+--
+
+DROP TABLE IF EXISTS `sys_role_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_role_menu` (
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `menu_id` bigint NOT NULL COMMENT '菜单ID',
+  PRIMARY KEY (`role_id`,`menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色和菜单关联表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_role_menu`
+--
+
+LOCK TABLES `sys_role_menu` WRITE;
+/*!40000 ALTER TABLE `sys_role_menu` DISABLE KEYS */;
+INSERT INTO `sys_role_menu` VALUES (3,1),(3,5),(3,100),(3,101),(3,102),(3,103),(3,104),(3,105),(3,106),(3,107),(3,108),(3,118),(3,123),(3,130),(3,131),(3,132),(3,133),(3,500),(3,501),(3,1001),(3,1002),(3,1003),(3,1004),(3,1005),(3,1006),(3,1007),(3,1008),(3,1009),(3,1010),(3,1011),(3,1012),(3,1013),(3,1014),(3,1015),(3,1016),(3,1017),(3,1018),(3,1019),(3,1020),(3,1021),(3,1022),(3,1023),(3,1024),(3,1025),(3,1026),(3,1027),(3,1028),(3,1029),(3,1030),(3,1031),(3,1032),(3,1033),(3,1034),(3,1035),(3,1036),(3,1037),(3,1038),(3,1039),(3,1040),(3,1041),(3,1042),(3,1043),(3,1044),(3,1045),(3,1050),(3,1061),(3,1062),(3,1063),(3,1064),(3,1065),(3,1500),(3,1501),(3,1502),(3,1503),(3,1504),(3,1505),(3,1506),(3,1507),(3,1508),(3,1509),(3,1510),(3,1511),(3,1600),(3,1601),(3,1602),(3,1603),(3,1620),(3,1621),(3,1622),(3,1623),(3,11616),(3,11618),(3,11619),(3,11622),(3,11623),(3,11629),(3,11632),(3,11633),(3,11638),(3,11639),(3,11640),(3,11641),(3,11642),(3,11643),(3,11701),(4,5),(4,1500),(4,1501),(4,1502),(4,1503),(4,1504),(4,1505),(4,1506),(4,1507),(4,1508),(4,1509),(4,1510),(4,1511),(1988119740642947074,1),(1988119740642947074,2),(1988119740642947074,3),(1988119740642947074,4),(1988119740642947074,5),(1988119740642947074,6),(1988119740642947074,100),(1988119740642947074,101),(1988119740642947074,102),(1988119740642947074,103),(1988119740642947074,104),(1988119740642947074,105),(1988119740642947074,106),(1988119740642947074,107),(1988119740642947074,108),(1988119740642947074,109),(1988119740642947074,110),(1988119740642947074,112),(1988119740642947074,113),(1988119740642947074,115),(1988119740642947074,116),(1988119740642947074,118),(1988119740642947074,121),(1988119740642947074,122),(1988119740642947074,123),(1988119740642947074,124),(1988119740642947074,130),(1988119740642947074,131),(1988119740642947074,132),(1988119740642947074,133),(1988119740642947074,500),(1988119740642947074,501),(1988119740642947074,1001),(1988119740642947074,1002),(1988119740642947074,1003),(1988119740642947074,1004),(1988119740642947074,1005),(1988119740642947074,1006),(1988119740642947074,1007),(1988119740642947074,1008),(1988119740642947074,1009),(1988119740642947074,1010),(1988119740642947074,1011),(1988119740642947074,1012),(1988119740642947074,1013),(1988119740642947074,1014),(1988119740642947074,1015),(1988119740642947074,1016),(1988119740642947074,1017),(1988119740642947074,1018),(1988119740642947074,1019),(1988119740642947074,1020),(1988119740642947074,1021),(1988119740642947074,1022),(1988119740642947074,1023),(1988119740642947074,1024),(1988119740642947074,1025),(1988119740642947074,1026),(1988119740642947074,1027),(1988119740642947074,1028),(1988119740642947074,1029),(1988119740642947074,1030),(1988119740642947074,1031),(1988119740642947074,1032),(1988119740642947074,1033),(1988119740642947074,1034),(1988119740642947074,1035),(1988119740642947074,1036),(1988119740642947074,1037),(1988119740642947074,1038),(1988119740642947074,1039),(1988119740642947074,1040),(1988119740642947074,1041),(1988119740642947074,1042),(1988119740642947074,1043),(1988119740642947074,1044),(1988119740642947074,1045),(1988119740642947074,1046),(1988119740642947074,1047),(1988119740642947074,1048),(1988119740642947074,1050),(1988119740642947074,1055),(1988119740642947074,1056),(1988119740642947074,1057),(1988119740642947074,1058),(1988119740642947074,1059),(1988119740642947074,1060),(1988119740642947074,1061),(1988119740642947074,1062),(1988119740642947074,1063),(1988119740642947074,1064),(1988119740642947074,1065),(1988119740642947074,1500),(1988119740642947074,1501),(1988119740642947074,1502),(1988119740642947074,1503),(1988119740642947074,1504),(1988119740642947074,1505),(1988119740642947074,1506),(1988119740642947074,1507),(1988119740642947074,1508),(1988119740642947074,1509),(1988119740642947074,1510),(1988119740642947074,1511),(1988119740642947074,1600),(1988119740642947074,1601),(1988119740642947074,1602),(1988119740642947074,1603),(1988119740642947074,1606),(1988119740642947074,1607),(1988119740642947074,1608),(1988119740642947074,1609),(1988119740642947074,1610),(1988119740642947074,1611),(1988119740642947074,1612),(1988119740642947074,1613),(1988119740642947074,1614),(1988119740642947074,1615),(1988119740642947074,1620),(1988119740642947074,1621),(1988119740642947074,1622),(1988119740642947074,1623),(1988119740642947074,11616),(1988119740642947074,11618),(1988119740642947074,11619),(1988119740642947074,11620),(1988119740642947074,11621),(1988119740642947074,11622),(1988119740642947074,11623),(1988119740642947074,11624),(1988119740642947074,11625),(1988119740642947074,11626),(1988119740642947074,11627),(1988119740642947074,11629),(1988119740642947074,11630),(1988119740642947074,11631),(1988119740642947074,11632),(1988119740642947074,11633),(1988119740642947074,11638),(1988119740642947074,11639),(1988119740642947074,11640),(1988119740642947074,11641),(1988119740642947074,11642),(1988119740642947074,11643),(1988119740642947074,11700),(1988119740642947074,11701),(1988119740642947074,11801),(1988119740642947074,11802),(1988119740642947074,11803),(1988119740642947074,11804),(1988119740642947074,11805),(1988119740642947074,11806),(1988119740642947074,1987789809333489666),(1988119740642947074,1987790263509504002);
+/*!40000 ALTER TABLE `sys_role_menu` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_sensitive_word`
+--
+
+DROP TABLE IF EXISTS `sys_sensitive_word`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_sensitive_word` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `word` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '敏感词内容',
+  `status` int NOT NULL DEFAULT '1' COMMENT '状态（0-禁用，1-启用）',
+  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT 'admin' COMMENT '创建者',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_word` (`word`) COMMENT '敏感词唯一索引',
+  KEY `idx_status` (`status`) COMMENT '状态索引'
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='敏感词表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_sensitive_word`
+--
+
+LOCK TABLES `sys_sensitive_word` WRITE;
+/*!40000 ALTER TABLE `sys_sensitive_word` DISABLE KEYS */;
+INSERT INTO `sys_sensitive_word` VALUES (1,'赌博',1,'admin','2025-10-26 10:34:43','1','2025-12-17 22:49:27',''),(2,'今天',0,'admin','2025-10-26 10:34:43','1','2025-12-17 22:49:27','类敏感词'),(3,'毒品',0,'admin','2025-10-26 10:34:43','1','2025-12-17 22:49:27','类敏感词'),(4,'明天',0,'admin','2025-10-26 10:34:43','1','2025-12-17 22:49:27','类敏感词'),(5,'匹配',0,'admin','2025-10-26 10:34:43','1','2025-12-18 11:32:20','类敏感词'),(6,'造谣',1,'admin','2025-10-26 10:34:43','1','2025-10-26 10:34:43','违规类敏感词'),(9,'特殊@敏感词',1,'admin','2025-11-02 13:22:51','1','2025-11-29 17:57:59',NULL),(10,'123',1,'1','2025-12-24 18:37:53','1','2025-12-24 18:37:53','1231');
+/*!40000 ALTER TABLE `sys_sensitive_word` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_sensitive_word_log`
+--
+
+DROP TABLE IF EXISTS `sys_sensitive_word_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_sensitive_word_log` (
+  `id` bigint NOT NULL COMMENT '日志ID（雪花算法，全局唯一）',
+  `trigger_field` varchar(50) NOT NULL COMMENT '触发敏感词的字段（如companyName）',
+  `sensitive_word` varchar(100) NOT NULL COMMENT '识别到的敏感词',
+  `operator_id` bigint DEFAULT '0' COMMENT '操作人ID',
+  `operator_name` varchar(50) DEFAULT '' COMMENT '操作人姓名',
+  `request_ip` varchar(39) DEFAULT '' COMMENT '请求IP地址（兼容IPv4/IPv6）',
+  `request_url` varchar(255) DEFAULT '' COMMENT '触发接口URL',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '状态（1：拦截 0：替换）',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间（分区字段）',
+  PRIMARY KEY (`id`,`create_time`),
+  KEY `idx_create_time_sensitive` (`create_time`,`sensitive_word`),
+  KEY `idx_create_time_field` (`create_time`,`trigger_field`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='敏感词拦截/替换日志表'
+/*!50100 PARTITION BY RANGE (to_days(`create_time`))
+(PARTITION p202501 VALUES LESS THAN (739648) ENGINE = InnoDB,
+ PARTITION p202502 VALUES LESS THAN (739676) ENGINE = InnoDB,
+ PARTITION p202503 VALUES LESS THAN (739707) ENGINE = InnoDB,
+ PARTITION p202504 VALUES LESS THAN (739737) ENGINE = InnoDB,
+ PARTITION p202505 VALUES LESS THAN (739768) ENGINE = InnoDB,
+ PARTITION p202506 VALUES LESS THAN (739798) ENGINE = InnoDB,
+ PARTITION p202507 VALUES LESS THAN (739829) ENGINE = InnoDB,
+ PARTITION p202508 VALUES LESS THAN (739860) ENGINE = InnoDB,
+ PARTITION p202509 VALUES LESS THAN (739890) ENGINE = InnoDB,
+ PARTITION p202510 VALUES LESS THAN (739921) ENGINE = InnoDB,
+ PARTITION p202511 VALUES LESS THAN (739951) ENGINE = InnoDB,
+ PARTITION p202512 VALUES LESS THAN (739982) ENGINE = InnoDB,
+ PARTITION p_future VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_sensitive_word_log`
+--
+
+LOCK TABLES `sys_sensitive_word_log` WRITE;
+/*!40000 ALTER TABLE `sys_sensitive_word_log` DISABLE KEYS */;
+INSERT INTO `sys_sensitive_word_log` VALUES (1987051439779135489,'companyName','测试敏感词1',1,'admin','10.11.7.128','/tenant',1,'2025-11-08 14:55:55'),(1988141983326466049,'companyName','特殊@敏感词',1,'admin','10.11.7.128','/tenant',1,'2025-11-11 15:09:21'),(1991348857345613825,'companyName','测试敏感词1',1,'admin','10.11.7.128','/tenant',1,'2025-11-20 11:32:20'),(1991348880384925697,'companyName','测试敏感词1',1,'admin','10.11.7.128','/tenant',1,'2025-11-20 11:32:25'),(1991348883320938498,'companyName','测试敏感词1',1,'admin','10.11.7.128','/tenant',1,'2025-11-20 11:32:26'),(1994702660383981569,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 17:39:09'),(1994703270797819906,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 17:41:34'),(1994703278825717762,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 17:41:36'),(1994703285779873793,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 17:41:38'),(1994705392226459650,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 17:50:00'),(1994705411264405505,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 17:50:05'),(1994709725475201026,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 18:07:13'),(1994709732727152642,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 18:07:15'),(1994709792995106818,'mq_message','测试敏感词1',NULL,'MQ消费者','127.0.0.1','/mq/consumer',0,'2025-11-29 18:07:29'),(1998409180913307649,'mq_message','特殊@敏感词',NULL,'MQ消费者','127.0.0.1','/mq/consumer',1,'2025-12-09 23:07:32'),(1998736752779886593,'mq_message','特殊@敏感词',NULL,'MQ消费者','127.0.0.1','/mq/consumer',1,'2025-12-10 20:49:11'),(1998737771316297729,'mq_message','特殊@敏感词',NULL,'MQ消费者','127.0.0.1','/mq/consumer',1,'2025-12-10 20:53:14'),(1998737778182356993,'mq_message','特殊@敏感词',NULL,'MQ消费者','127.0.0.1','/mq/consumer',1,'2025-12-10 20:53:16'),(1998963794536480770,'mq_message','特殊@敏感词',NULL,'MQ消费者','127.0.0.1','/mq/consumer',1,'2025-12-11 11:51:22'),(1998963797606694913,'mq_message','特殊@敏感词',NULL,'MQ消费者','127.0.0.1','/mq/consumer',1,'2025-12-11 11:51:23'),(1998982636276989954,'mq_message','特殊@敏感词',NULL,'MQ消费者','127.0.0.1','/mq/consumer',1,'2025-12-11 13:06:14'),(2001186258079342594,'companyName','毒品',1,'admin','10.11.7.128','/tenant',1,'2025-12-17 15:02:39'),(2001190141417656321,'companyName','毒品',1,'admin','10.11.7.128','/tenant',1,'2025-12-17 15:18:05');
+/*!40000 ALTER TABLE `sys_sensitive_word_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_social`
+--
+
+DROP TABLE IF EXISTS `sys_social`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_social` (
+  `id` bigint NOT NULL COMMENT '主键',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户id',
+  `auth_id` varchar(255) NOT NULL COMMENT '平台+平台唯一id',
+  `source` varchar(255) NOT NULL COMMENT '用户来源',
+  `open_id` varchar(255) DEFAULT NULL COMMENT '平台编号唯一id',
+  `user_name` varchar(30) NOT NULL COMMENT '登录账号',
+  `nick_name` varchar(30) DEFAULT '' COMMENT '用户昵称',
+  `email` varchar(255) DEFAULT '' COMMENT '用户邮箱',
+  `avatar` varchar(500) DEFAULT '' COMMENT '头像地址',
+  `access_token` varchar(2000) NOT NULL COMMENT '用户的授权令牌',
+  `expire_in` int DEFAULT NULL COMMENT '用户的授权令牌的有效期，部分平台可能没有',
+  `refresh_token` varchar(2000) DEFAULT NULL COMMENT '刷新令牌，部分平台可能没有',
+  `access_code` varchar(255) DEFAULT NULL COMMENT '平台的授权信息，部分平台可能没有',
+  `union_id` varchar(255) DEFAULT NULL COMMENT '用户的 unionid',
+  `scope` varchar(255) DEFAULT NULL COMMENT '授予的权限，部分平台可能没有',
+  `token_type` varchar(255) DEFAULT NULL COMMENT '个别平台的授权信息，部分平台可能没有',
+  `id_token` varchar(2000) DEFAULT NULL COMMENT 'id token，部分平台可能没有',
+  `mac_algorithm` varchar(255) DEFAULT NULL COMMENT '小米平台用户的附带属性，部分平台可能没有',
+  `mac_key` varchar(255) DEFAULT NULL COMMENT '小米平台用户的附带属性，部分平台可能没有',
+  `code` varchar(255) DEFAULT NULL COMMENT '用户的授权code，部分平台可能没有',
+  `oauth_token` varchar(255) DEFAULT NULL COMMENT 'Twitter平台用户的附带属性，部分平台可能没有',
+  `oauth_token_secret` varchar(255) DEFAULT NULL COMMENT 'Twitter平台用户的附带属性，部分平台可能没有',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='社会化关系表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_social`
+--
+
+LOCK TABLES `sys_social` WRITE;
+/*!40000 ALTER TABLE `sys_social` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sys_social` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_tenant`
+--
+
+DROP TABLE IF EXISTS `sys_tenant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_tenant` (
+  `id` bigint NOT NULL COMMENT 'id',
+  `tenant_id` varchar(20) NOT NULL COMMENT '租户编号',
+  `contact_user_name` varchar(20) DEFAULT NULL COMMENT '联系人',
+  `contact_phone` varchar(20) DEFAULT NULL COMMENT '联系电话',
+  `company_name` varchar(30) DEFAULT NULL COMMENT '企业名称',
+  `license_number` varchar(30) DEFAULT NULL COMMENT '统一社会信用代码',
+  `address` varchar(200) DEFAULT NULL COMMENT '地址',
+  `intro` varchar(200) DEFAULT NULL COMMENT '企业简介',
+  `domain` varchar(200) DEFAULT NULL COMMENT '域名',
+  `remark` varchar(200) DEFAULT NULL COMMENT '备注',
+  `package_id` bigint DEFAULT NULL COMMENT '租户套餐编号',
+  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
+  `account_count` int DEFAULT '-1' COMMENT '用户数量（-1不限制）',
+  `status` char(1) DEFAULT '0' COMMENT '租户状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='租户表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_tenant`
+--
+
+LOCK TABLES `sys_tenant` WRITE;
+/*!40000 ALTER TABLE `sys_tenant` DISABLE KEYS */;
+INSERT INTO `sys_tenant` VALUES (1,'000000','管理组','15888888888','XXX有限公司',NULL,NULL,'多租户通用后台管理管理系统',NULL,NULL,NULL,NULL,-1,'0','0',103,1,'2025-10-25 12:31:58',NULL,NULL),(1983716893075607553,'898509','12','1212','66色2323情444332','','','','','',1982714866774216706,NULL,0,'0','1',103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:49'),(1983726214786228225,'180427','34343','343434','毒——品','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40'),(1983726284235513857,'380976','2323','2323','毒1品','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57'),(1983726698230095874,'234087','23232','23232','毒B品','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35'),(1983726841964699649,'751666','2323','2323','毒qq品','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10'),(1983729609425190914,'715928','2323','23232','ni毒edrfgdfgdfgdfg品','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-10-30 10:56:09',1,'2025-10-30 10:56:09'),(1983729778287869953,'279445','23424','34343','毒————品——','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50'),(1983734804322381826,'473381','23232','32323','毒@#@品','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48'),(1986691028680695810,'505898','RTYRTYR','RTYRTYR','RTYRTY','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-11-07 15:03:47',1,'2025-11-07 15:03:47'),(2001190142013247489,'863903','1231','12312312','/**','','','','','',1982714866774216706,NULL,0,'0','0',103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05');
+/*!40000 ALTER TABLE `sys_tenant` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_tenant_package`
+--
+
+DROP TABLE IF EXISTS `sys_tenant_package`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_tenant_package` (
+  `package_id` bigint NOT NULL COMMENT '租户套餐id',
+  `package_name` varchar(20) DEFAULT NULL COMMENT '套餐名称',
+  `menu_ids` varchar(3000) DEFAULT NULL COMMENT '关联菜单id',
+  `remark` varchar(200) DEFAULT NULL COMMENT '备注',
+  `menu_check_strictly` tinyint(1) DEFAULT '1' COMMENT '菜单树选择项是否关联显示',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`package_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='租户套餐表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_tenant_package`
+--
+
+LOCK TABLES `sys_tenant_package` WRITE;
+/*!40000 ALTER TABLE `sys_tenant_package` DISABLE KEYS */;
+INSERT INTO `sys_tenant_package` VALUES (1982714866774216706,'1212','','',1,'0','0',103,1,'2025-10-27 15:43:56',1,'2025-10-27 15:43:56');
+/*!40000 ALTER TABLE `sys_tenant_package` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_user`
+--
+
+DROP TABLE IF EXISTS `sys_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_user` (
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
+  `user_name` varchar(30) NOT NULL COMMENT '用户账号',
+  `nick_name` varchar(30) NOT NULL COMMENT '用户昵称',
+  `user_type` varchar(10) DEFAULT 'sys_user' COMMENT '用户类型（sys_user系统用户）',
+  `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',
+  `phonenumber` varchar(11) DEFAULT '' COMMENT '手机号码',
+  `sex` char(1) DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
+  `avatar` bigint DEFAULT NULL COMMENT '头像地址',
+  `password` varchar(100) DEFAULT '' COMMENT '密码',
+  `status` char(1) DEFAULT '0' COMMENT '帐号状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `login_ip` varchar(128) DEFAULT '' COMMENT '最后登录IP',
+  `login_date` datetime DEFAULT NULL COMMENT '最后登录时间',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_user`
+--
+
+LOCK TABLES `sys_user` WRITE;
+/*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
+INSERT INTO `sys_user` VALUES (1,'000000',103,'admin','疯狂的狮子Li','sys_user','crazyLionLi@163.com','15888888888','1',NULL,'$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','10.11.7.128','2025-12-25 11:35:23',103,1,'2025-10-25 12:32:01',-1,'2025-12-25 11:35:23','管理员'),(3,'000000',108,'test','本部门及以下 密码666666','sys_user','','','0',NULL,'$2a$10$b8yUzN0C71sbz.PhNOCgJe.Tu1yWC3RNrTyjSQ8p1W0.aaUXUJ.Ne','0','0','127.0.0.1','2025-10-25 12:32:01',103,1,'2025-10-25 12:32:01',NULL,NULL,''),(4,'000000',102,'test1','仅本人 密码666666','sys_user','','','0',NULL,'$2a$10$b8yUzN0C71sbz.PhNOCgJe.Tu1yWC3RNrTyjSQ8p1W0.aaUXUJ.Ne','0','0','127.0.0.1','2025-10-25 12:32:01',103,1,'2025-10-25 12:32:01',NULL,NULL,''),(1982033075667099649,'000000',NULL,'1212','1212','sys_user','','','0',NULL,'$2a$10$80si8ynCA0pfW/o/UPwWNOxVQcr2De1yjDVonjoWZBzHRHi5vPrau','0','0','',NULL,103,1,'2025-10-25 18:34:44',1,'2025-10-25 18:34:44',''),(1982033836870361090,'000000',NULL,'1025ceshi','1025ceshi','sys_user','','','0',NULL,'$2a$10$1q/e1z.N0RQ1SfP4rTRZXOKedS7eCFbaOzaqwfOXAeAVoj7EmAeQe','0','0','',NULL,103,1,'2025-10-25 18:37:46',1,'2025-10-25 18:37:46',''),(1983716893667004418,'898509',1983716893142716418,'12','12','sys_user','','','0',NULL,'$2a$10$JBDzP6JLygcB1zfKHM2C7.bwu/Mpgi9pfD2KCnj1mPZ.sM6cMhuMu','0','0','',NULL,103,1,'2025-10-30 10:05:38',1,'2025-10-30 10:05:38',NULL),(1983726215323099137,'180427',1983726214853337089,'34343','34343','sys_user','','','0',NULL,'$2a$10$K3vnYej2mOHRDpR71WUZoe5uBHTEGHbylgklXvmzmbsisBrD7IsYq','0','0','',NULL,103,1,'2025-10-30 10:42:40',1,'2025-10-30 10:42:40',NULL),(1983726284696887298,'380976',1983726284298428419,'23232','23232','sys_user','','','0',NULL,'$2a$10$9v3PPCo4WKXRBFMFoEkMwODCP/mC9RMwWRHe7.2SAQ/e9.H1ISFIO','0','0','',NULL,103,1,'2025-10-30 10:42:57',1,'2025-10-30 10:42:57',NULL),(1983726698653720578,'234087',1983726698251067393,'2323','2323','sys_user','','','0',NULL,'$2a$10$eoo4wKb2WiLTg1IJLzfBKOccmuih5l910.47qimOoyktDAme1xx/m','0','0','',NULL,103,1,'2025-10-30 10:44:35',1,'2025-10-30 10:44:35',NULL),(1983726842493181954,'751666',1983726841964699651,'2323','2323','sys_user','','','0',NULL,'$2a$10$Yt1afske/ulcXxKgLSSmx.FwJI8N1Aow9jwag.Jf4nIEhqFj7cpue','0','0','',NULL,103,1,'2025-10-30 10:45:10',1,'2025-10-30 10:45:10',NULL),(1983729609890758658,'715928',1983729609492299778,'3232','3232','sys_user','','','0',NULL,'$2a$10$4AXgcCOBj3e1.4ngvy4ZZeibh9qG2iWJ.pUufpVHk4Z7T/PAGeBP6','0','0','',NULL,103,1,'2025-10-30 10:56:10',1,'2025-10-30 10:56:10',NULL),(1983729778686328833,'279445',1983729778287869955,'4343434','4343434','sys_user','','','0',NULL,'$2a$10$M5Vhc1VK5OxdMOAEctQLne0T.33uw15f1vAC7Lq6xmUA6vlNXCbHO','0','0','',NULL,103,1,'2025-10-30 10:56:50',1,'2025-10-30 10:56:50',NULL),(1983734804917972994,'473381',1983734804456599554,'232323','232323','sys_user','','','0',NULL,'$2a$10$GoJb5sirm5YpMmNz.z1cV.B6abEKZp2gQK7waG649WLP6Iy4jp/3.','0','0','',NULL,103,1,'2025-10-30 11:16:48',1,'2025-10-30 11:16:48',NULL),(1986691036565987329,'505898',1986691029318230017,'TYRTYRTY','TYRTYRTY','sys_user','','','0',NULL,'$2a$10$A0pTLpwgnA5wSBOpha9p/ury6Mqv1JwO1CYEehUrEEDQBix3F9wsy','0','0','',NULL,103,1,'2025-11-07 15:03:49',1,'2025-11-07 15:03:49',NULL),(1988119924387016706,'000000',100,'yan','yanmin','sys_user','','','0',NULL,'$2a$10$b7JNmzX6BilmRGI.4h/cZe/HD.AIkDIwj10fK54QSSac7mB3osJ42','0','0','10.11.7.128','2025-11-20 11:31:07',103,1,'2025-11-11 13:41:42',-1,'2025-11-20 11:31:07',''),(2001190143011491842,'863903',2001190142130688001,'1231231','1231231','sys_user','','','0',NULL,'$2a$10$mmXpQ2W3OSWn5T8yyEtfwe2jpnhhqQZfns5S8hAmEHfyX6.1FaLJC','0','0','',NULL,103,1,'2025-12-17 15:18:05',1,'2025-12-17 15:18:05',NULL);
+/*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_user_post`
+--
+
+DROP TABLE IF EXISTS `sys_user_post`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_user_post` (
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `post_id` bigint NOT NULL COMMENT '岗位ID',
+  PRIMARY KEY (`user_id`,`post_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户与岗位关联表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_user_post`
+--
+
+LOCK TABLES `sys_user_post` WRITE;
+/*!40000 ALTER TABLE `sys_user_post` DISABLE KEYS */;
+INSERT INTO `sys_user_post` VALUES (1,1);
+/*!40000 ALTER TABLE `sys_user_post` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_user_role`
+--
+
+DROP TABLE IF EXISTS `sys_user_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_user_role` (
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  PRIMARY KEY (`user_id`,`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户和角色关联表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_user_role`
+--
+
+LOCK TABLES `sys_user_role` WRITE;
+/*!40000 ALTER TABLE `sys_user_role` DISABLE KEYS */;
+INSERT INTO `sys_user_role` VALUES (1,1),(3,3),(4,4),(1982033075667099649,3),(1982033075667099649,4),(1982033836870361090,3),(1983716893667004418,1983716893075607554),(1983726215323099137,1983726214819782657),(1983726284696887298,1983726284298428418),(1983726698653720578,1983726698246873089),(1983726842493181954,1983726841964699650),(1983729609890758658,1983729609425190915),(1983729778686328833,1983729778287869954),(1983734804917972994,1983734804389490689),(1986691036565987329,1986691029049794562),(1988119924387016706,1988119740642947074),(2001190143011491842,2001190142097133569);
+/*!40000 ALTER TABLE `sys_user_role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `test_demo`
+--
+
+DROP TABLE IF EXISTS `test_demo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `test_demo` (
+  `id` bigint NOT NULL COMMENT '主键',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `dept_id` bigint DEFAULT NULL COMMENT '部门id',
+  `user_id` bigint DEFAULT NULL COMMENT '用户id',
+  `order_num` int DEFAULT '0' COMMENT '排序号',
+  `test_key` varchar(255) DEFAULT NULL COMMENT 'key键',
+  `value` varchar(255) DEFAULT NULL COMMENT '值',
+  `version` int DEFAULT '0' COMMENT '版本',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` bigint DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新人',
+  `del_flag` int DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='测试单表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `test_demo`
+--
+
+LOCK TABLES `test_demo` WRITE;
+/*!40000 ALTER TABLE `test_demo` DISABLE KEYS */;
+INSERT INTO `test_demo` VALUES (1,'000000',102,4,1,'测试数据权限','测试',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(2,'000000',102,3,2,'子节点1','111',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(3,'000000',102,3,3,'子节点2','222',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(4,'000000',108,4,4,'测试数据','demo',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(5,'000000',108,3,13,'子节点11','1111',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(6,'000000',108,3,12,'子节点22','2222',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(7,'000000',108,3,11,'子节点33','3333',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(8,'000000',108,3,10,'子节点44','4444',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(9,'000000',108,3,9,'子节点55','5555',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(10,'000000',108,3,8,'子节点66','6666',0,103,'2025-10-25 12:33:08',1,NULL,NULL,0),(11,'000000',108,3,7,'子节点77','7777',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(12,'000000',108,3,6,'子节点88','8888',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(13,'000000',108,3,5,'子节点99','9999',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0);
+/*!40000 ALTER TABLE `test_demo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `test_tree`
+--
+
+DROP TABLE IF EXISTS `test_tree`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `test_tree` (
+  `id` bigint NOT NULL COMMENT '主键',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `parent_id` bigint DEFAULT '0' COMMENT '父id',
+  `dept_id` bigint DEFAULT NULL COMMENT '部门id',
+  `user_id` bigint DEFAULT NULL COMMENT '用户id',
+  `tree_name` varchar(255) DEFAULT NULL COMMENT '值',
+  `version` int DEFAULT '0' COMMENT '版本',
+  `create_dept` bigint DEFAULT NULL COMMENT '创建部门',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` bigint DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` bigint DEFAULT NULL COMMENT '更新人',
+  `del_flag` int DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='测试树表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `test_tree`
+--
+
+LOCK TABLES `test_tree` WRITE;
+/*!40000 ALTER TABLE `test_tree` DISABLE KEYS */;
+INSERT INTO `test_tree` VALUES (1,'000000',0,102,4,'测试数据权限',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(2,'000000',1,102,3,'子节点1',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(3,'000000',2,102,3,'子节点2',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(4,'000000',0,108,4,'测试树1',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(5,'000000',4,108,3,'子节点11',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(6,'000000',4,108,3,'子节点22',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(7,'000000',4,108,3,'子节点33',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(8,'000000',5,108,3,'子节点44',0,103,'2025-10-25 12:33:09',1,NULL,NULL,0),(9,'000000',6,108,3,'子节点55',0,103,'2025-10-25 12:33:10',1,NULL,NULL,0),(10,'000000',7,108,3,'子节点66',0,103,'2025-10-25 12:33:10',1,NULL,NULL,0),(11,'000000',7,108,3,'子节点77',0,103,'2025-10-25 12:33:10',1,NULL,NULL,0),(12,'000000',10,108,3,'子节点88',0,103,'2025-10-25 12:33:10',1,NULL,NULL,0),(13,'000000',10,108,3,'子节点99',0,103,'2025-10-25 12:33:10',1,NULL,NULL,0);
+/*!40000 ALTER TABLE `test_tree` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `undo_log`
+--
+
+DROP TABLE IF EXISTS `undo_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `undo_log` (
+  `branch_id` bigint NOT NULL COMMENT 'branch transaction id',
+  `xid` varchar(100) NOT NULL COMMENT 'global transaction id',
+  `context` varchar(128) NOT NULL COMMENT 'undo_log context,such as serialization',
+  `rollback_info` longblob NOT NULL COMMENT 'rollback info',
+  `log_status` int NOT NULL COMMENT '0:normal status,1:defense status',
+  `log_created` datetime(6) NOT NULL COMMENT 'create datetime',
+  `log_modified` datetime(6) NOT NULL COMMENT 'modify datetime',
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='AT transaction mode undo table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `undo_log`
+--
+
+LOCK TABLES `undo_log` WRITE;
+/*!40000 ALTER TABLE `undo_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `undo_log` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-27 16:24:38
