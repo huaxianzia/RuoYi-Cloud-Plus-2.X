@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: ruoyi-sensitive  # 模块名称（固定，与Nacos中dataId对应）
+  profiles:
+    active: dev  # 写死环境为dev（开发环境）
+  cloud:
+    nacos:
+      # Nacos服务器地址（写死，根据你的实际部署地址修改，默认本地是localhost:8848）
+      server-addr: localhost:8848
+      # Nacos登录账号（默认是nacos，若改过则写实际值）
+      username: nacos
+      # Nacos登录密码（默认是nacos，若改过则写实际值）
+      password: nacos
+      discovery:
+        # 服务注册分组（写死，默认是DEFAULT_GROUP）
+        group: DEFAULT_GROUP
+        # 命名空间（写死为dev，与spring.profiles.active一致）
+        namespace: dev
+      config:
+        # 配置文件分组（写死，默认是DEFAULT_GROUP）
+        group: DEFAULT_GROUP
+        # 命名空间（写死为dev，与环境一致）
+        namespace: dev
+        # 配置文件格式（固定为yml）
+        file-extension: yml
+  # 核心：写死Nacos配置文件的定位信息（dataId、group、namespace）
+  config:
+    import: "nacos:ruoyi-sensitive.yml?group=DEFAULT_GROUP&namespace=dev"
+    # 关闭配置导入检查（避免无配置时额外报错）
+    import-check:
+      enabled: false
+
+  mybatis-plus:
+  # 关键：添加子目录sensitive的扫描，与你的XML路径匹配
+  mapper-locations: classpath:mapper/**/*.xml  # 用**匹配所有子目录
+  configuration:
+    map-underscore-to-camel-case: true  # 确保字段映射正确
