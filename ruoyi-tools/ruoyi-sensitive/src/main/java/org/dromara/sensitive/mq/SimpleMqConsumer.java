@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
+ * 仅测试，之后还是使用自带的
  * RabbitMQ 消费者（监听消息 → 敏感词识别 → 记录日志）
  * 适配现有 SensitiveWordUtils 工具类（check() 方法）
  * 存放位置：org/dromara/sensitive/mq/SimpleMqConsumer.java
