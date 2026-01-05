@@ -1,7 +1,7 @@
 package org.dromara.sensitive.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.StrUtil; // 导入Hutool的字符串工具类
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,161 +26,114 @@ public class SysSensitiveWordServiceImpl extends ServiceImpl<SysSensitiveWordMap
 
     private final SysSensitiveWordMapper sensitiveWordMapper;
 
-    // ========== 原有方法（无修改） ==========
     @Override
     public List<SysSensitiveWord> selectEnabledSensitiveWords() {
-        LambdaQueryWrapper<SysSensitiveWord> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysSensitiveWord::getStatus, 0); // 0=启用（Integer类型）
-        return sensitiveWordMapper.selectList(queryWrapper);
+        return sensitiveWordMapper.selectList(
+            Wrappers.<SysSensitiveWord>lambdaQuery().eq(SysSensitiveWord::getStatus, 0)
+        );
+    }
+
+    @Override
+    public TableDataInfo<SysSensitiveWordVo> selectPageList(SysSensitiveWordBo bo) {
+        Page<SysSensitiveWord> page = sensitiveWordMapper.selectPage(new Page<>(bo.getPageNum(), bo.getPageSize()), buildQueryWrapper(bo));
+        return TableDataInfo.build(page.convert(this::convertVo));
+    }
+
+    @Override
+    public List<SysSensitiveWordVo> selectList(SysSensitiveWordBo bo) {
+        List<SysSensitiveWord> list = sensitiveWordMapper.selectList(buildQueryWrapper(bo));
+        return BeanUtil.copyToList(list, SysSensitiveWordVo.class);
+    }
+
+    @Override
+    public SysSensitiveWordVo selectVoById(Long id) {
+        return convertVo(getById(id));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysSensitiveWordBo bo) {
-        // 校验敏感词是否已存在
-        if (exists(new LambdaQueryWrapper<SysSensitiveWord>().eq(SysSensitiveWord::getWord, bo.getWord()))) {
-            throw new ServiceException("敏感词【" + bo.getWord() + "】已存在，请勿重复添加");
+        if (checkWordUnique(bo.getWord(), null)) {
+            throw new ServiceException("敏感词【" + bo.getWord() + "】已存在");
         }
-        // BO转实体
         SysSensitiveWord sensitiveWord = BeanUtil.toBean(bo, SysSensitiveWord.class);
-        // 填充创建人（替换为项目实际登录工具类）
-        sensitiveWord.setCreateBy(getLoginUserId().toString());
+        sensitiveWord.setCreateBy(getLoginUserIdStr());
         return save(sensitiveWord);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysSensitiveWordBo bo) {
-        // 校验ID是否存在
         SysSensitiveWord oldWord = getById(bo.getId());
         if (oldWord == null) {
-            throw new ServiceException("敏感词不存在，无法修改");
+            throw new ServiceException("敏感词不存在");
         }
-        // 校验敏感词内容重复（排除自身）
-        if (exists(new LambdaQueryWrapper<SysSensitiveWord>()
-            .eq(SysSensitiveWord::getWord, bo.getWord())
-            .ne(SysSensitiveWord::getId, bo.getId()))) {
-            throw new ServiceException("敏感词【" + bo.getWord() + "】已存在，请勿重复修改");
+        if (checkWordUnique(bo.getWord(), bo.getId())) {
+            throw new ServiceException("敏感词【" + bo.getWord() + "】已存在");
         }
-        // BO转实体
         SysSensitiveWord sensitiveWord = BeanUtil.toBean(bo, SysSensitiveWord.class);
-        sensitiveWord.setUpdateBy(getLoginUserId().toString());
+        sensitiveWord.setUpdateBy(getLoginUserIdStr());
         return updateById(sensitiveWord);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateStatusById(Long id, Integer status) {
-        // 校验状态合法性（Integer类型：0=启用，1=禁用）
         if (status == null || (status != 0 && status != 1)) {
-            throw new ServiceException("状态值非法，仅支持0（启用）/1（禁用）");
+            throw new ServiceException("状态值非法");
         }
-        // 校验ID存在
-        SysSensitiveWord sensitiveWord = getById(id);
-        if (sensitiveWord == null) {
-            throw new ServiceException("敏感词不存在，无法修改状态");
+        SysSensitiveWord exist = getById(id);
+        if (exist == null) {
+            throw new ServiceException("敏感词不存在");
         }
-        // 更新状态
-        sensitiveWord.setStatus(status);
-        sensitiveWord.setUpdateBy(getLoginUserId().toString());
-        return updateById(sensitiveWord);
+        exist.setStatus(status);
+        exist.setUpdateBy(getLoginUserIdStr());
+        return updateById(exist);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) {
-            throw new ServiceException("请选择要删除的敏感词");
+            throw new ServiceException("请选择要删除的数据");
         }
-        // 校验ID是否存在
-        List<SysSensitiveWord> wordList = listByIds(ids);
-        if (wordList.size() != ids.size()) {
-            throw new ServiceException("部分敏感词不存在，删除失败");
+        // 校验逻辑可根据业务需求保留或简化，这里保持原逻辑严格性
+        if (listByIds(ids).size() != ids.size()) {
+            throw new ServiceException("部分数据不存在，删除失败");
         }
         return removeByIds(ids);
     }
 
-    // ========== 修复分页查询方法（核心修改） ==========
-    @Override
-    public TableDataInfo<SysSensitiveWordVo> selectPageList(SysSensitiveWordBo bo) {
-        // 1. 直接构建MyBatis-Plus分页对象
-        Page<SysSensitiveWord> page = new Page<>(bo.getPageNum(), bo.getPageSize());
-        // 2. 构建查询条件
-        LambdaQueryWrapper<SysSensitiveWord> queryWrapper = buildQueryWrapper(bo);
-
-        // ========== 调试用：打印SQL（生产环境可删除） ==========
-        // System.out.println("=== 敏感词查询SQL ===" + sensitiveWordMapper.getSqlRunner().sqlSelect(queryWrapper));
-
-        // 3. 执行分页查询
-        sensitiveWordMapper.selectPage(page, queryWrapper);
-        // 4. 实体转VO并封装分页结果
-        return TableDataInfo.build(page.convert(this::convertVo));
-    }
-
-    @Override
-    public List<SysSensitiveWordVo> selectList(SysSensitiveWordBo bo) {
-        LambdaQueryWrapper<SysSensitiveWord> queryWrapper = buildQueryWrapper(bo);
-        return sensitiveWordMapper.selectList(queryWrapper)
-            .stream()
-            .map(this::convertVo)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public SysSensitiveWordVo selectVoById(Long id) {
-        SysSensitiveWord sensitiveWord = sensitiveWordMapper.selectById(id);
-        return convertVo(sensitiveWord);
-    }
-
-    // ========== 私有辅助方法（核心修改：替换为Hutool的StrUtil） ==========
     /**
-     * 构建查询条件（增强空值+合法性判断，兼容所有环境）
+     * 构建查询条件 (链式调用，简洁明了)
      */
     private LambdaQueryWrapper<SysSensitiveWord> buildQueryWrapper(SysSensitiveWordBo bo) {
-        LambdaQueryWrapper<SysSensitiveWord> queryWrapper = Wrappers.lambdaQuery();
-
-        // 1. 模糊查询：敏感词内容（仅非空且非空白时筛选，用Hutool的StrUtil）
-        if (StrUtil.isNotBlank(bo.getWord())) {
-            queryWrapper.like(SysSensitiveWord::getWord, StrUtil.trim(bo.getWord()));
-        }
-
-        // 2. 模糊查询：备注（仅非空且非空白时筛选，用Hutool的StrUtil）
-        if (StrUtil.isNotBlank(bo.getRemark())) {
-            queryWrapper.like(SysSensitiveWord::getRemark, StrUtil.trim(bo.getRemark()));
-        }
-
-        // 3. 状态筛选：仅当status为0/1时才添加筛选（否则查全部）
-        if (bo.getStatus() != null && (bo.getStatus() == 0 || bo.getStatus() == 1)) {
-            queryWrapper.eq(SysSensitiveWord::getStatus, bo.getStatus());
-        }
-
-        // 4. 时间范围：创建时间（仅开始+结束都非空时筛选）
-        if (bo.getBeginTime() != null && bo.getEndTime() != null) {
-            queryWrapper.between(SysSensitiveWord::getCreateTime, bo.getBeginTime(), bo.getEndTime());
-        }
-
-        // 5. 排序：创建时间倒序
-        queryWrapper.orderByDesc(SysSensitiveWord::getCreateTime);
-
-        return queryWrapper;
+        return Wrappers.<SysSensitiveWord>lambdaQuery()
+            .like(StrUtil.isNotBlank(bo.getWord()), SysSensitiveWord::getWord, bo.getWord())
+            .like(StrUtil.isNotBlank(bo.getRemark()), SysSensitiveWord::getRemark, bo.getRemark())
+            .eq(bo.getStatus() != null, SysSensitiveWord::getStatus, bo.getStatus())
+            .between(bo.getBeginTime() != null && bo.getEndTime() != null, SysSensitiveWord::getCreateTime, bo.getBeginTime(), bo.getEndTime())
+            .orderByDesc(SysSensitiveWord::getCreateTime);
     }
 
     /**
-     * 实体转VO
+     * 校验敏感词唯一性
+     * @param word 敏感词
+     * @param excludeId 需要排除的ID（修改时使用）
+     * @return true=已存在
      */
-    private SysSensitiveWordVo convertVo(SysSensitiveWord sensitiveWord) {
-        if (sensitiveWord == null) {
-            return null;
-        }
-        return BeanUtil.toBean(sensitiveWord, SysSensitiveWordVo.class);
+    private boolean checkWordUnique(String word, Long excludeId) {
+        return exists(Wrappers.<SysSensitiveWord>lambdaQuery()
+            .eq(SysSensitiveWord::getWord, word)
+            .ne(excludeId != null, SysSensitiveWord::getId, excludeId));
     }
 
-    /**
-     * 获取当前登录用户ID（替换为项目实际工具类）
-     */
-    private Long getLoginUserId() {
-        // 示例：Sa-Token获取登录ID（实际替换为项目真实逻辑）
-        // return StpUtil.getLoginIdAsLong();
-        return 1L; // 测试用占位
+    private SysSensitiveWordVo convertVo(SysSensitiveWord entity) {
+        return entity == null ? null : BeanUtil.toBean(entity, SysSensitiveWordVo.class);
+    }
+
+    // 建议：实际项目中建议使用 LoginHelper.getUserId()，这里仅作兼容
+    private String getLoginUserIdStr() {
+        return "1";
     }
 }
