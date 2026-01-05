@@ -1,0 +1,56 @@
+server:
+  port: 8088  # 已改为未被占用的端口，直接使用
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          type: com.zaxxer.hikari.HikariDataSource
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/ry-cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+          username: root
+          password: 123456
+  # 新增 RabbitMQ 配置（和datasource同级）
+  rabbitmq:
+    host: localhost       # RabbitMQ服务地址（本地测试用）
+    port: 5672            # RabbitMQ默认通信端口
+    username: guest       # RabbitMQ默认账号（生产环境建议修改）
+    password: guest       # RabbitMQ默认密码（生产环境建议修改）
+    virtual-host: /       # 默认虚拟主机
+    listener:
+      simple:
+        acknowledge-mode: manual  # 手动ACK确认（匹配消费者手动确认逻辑）
+        prefetch: 1               # 每次只取1条消息（避免消息堆积）
+        concurrency: 1            # 消费者并发数（测试环境1即可）
+        max-concurrency: 5        # 最大并发数（生产可调整）
+        retry:
+          enabled: true           # 开启消费重试（可选，异常时重试）
+          max-attempts: 3         # 最大重试次数
+          initial-interval: 1000  # 重试间隔（1秒）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ruoyi123
+      timeout: 3000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+
+redisson:
+  singleServerConfig:
+    password: ruoyi123
+    address: redis://localhost:6379
+
+mybatis-plus:
+  mapperPackage: org.dromara.sensitive.mapper
+  type-aliases-package: org.dromara.sensitive.domain
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
