@@ -1,27 +1,86 @@
-# 安全配置
-security:
-  # 不校验白名单
-  ignore:
-    whites:
-      - /auth/code
-      - /auth/logout
-      - /auth/login
-      - /auth/binding/*
-      - /auth/register
-      - /auth/tenant/list
-      - /resource/sms/code
-      - /resource/sse/close
-      - /*/v3/api-docs
-      - /*/error
-      - /csrf
-      - /warm-flow-ui/**
+server:
+  # undertow 配置
+  undertow:
+    max-http-post-size: -1
+    buffer-size: 512
+    direct-buffers: true
+    threads:
+      io: 8
+      worker: 256
+
+dubbo:
+  application:
+    qos-enable: false
+  protocol:
+    name: dubbo
+    port: -1  # 自动分配端口
+  consumer:
+    timeout: 3000  # 消费超时时间
+  metadata-report:
+    cluster: false
+    parameters:
+      backup: 127.0.0.1:6379,127.0.0.1:6381  # redis备份节点
+  custom:
+    request-log: true  # 开启请求日志
+    log-level: info  # 日志级别
 
 spring:
+  threads:
+    virtual:
+      enabled: false  # 关闭虚拟线程（按需开启）
+  task:
+    execution:
+      thread-name-prefix: async-  # 异步线程名前缀
+      mode: force  # 强制使用线程池
+  # 资源信息
+  messages:
+    basename: i18n/messages  # 国际化配置
+  servlet:
+    multipart:
+      max-request-size: 20MB  # 最大请求大小
+      max-file-size: 10MB  # 最大文件大小
+  mvc:
+    static-path-pattern: /static/**  # 静态资源路径
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss  # 日期时间格式
+  # jackson配置（JSON序列化）
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      INDENT_OUTPUT: false  # 不格式化输出
+      fail_on_empty_beans: false  # 允许空对象序列化
+    deserialization:
+      fail_on_unknown_properties: false  # 忽略未知属性
+  # 排除数据源自动配置（网关无需数据库）
+  autoconfigure:
+    exclude:
+      - com.baomidou.dynamic.datasource.autoconfigure.DynamicDataSourceAutoConfiguration
+      - com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.actuate.autoconfigure.jdbc.DataSourceHealthContributorAutoConfiguration
   cloud:
-    # 网关配置
+    inetutils:
+      preferred-networks:  # 优先网络（按需配置内网IP段）
+      # - 192.168
+      # - 10.0
+    nacos:
+      server-addr: localhost:8848  # Nacos服务地址
+      username: nacos  # Nacos用户名（默认nacos，按需修改）
+      password: nacos  # Nacos密码（默认nacos，按需修改）
+      discovery:
+        group: DEFAULT_GROUP  # 服务发现分组
+        metadata:
+          username: ruoyi
+          userpassword: 123456
+      config:
+        group: DEFAULT_GROUP  # 配置中心分组
+        file-extension: yml  # 配置文件格式
+    bus:
+      id: ${spring.application.name}  # 总线ID
+      base-packages: org.dromara.**.event  # 事件扫描包
+    # 网关核心路由配置（新增敏感词服务路由）
     gateway:
-      # 打印请求日志(自定义)
-      requestLog: true
+      requestLog: true  # 打印请求日志（自定义）
       server:
         webflux:
           discovery:
@@ -43,13 +102,19 @@ spring:
                 - Path=/tool/**
               filters:
                 - StripPrefix=1
-            # 系统模块
-            - id: ruoyi-system
+            # 系统模块-主路由（保留原有路径截断，兼容旧接口）
+            - id: ruoyi-system-main
               uri: lb://ruoyi-system
               predicates:
                 - Path=/system/**,/monitor/**
               filters:
-                - StripPrefix=1
+                - StripPrefix=1 # 截断第一个层级，如/system/user → /user
+            # 系统模块-测试路由
+            - id: ruoyi-system-test
+              uri: lb://ruoyi-system
+              predicates:
+                - Path=/test/mq/sensitive/**
+              # 无StripPrefix，默认完整转发路径
             # 资源服务
             - id: ruoyi-resource
               uri: lb://ruoyi-resource
@@ -83,3 +148,191 @@ spring:
                 - Path=/test-mq/**
               filters:
                 - StripPrefix=1
+            # 新增：敏感词服务路由（解决/sensitive/log/list 404问题）
+            - id: ruoyi-sensitive
+              uri: lb://ruoyi-sensitive  # 敏感词服务名（需与Nacos注册的服务名一致）
+              predicates:
+                - Path=/sensitive/**  # 匹配所有以/sensitive开头的路径
+              filters:
+              #- StripPrefix=1  # 截断路径中的/sensitive，转发为/log/list到服务端
+  # redis配置（敏感词库、缓存等依赖）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ruoyi123  # 你的Redis密码
+      database: 0  # 数据库索引
+      timeout: 10000  # 连接超时时间（毫秒）
+      ssl:
+        enabled: false  # 关闭SSL
+
+# 敏感词功能配置（确保启用并正确加载）
+sensitive:
+  enable: true  # 必须开启，否则敏感词库不加载
+  replace-char: '*'  # 敏感词替换字符（如"测试"→"**"）
+  init-load: true  # 启动时加载敏感词库
+  refresh-interval: 300  # 定时刷新间隔（秒，可选）
+
+# redisson配置（分布式锁、缓存等）
+redisson:
+  keyPrefix: "ruoyi:"  # 键前缀（避免冲突）
+  threads: 4  # 业务线程池大小
+  nettyThreads: 8  # Netty线程池大小
+  singleServerConfig:
+    clientName: ${spring.application.name}  # 客户端名称
+    connectionMinimumIdleSize: 8  # 最小空闲连接数
+    connectionPoolSize: 32  # 连接池大小
+    idleConnectionTimeout: 10000  # 空闲连接超时（毫秒）
+    timeout: 3000  # 操作超时（毫秒）
+    subscriptionConnectionPoolSize: 50  # 订阅连接池大小
+
+# 分布式锁 lock4j 配置
+lock4j:
+  acquire-timeout: 3000  # 获取锁超时时间（毫秒）
+  expire: 30000  # 锁过期时间（毫秒）
+
+# 监控端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  # 暴露所有端点
+  endpoint:
+    health:
+      show-details: ALWAYS  # 健康检查显示详情
+    logfile:
+      external-file: ./logs/${spring.application.name}/console.log  # 日志文件路径
+  health:
+    db:
+      enabled: false  # 关闭数据库健康检查（按需开启）
+    rabbit:
+      enabled: false  # 已删除RabbitMQ，关闭其健康检查
+
+# 日志配置
+logging:
+  level:
+    org.springframework: warn  # Spring框架日志级别
+    org.springframework.cloud.gateway: DEBUG  # 网关调试日志（便于追踪路由）
+    org.apache.dubbo: error
+    com.alibaba.nacos: error
+    org.mybatis.spring.mapper: error
+    org.dromara.system.controller.TestMqSensitiveController: INFO  # 测试接口日志级别
+  config: classpath:logback-plus.xml  # 日志配置文件
+
+# Sa-Token配置（认证授权）
+sa-token:
+  token-name: Authorization  # 令牌名称
+  check-same-token: true  # 检查同一令牌是否重复登录
+  is-concurrent: true  # 允许并发登录
+  is-share: false  # 不共享令牌
+  jwt-secret-key: abcdefghijklmnopqrstuvwxyz  # JWT密钥（生产环境需修改）
+  exclude-path-patterns:  # 排除认证的路径（测试接口无需登录）
+    - /test/mq/sensitive/**
+    - /login
+    - /doc.html
+    - /swagger-ui/**
+    - /v3/api-docs/**
+
+# MyBatisPlus配置
+mybatis-plus:
+  enable: false  # 禁用MyBatisPlus（网关无需ORM）
+  enableLogicDelete: true  # 启用逻辑删除（仅为保留配置，实际未使用）
+  mapperPackage: org.dromara.**.mapper  # Mapper接口包路径
+  mapperLocations: classpath*:mapper/**/*Mapper.xml  # Mapper.xml路径
+  typeAliasesPackage: org.dromara.**.domain  # 实体类别名包
+  global-config:
+    dbConfig:
+      idType: ASSIGN_ID  # ID生成策略（雪花算法）
+
+# 数据加密配置（按需开启）
+mybatis-encryptor:
+  enable: false  # 关闭加密（如需加密可开启）
+  algorithm: BASE64
+  encode: BASE64
+  password:
+  publicKey:
+  privateKey:
+
+# API接口加密配置
+api-decrypt:
+  enabled: true  # 开启接口解密（如需关闭可设为false）
+  headerFlag: encrypt-key  # 加密标识头
+  publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJnNwrj4hi/y3CCJu868ghCG5dUj8wZK++RNlTLcXoMmdZWEQ/u02RgD5LyLAXGjLOjbMtC+/J9qofpSGTKSx/MCAwEAAQ==
+  privateKey: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAqhHyZfSsYourNxaY7Nt+PrgrxkiA50efORdI5U5lsW79MmFnusUA355oaSXcLhu5xxB38SMSyP2KvuKNPuH3owIDAQABAkAfoiLyL+Z4lf4Myxk6xUDgLaWGximj20CUf+5BKKnlrK+Ed8gAkM0HqoTt2UZwA5E2MzS4EI2gjfQhz5X28uqxAiEA3wNFxfrCZlSZHb0gn2zDpWowcSxQAgiCstxGUoOqlW8CIQDDOerGKH5OmCJ4Z21v+F25WaHYPxCFMvwxpcw99EcvDQIgIdhDTIqD2jfYjPTY8Jj3EDGPbH2HHuffvflECt3Ek60CIQCFRlCkHpi7hthhYhovyloRYsM+IS9h/0BzlEAuO0ktMQIgSPT3aFAgJYwKpqRYKlLDVcflZFCKY7u3UP8iWi1Qw0Y=
+
+# XSS攻击防护
+xss:
+  enabled: true  # 开启XSS防护
+  excludeUrls:  # 排除XSS检查的路径
+    - /system/notice
+
+# 接口文档配置
+springdoc:
+  api-docs:
+    enabled: true  # 开启接口文档
+  info:
+    title: 'RuoYi-Cloud-Plus微服务权限管理系统_接口文档'
+    description: '包含系统管理、敏感词过滤等模块接口'
+    version: '2.0.0'
+    contact:
+      name: Lion Li
+      email: crazylionli@163.com
+      url: https://gitee.com/dromara/RuoYi-Cloud-Plus
+
+# Seata分布式事务（按需开启）
+seata:
+  enabled: false  # 关闭Seata（如需分布式事务可开启）
+  application-id: ${spring.application.name}
+  tx-service-group: ${spring.application.name}-group
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.server-addr}
+      group: ${spring.cloud.nacos.config.group}
+      namespace: ${spring.profiles.active}
+      username: ${spring.cloud.nacos.username}
+      password: ${spring.cloud.nacos.password}
+      data-id: seata-server.properties
+  registry:
+    type: nacos
+    nacos:
+      application: ruoyi-seata-server
+      server-addr: ${spring.cloud.nacos.server-addr}
+      group: ${spring.cloud.nacos.discovery.group}
+      username: ${spring.cloud.nacos.username}
+      password: ${spring.cloud.nacos.password}
+      namespace: ${spring.profiles.active}
+  enable-auto-data-source-proxy: false
+
+# 多租户配置
+tenant:
+  enable: true  # 开启多租户（按需关闭）
+  excludes:  # 租户过滤排除表
+    - sys_menu
+    - sys_tenant
+    - sys_tenant_package
+    - sys_role_dept
+    - sys_role_menu
+    - sys_user_post
+    - sys_user_role
+    - sys_client
+    - sys_oss_config
+    - flow_spel  # 若为笔误，需按实际表名修正（例：flow_spel_config）
+
+# 安全配置
+security:
+  # 不校验白名单
+  ignore:
+    whites:
+      - /auth/code
+      - /auth/logout
+      - /auth/login
+      - /auth/binding/*
+      - /auth/register
+      - /auth/tenant/list
+      - /resource/sms/code
+      - /resource/sse/close
+      - /*/v3/api-docs
+      - /*/error
+      - /warm-flow-ui/**
+      - /test/mq/sensitive/** # 放行敏感词测试接口路径
