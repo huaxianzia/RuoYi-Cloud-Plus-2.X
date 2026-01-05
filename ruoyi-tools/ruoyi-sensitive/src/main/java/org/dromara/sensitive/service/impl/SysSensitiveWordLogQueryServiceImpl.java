@@ -1,8 +1,10 @@
 package org.dromara.sensitive.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.sensitive.domain.SysSensitiveWordLog;
@@ -10,97 +12,59 @@ import org.dromara.sensitive.domain.bo.SysSensitiveWordLogBo;
 import org.dromara.sensitive.domain.vo.SysSensitiveWordLogVo;
 import org.dromara.sensitive.mapper.SysSensitiveWordLogMapper;
 import org.dromara.sensitive.service.ISysSensitiveWordLogQueryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * 敏感词日志查询专用实现类（仅处理查询逻辑，简洁无冗余）
- *
- * @author 你的名字
+ * 敏感词日志查询服务
  */
 @Service
+@RequiredArgsConstructor
 public class SysSensitiveWordLogQueryServiceImpl implements ISysSensitiveWordLogQueryService {
 
-    @Autowired
-    private SysSensitiveWordLogMapper sysSensitiveWordLogMapper;
+    private final SysSensitiveWordLogMapper sensitiveWordLogMapper;
 
     @Override
     public TableDataInfo<SysSensitiveWordLogVo> selectPageList(SysSensitiveWordLogBo bo) {
-        // 1. 构建分页参数（默认页码1，每页10条）
-        Page<SysSensitiveWordLog> page = new Page<>(
-            bo.getPageNum() == null ? 1 : bo.getPageNum(),
-            bo.getPageSize() == null ? 10 : bo.getPageSize()
-        );
+        // 1. 构建分页对象 (处理默认值逻辑建议放在Bo或者前端，此处保持简洁)
+        Page<SysSensitiveWordLog> page = new Page<>(bo.getPageNum(), bo.getPageSize());
 
-        // 2. 构建查询条件（支持多维度筛选）
-        LambdaQueryWrapper<SysSensitiveWordLog> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper
-            // 敏感词模糊查询
-            .like(StringUtils.isNotBlank(bo.getSensitiveWord()), SysSensitiveWordLog::getSensitiveWord, bo.getSensitiveWord())
-            // 触发字段精确查询
-            .eq(StringUtils.isNotBlank(bo.getTriggerField()), SysSensitiveWordLog::getTriggerField, bo.getTriggerField())
-            // 操作人名称模糊查询
-            .like(StringUtils.isNotBlank(bo.getOperatorName()), SysSensitiveWordLog::getOperatorName, bo.getOperatorName())
-            // 操作人ID精确查询
-            .eq(bo.getOperatorId() != null, SysSensitiveWordLog::getOperatorId, bo.getOperatorId())
-            // 状态精确查询（1=拦截，0=替换）
-            .eq(bo.getStatus() != null, SysSensitiveWordLog::getStatus, bo.getStatus())
-            // 时间范围查询
-            .ge(bo.getCreateTimeStart() != null, SysSensitiveWordLog::getCreateTime, bo.getCreateTimeStart())
-            .le(bo.getCreateTimeEnd() != null, SysSensitiveWordLog::getCreateTime, bo.getCreateTimeEnd())
-            // 按创建时间倒序（最新日志在前）
-            .orderByDesc(SysSensitiveWordLog::getCreateTime);
+        // 2. 查询并转换
+        sensitiveWordLogMapper.selectPage(page, buildQueryWrapper(bo));
 
-        // 3. 执行分页查询
-        IPage<SysSensitiveWordLog> iPage = sysSensitiveWordLogMapper.selectPage(page, queryWrapper);
-
-        // 4. 实体转VO（适配前端展示）
-        List<SysSensitiveWordLogVo> voList = iPage.getRecords().stream()
-            .map(this::convertToVo)
-            .collect(Collectors.toList());
-
-        // 5. 封装分页结果
-        return new TableDataInfo<>(voList, iPage.getTotal());
+        // 3. 利用 Page 的 convert 方法配合 BeanUtil 转换，TableDataInfo.build 自动封装总数
+        return TableDataInfo.build(page.convert(this::convertToVo));
     }
 
     @Override
     public List<SysSensitiveWordLogVo> selectList(SysSensitiveWordLogBo bo) {
-        // 复用查询条件逻辑
-        LambdaQueryWrapper<SysSensitiveWordLog> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper
+        List<SysSensitiveWordLog> list = sensitiveWordLogMapper.selectList(buildQueryWrapper(bo));
+        // 使用 Hutool 快速转换列表
+        return BeanUtil.copyToList(list, SysSensitiveWordLogVo.class);
+    }
+
+    /**
+     * 构建通用查询条件（DRY原则：一次编写，到处复用）
+     */
+    private LambdaQueryWrapper<SysSensitiveWordLog> buildQueryWrapper(SysSensitiveWordLogBo bo) {
+        return Wrappers.<SysSensitiveWordLog>lambdaQuery()
             .like(StringUtils.isNotBlank(bo.getSensitiveWord()), SysSensitiveWordLog::getSensitiveWord, bo.getSensitiveWord())
             .eq(StringUtils.isNotBlank(bo.getTriggerField()), SysSensitiveWordLog::getTriggerField, bo.getTriggerField())
             .like(StringUtils.isNotBlank(bo.getOperatorName()), SysSensitiveWordLog::getOperatorName, bo.getOperatorName())
             .eq(bo.getOperatorId() != null, SysSensitiveWordLog::getOperatorId, bo.getOperatorId())
             .eq(bo.getStatus() != null, SysSensitiveWordLog::getStatus, bo.getStatus())
+            // 范围查询：开始时间
             .ge(bo.getCreateTimeStart() != null, SysSensitiveWordLog::getCreateTime, bo.getCreateTimeStart())
+            // 范围查询：结束时间
             .le(bo.getCreateTimeEnd() != null, SysSensitiveWordLog::getCreateTime, bo.getCreateTimeEnd())
             .orderByDesc(SysSensitiveWordLog::getCreateTime);
-
-        // 查询并转VO
-        return sysSensitiveWordLogMapper.selectList(queryWrapper).stream()
-            .map(this::convertToVo)
-            .collect(Collectors.toList());
     }
 
     /**
-     * 实体类转VO（简洁映射，仅保留前端需要的字段）
+     * 单个对象转换
      */
     private SysSensitiveWordLogVo convertToVo(SysSensitiveWordLog entity) {
-        SysSensitiveWordLogVo vo = new SysSensitiveWordLogVo();
-        vo.setId(entity.getId());
-        vo.setTriggerField(entity.getTriggerField());
-        vo.setSensitiveWord(entity.getSensitiveWord());
-        vo.setOperatorId(entity.getOperatorId());
-        vo.setOperatorName(entity.getOperatorName());
-        vo.setRequestIp(entity.getRequestIp());
-        vo.setRequestUrl(entity.getRequestUrl());
-        vo.setStatus(entity.getStatus());
-        vo.setCreateTime(entity.getCreateTime());
-        return vo;
+        return entity == null ? null : BeanUtil.toBean(entity, SysSensitiveWordLogVo.class);
     }
-
 }
