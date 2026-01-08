@@ -7,8 +7,27 @@ spring:
     # 应用名称
     name: ruoyi-test-mq
   profiles:
-    # 环境配置
-    active: @profiles.active@
+    # 环境配置：直接写死为 dev
+    active: dev
+
+# ==========================================
+# 【新增】敏感词配置 (核心！解决启动报错)
+# ==========================================
+sensitive:
+  enable: true        # 必须为 true，否则 SensitiveWordUtils Bean 不会被创建
+  init-load: true     # 启动时加载词库
+  replace-char: '*'   # 敏感词替换字符
+
+# ==========================================
+# 安全配置 (解决 401 认证失败)
+# ==========================================
+security:
+  ignore:
+    whites:
+      - /rabbit/** # 放行 RabbitMQ 测试接口
+      - /kafka/** # 放行 Kafka 测试接口
+      - /rocket/** # 放行 RocketMQ 测试接口
+      - /test/mq/sensitive/** # 放行 敏感词 测试接口
 
 --- # rabbitmq 配置
 spring:
@@ -19,11 +38,17 @@ spring:
     password: guest
     publisher-returns: true
     publisher-confirm-type: correlated
+    listener:
+      simple:
+        # 建议改为 auto (自动签收)，方便测试，避免消息堆积
+        acknowledge-mode: auto
 
 --- # kafka 配置
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+    listener:
+      auto-startup: false # kafka暂关，防止刷屏报错
     consumer:
       group-id: test-group-id # 消费者组ID
       auto-offset-reset: earliest # 当没有偏移量或偏移量无效时，从何处开始消费
@@ -37,29 +62,29 @@ spring:
       # 默认副本数 1 避免单机使用无法创建 topic
       default.replication.factor: 1
 
---- # rocketmq 配置
-rocketmq:
-  name-server: localhost:9876
-  producer:
-    # 生产者组
-    group: dist-test
+--- # rocketmq 配置 (已禁用)
+#rocketmq:
+#  name-server: localhost:9876
+#  producer:
+#    # 生产者组
+#    group: dist-test
 
 --- # nacos 配置
 spring:
   cloud:
     nacos:
-      # nacos 服务地址
-      server-addr: @nacos.server@
-      username: @nacos.username@
-      password: @nacos.password@
+      # nacos 服务地址：直接写死
+      server-addr: localhost:8848
+      username: nacos
+      password: nacos
       discovery:
-        # 注册组
-        group: @nacos.discovery.group@
-        namespace: ${spring.profiles.active}
+        group: DEFAULT_GROUP
+        # 如果你 Nacos 没有建 "dev" 命名空间，建议把下面这行注释掉，使用默认 public 空间
+        # namespace: ${spring.profiles.active}
       config:
-        # 配置组
-        group: @nacos.config.group@
-        namespace: ${spring.profiles.active}
+        group: DEFAULT_GROUP
+        # 如果你 Nacos 没有建 "dev" 命名空间，建议把下面这行注释掉
+        # namespace: ${spring.profiles.active}
   config:
     import:
       - optional:nacos:application-common.yml

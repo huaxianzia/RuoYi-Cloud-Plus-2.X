@@ -17,6 +17,7 @@
 
     <dependencies>
 
+
         <dependency>
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-nacos</artifactId>
@@ -48,6 +49,15 @@
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-web</artifactId>
         </dependency>
+
+
+<!--        <dependency>-->
+<!--            <groupId>org.dromara</groupId>-->
+<!--            <artifactId>ruoyi-sensitive</artifactId>-->
+<!--        </dependency>-->
+
+
+
 
         <dependency>
             <groupId>org.dromara</groupId>

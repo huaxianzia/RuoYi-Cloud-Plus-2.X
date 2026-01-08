@@ -4,12 +4,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * SpringBoot-MQ 案例项目
  * @author Lion Li
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@ComponentScan(basePackages = {
+    "org.dromara.sensitive", // SensitiveWordUtils 所在包
+    "org.dromara.stream"     // 控制器所在包
+})
 public class RuoYiTestMqApplication {
 
     public static void main(String[] args) {
